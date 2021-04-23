@@ -78,6 +78,12 @@ const useStyles = makeStyles((theme: Theme) =>
 export default function Header() {
     const classes = useStyles();
 
+    const selection = getSelection()
+
+    const onClickLogin = () => {
+        console.log('onClickLogin')
+    }
+
     return (
         <div className={classes.root}>
             <AppBar position="static">
@@ -108,7 +114,7 @@ export default function Header() {
                         />
                     </div>
                     <div className={classes.grow}/>
-                    <Button color="inherit">Login</Button>
+                    <Button color="inherit" onClick={onClickLogin}>Login</Button>
                 </Toolbar>
             </AppBar>
         </div>
