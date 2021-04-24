@@ -11,6 +11,8 @@ import {
 } from "@material-ui/core";
 import MenuIcon from '@material-ui/icons/Menu'
 import SearchIcon from '@material-ui/icons/Search'
+import {useContext} from "react";
+import {AuthRepo} from "../../domain/auth/auth.repo";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -78,8 +80,6 @@ const useStyles = makeStyles((theme: Theme) =>
 export default function Header() {
     const classes = useStyles();
 
-    const selection = getSelection()
-
     const onClickLogin = () => {
         console.log('onClickLogin')
     }
@@ -97,7 +97,7 @@ export default function Header() {
                         <MenuIcon/>
                     </IconButton>
                     <Typography className={classes.title} variant="h6" noWrap>
-                        Material-UI
+                        {'anyString'}
                     </Typography>
                     <div className={classes.halfGrow}/>
                     <div className={classes.search}>

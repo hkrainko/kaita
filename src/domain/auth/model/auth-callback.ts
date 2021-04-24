@@ -54,7 +54,7 @@ export class AuthCallback implements AuthUser {
     this.lastUpdateTime = lastUpdateTime;
   }
 
-  toAuthUser(): AuthUser | null {
+  toAuthUser(): AuthUser | undefined {
     return {
       apiToken: this.apiToken,
       authId: this.authId,
