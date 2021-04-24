@@ -11,8 +11,10 @@ import {
 } from "@material-ui/core";
 import MenuIcon from '@material-ui/icons/Menu'
 import SearchIcon from '@material-ui/icons/Search'
-import {useContext} from "react";
-import {AuthRepo} from "../../domain/auth/auth.repo";
+import {useAppDispatch, useAppSelector} from "../hooks";
+import {RootState} from "../store";
+import {getAuthUrl} from "../auth/slice/authSlice";
+import {AuthType} from "../../domain/auth/auth-type";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -78,10 +80,13 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 export default function Header() {
-    const classes = useStyles();
+    const classes = useStyles()
+    const url = useAppSelector((state: RootState) => state.auth.authUrl)
+    const dispatch = useAppDispatch()
 
     const onClickLogin = () => {
         console.log('onClickLogin')
+        dispatch(getAuthUrl(AuthType.Facebook))
     }
 
     return (
@@ -97,7 +102,7 @@ export default function Header() {
                         <MenuIcon/>
                     </IconButton>
                     <Typography className={classes.title} variant="h6" noWrap>
-                        {'anyString'}
+                        {`anyString: ${url}`}
                     </Typography>
                     <div className={classes.halfGrow}/>
                     <div className={classes.search}>

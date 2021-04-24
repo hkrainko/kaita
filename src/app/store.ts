@@ -1,9 +1,12 @@
 import {Action, configureStore, getDefaultMiddleware, ThunkAction} from "@reduxjs/toolkit";
 import AppDependency from "./di";
+import authReducer from './auth/slice/authSlice'
 
 
 export const store = configureStore({
-    reducer: {},
+    reducer: {
+        auth: authReducer
+    },
     middleware: getDefaultMiddleware(
         {
             thunk: {extraArgument: new AppDependency()}

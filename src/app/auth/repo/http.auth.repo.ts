@@ -2,22 +2,21 @@ import {AuthType} from '../../../domain/auth/auth-type';
 import {Observable} from 'rxjs';
 import {AuthRepo} from '../../../domain/auth/auth.repo';
 import {GetAuthUrlRepoModel, GetAuthUrlMapper} from './model/get-auth-url.repo.model';
-import {map} from 'rxjs/operators';
 import {AuthCallbackMapper, AuthCallbackRepoModel} from './model/auth-callback.repo.model';
 import {AuthCallback} from '../../../domain/auth/model/auth-callback';
-import {AxiosStatic} from "axios";
+import axios, {AxiosStatic} from "axios";
 
 export class HttpAuthRepo extends AuthRepo {
 
+    private http: AxiosStatic
     getAuthUrlMapper = new GetAuthUrlMapper();
     authCallbackMapper = new AuthCallbackMapper();
 
-    apiPath = 'http://localhost:8080';
+    apiPath = 'http://192.168.64.12:31398/api';
 
-    constructor(
-        private http: AxiosStatic
-    ) {
+    constructor() {
         super();
+        this.http = axios
     }
 
     getText(anyStr: string): string {
@@ -33,12 +32,11 @@ export class HttpAuthRepo extends AuthRepo {
             })
     }
 
-    authCallback(type: AuthType, code: string, state: string): Observable<AuthCallback> {
-        return new Observable()
-        // return this.http
-        //   .get<AuthCallbackRepoModel>(`${this.apiPath}/auth/callback?auth_type=${type}&code=${code}&state=${state}`)
-        //   .pipe(map(
-        //     this.authCallbackMapper.mapFrom
-        //   ));
+    authCallback(type: AuthType, code: string, state: string): Promise<AuthCallback> {
+        return this.http
+            .get<AuthCallbackRepoModel>(`${this.apiPath}/auth/callback?auth_type=${type}&code=${code}&state=${state}`)
+            .then(response => {
+                return this.authCallbackMapper.mapFrom(response.data)
+            })
     }
 }

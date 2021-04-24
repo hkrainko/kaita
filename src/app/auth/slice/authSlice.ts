@@ -3,14 +3,24 @@ import AppDependency from "../../di";
 import {AuthType} from "../../../domain/auth/auth-type";
 
 export interface AuthState {
-    value: number;
-    status: 'idle' | 'loading' | 'failed';
+    value: number
+    status: 'loggedIn' | 'loggingIn' | 'notLoggedIn'
+    authUrl: string | null
 }
 
 const initialState: AuthState = {
     value: 0,
-    status: 'idle',
+    status: 'notLoggedIn',
+    authUrl: null,
 };
+
+export const getAuthUrl = createAsyncThunk(
+    'auth/getAuthUrl',
+    async (authType: AuthType, thunkAPI) => {
+        const ad = thunkAPI.extra as AppDependency
+        return await ad.authRepo.getAuthUrl(authType)
+    }
+);
 
 export const authSlice = createSlice({
     name: 'auth',
@@ -23,24 +33,24 @@ export const authSlice = createSlice({
     extraReducers: (builder => {
         builder
             .addCase(getAuthUrl.pending, (state) => {
-                state.status = 'loading'
+                state.status = 'loggingIn'
             })
             .addCase(getAuthUrl.fulfilled, (state, action) => {
-                state.status = 'idle'
-                // state.value = action.payload
+                state.status = 'loggedIn'
+                state.authUrl = action.payload
+            })
+            .addCase(getAuthUrl.rejected, (state, action) => {
+                state.status = 'notLoggedIn'
+                console.log(`getAuthUrl.rejected:${action.payload}`)
+                state.authUrl = null
             })
     })
 })
 
 export const {logout} = authSlice.actions
 
-export const getAuthUrl = createAsyncThunk(
-    'auth/getAuthUrl',
-    async (amount: number, thunkAPI) => {
-        const ad = thunkAPI.extra as AppDependency
-        return await ad.authRepo.getAuthUrl(AuthType.Facebook)
-    }
-);
+
+export default authSlice.reducer
 
 
 // export const getAuthUrl = (url: string): AppThunk => (
