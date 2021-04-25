@@ -122,7 +122,7 @@ export default function Header() {
                         />
                     </div>
                     <div className={classes.grow}/>
-                    <Link to={`/artists/123`}>
+                    <Link to={`/auth`}>
                         註冊/登入
                         {/*<Button color="inherit" onClick={onClickLogin}>Login</Button>*/}
                     </Link>

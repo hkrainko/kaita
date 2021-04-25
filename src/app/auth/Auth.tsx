@@ -1,4 +1,4 @@
-import {createStyles, fade, makeStyles, Theme} from "@material-ui/core";
+import {Box, Button, Container, createStyles, Grid, makeStyles, Theme} from "@material-ui/core";
 
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -12,8 +12,24 @@ const useStyles = makeStyles((theme: Theme) =>
 
 export default function Auth() {
     return (
-        <div>
-            Auth
-        </div>
+        <Box mt={4}>
+            <Grid container justify="center" spacing={4}>
+                <Grid item xs={12}>
+                    <Button variant="contained" color="primary">
+                        Facebook
+                    </Button>
+                </Grid>
+                <Grid item xs={12}>
+                    <Button variant="contained" color="primary">
+                        Twitter
+                    </Button>
+                </Grid>
+                <Grid item xs={12}>
+                    <Button variant="contained" color="primary">
+                        Google
+                    </Button>
+                </Grid>
+            </Grid>
+        </Box>
     )
 }
