@@ -15,6 +15,7 @@ import {useAppDispatch, useAppSelector} from "../hooks";
 import {RootState} from "../store";
 import {getAuthUrl} from "../auth/slice/authSlice";
 import {AuthType} from "../../domain/auth/auth-type";
+import {Link} from "react-router-dom";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -102,7 +103,9 @@ export default function Header() {
                         <MenuIcon/>
                     </IconButton>
                     <Typography className={classes.title} variant="h6" noWrap>
-                        {`anyString: ${url}`}
+                        <Link to={`/`}>
+                            {`anyString: ${url}`}
+                        </Link>
                     </Typography>
                     <div className={classes.halfGrow}/>
                     <div className={classes.search}>
@@ -119,7 +122,10 @@ export default function Header() {
                         />
                     </div>
                     <div className={classes.grow}/>
-                    <Button color="inherit" onClick={onClickLogin}>Login</Button>
+                    <Link to={`/artists/123`}>
+                        註冊/登入
+                        {/*<Button color="inherit" onClick={onClickLogin}>Login</Button>*/}
+                    </Link>
                 </Toolbar>
             </AppBar>
         </div>
