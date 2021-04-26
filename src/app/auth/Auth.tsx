@@ -1,11 +1,11 @@
 import {Box, Button, createStyles, Grid, makeStyles, Theme} from "@material-ui/core";
-import React, {useContext} from "react";
-import {getAuthUrl} from "./usecase/authSlice";
+import React from "react";
 import {useAppDispatch} from "../hooks";
 import {AuthType} from "../../domain/auth/auth-type";
 import {useInjection} from "../../iocReact";
 import {TYPES} from "../../types";
 import AuthUseCase from "../../domain/auth/auth.usecase";
+import { useHistory } from 'react-router-dom';
 
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -20,13 +20,17 @@ const useStyles = makeStyles((theme: Theme) =>
 export default function Auth() {
 
     const dispatch = useAppDispatch();
+    const history = useHistory();
     const authUseCase = useInjection<AuthUseCase>(TYPES.AuthUseCase)
 
     const onButtonClick = (authType: AuthType) => {
         console.log(authType)
         // dispatch(getAuthUrl(authType))
         authUseCase.getAuthUrl(authType)
-            .then(r => console.log(r))
+            .then(r => {
+                console.log(r)
+                document.location.href = r
+            })
     }
 
     return (
