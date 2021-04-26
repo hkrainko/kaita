@@ -13,7 +13,7 @@ import MenuIcon from '@material-ui/icons/Menu'
 import SearchIcon from '@material-ui/icons/Search'
 import {useAppDispatch, useAppSelector} from "../hooks";
 import {RootState} from "../store";
-import {getAuthUrl} from "../auth/slice/authSlice";
+import {getAuthUrl} from "../auth/usecase/authSlice";
 import {AuthType} from "../../domain/auth/auth-type";
 import {Link} from "react-router-dom";
 

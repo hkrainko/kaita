@@ -18,6 +18,10 @@ export const getAuthUrl = createAsyncThunk(
     'auth/getAuthUrl',
     async (authType: AuthType, thunkAPI) => {
         const ad = thunkAPI.extra as AppDependency
+        const callback = await ad.authRepo.getAuthUrl(authType)
+
+
+
         return await ad.authRepo.getAuthUrl(authType)
     }
 );

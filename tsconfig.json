@@ -1,11 +1,15 @@
 {
   "compilerOptions": {
+    "experimentalDecorators": true,
     "target": "es5",
     "lib": [
       "dom",
       "dom.iterable",
-      "esnext"
+      "esnext",
+      "es6"
     ],
+    "types": ["reflect-metadata"],
+    "emitDecoratorMetadata": true,
     "allowJs": true,
     "skipLibCheck": true,
     "esModuleInterop": true,

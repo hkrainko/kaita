@@ -4,8 +4,10 @@ import {GetAuthUrlRepoModel, GetAuthUrlMapper} from './model/get-auth-url.repo.m
 import {AuthCallbackMapper, AuthCallbackRepoModel} from './model/auth-callback.repo.model';
 import {AuthCallback} from '../../../domain/auth/model/auth-callback';
 import axios, {AxiosStatic} from "axios";
+import {injectable} from "inversify";
 
-export class HttpAuthRepo extends AuthRepo {
+@injectable()
+export class HttpAuthRepo implements AuthRepo {
 
     private http: AxiosStatic
     getAuthUrlMapper = new GetAuthUrlMapper();
@@ -14,7 +16,6 @@ export class HttpAuthRepo extends AuthRepo {
     apiPath = 'http://192.168.64.12:31398/api';
 
     constructor() {
-        super();
         this.http = axios
     }
 

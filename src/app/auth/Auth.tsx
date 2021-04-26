@@ -1,4 +1,11 @@
-import {Box, Button, Container, createStyles, Grid, makeStyles, Theme} from "@material-ui/core";
+import {Box, Button, createStyles, Grid, makeStyles, Theme} from "@material-ui/core";
+import React, {useContext} from "react";
+import {getAuthUrl} from "./usecase/authSlice";
+import {useAppDispatch} from "../hooks";
+import {AuthType} from "../../domain/auth/auth-type";
+import {useInjection} from "../../iocReact";
+import {TYPES} from "../../types";
+import AuthUseCase from "../../domain/auth/auth.usecase";
 
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -11,25 +18,45 @@ const useStyles = makeStyles((theme: Theme) =>
 
 
 export default function Auth() {
+
+    const dispatch = useAppDispatch();
+    const authUseCase = useInjection<AuthUseCase>(TYPES.AuthUseCase)
+
+    const onButtonClick = (authType: AuthType) => {
+        console.log(authType)
+        // dispatch(getAuthUrl(authType))
+        authUseCase.getAuthUrl(authType)
+            .then(r => console.log(r))
+    }
+
     return (
         <Box mt={4}>
             <Grid container justify="center" spacing={4}>
                 <Grid item xs={12}>
-                    <Button variant="contained" color="primary">
+                    <AuthButton authType={AuthType.Facebook} onClick={onButtonClick}>
                         Facebook
-                    </Button>
+                    </AuthButton>
                 </Grid>
                 <Grid item xs={12}>
-                    <Button variant="contained" color="primary">
+                    <AuthButton authType={AuthType.Twitter} onClick={onButtonClick}>
                         Twitter
-                    </Button>
+                    </AuthButton>
                 </Grid>
                 <Grid item xs={12}>
-                    <Button variant="contained" color="primary">
+                    <AuthButton authType={AuthType.Google} onClick={onButtonClick}>
                         Google
-                    </Button>
+                    </AuthButton>
                 </Grid>
             </Grid>
         </Box>
+    )
+}
+
+const AuthButton = ({authType, onClick, children}:
+                        { authType: AuthType, onClick: (authType: AuthType) => void, children: React.ReactNode }) => {
+    return (
+        <Button variant="contained" color="primary" onClick={() => onClick(authType)}>
+            {children}
+        </Button>
     )
 }

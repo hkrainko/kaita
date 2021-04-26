@@ -1,6 +1,6 @@
 import {Action, configureStore, getDefaultMiddleware, ThunkAction} from "@reduxjs/toolkit";
 import AppDependency from "./di";
-import authReducer from './auth/slice/authSlice'
+import authReducer from './auth/usecase/authSlice'
 
 
 export const store = configureStore({
