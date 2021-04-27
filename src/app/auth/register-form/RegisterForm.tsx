@@ -16,7 +16,7 @@ export default function RegisterForm() {
 
     return (
         <Box mt={4} className={classes.root}>
-            RegisterForm
+            <h1>RegisterForm</h1>
         </Box>
     )
 }

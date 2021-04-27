@@ -5,7 +5,7 @@ import {AuthType} from "../../domain/auth/model/auth-type";
 import {useInjection} from "../../iocReact";
 import {TYPES} from "../../types";
 import AuthUseCase from "../../domain/auth/auth.usecase";
-import {useHistory, useLocation} from 'react-router-dom';
+import {Redirect, useHistory, useLocation} from 'react-router-dom';
 import {submitAuthCallback} from "./usecase/authSlice";
 import {Auth} from "../../domain/auth/model/auth";
 import {AuthState} from "../../domain/auth/model/auth-state";
@@ -40,15 +40,17 @@ export default function AuthView() {
 
     if (authType && code && state && authSelector.authState === AuthState.Idle) {
         dispatch(submitAuthCallback({authType: (authType as AuthType), code, state}))
+        console.log('1')
         return <></>
     } else if (authSelector.authState === AuthState.Authed) {
+        console.log('2')
         switch (authSelector?.user?.state) {
             case UserState.Active:
-
+                return <Redirect to='/'/>
             case UserState.Pending:
-
+                return <Redirect to='/register'/>
             case UserState.Terminated:
-
+                return <Redirect to='/home'/>
             default:
                 break
         }

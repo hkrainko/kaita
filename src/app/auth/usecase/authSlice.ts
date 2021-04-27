@@ -43,7 +43,8 @@ export const authSlice = createSlice({
                         state.user = action.payload
                         break;
                     case UserState.Pending:
-                        state.authState = AuthStatus.Authing
+                        state.authState = AuthStatus.Authed
+                        state.user = action.payload
                         break;
                     case UserState.Terminated:
                         state.authState = AuthStatus.Failed

@@ -19,7 +19,7 @@ export default function RegisterView() {
     const history = useHistory();
 
     const onClickedRegisterButton = (type: 'normal-user' | 'artist') => {
-        history.push(`/register-form?type=${type}`)
+        history.push(`/register/form?type=${type}`)
     }
 
     return (
