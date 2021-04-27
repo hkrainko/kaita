@@ -1,11 +1,15 @@
 import {Action, configureStore, getDefaultMiddleware, ThunkAction} from "@reduxjs/toolkit";
 import AppDependency from "./di";
 import authReducer from './auth/usecase/authSlice'
+import loadingReducer from './loading/usecase/loadingSlice'
+import errorReducer from './error/usecase/errorSlice'
 
 
 export const store = configureStore({
     reducer: {
-        auth: authReducer
+        auth: authReducer,
+        loading: loadingReducer,
+        error: errorReducer
     },
     middleware: getDefaultMiddleware(
         {
@@ -16,8 +20,7 @@ export const store = configureStore({
 
 export type AppDispatch = typeof store.dispatch;
 export type RootState = ReturnType<typeof store.getState>;
-export type AppThunk<ReturnType = void> = ThunkAction<
-    ReturnType,
+export type AppThunk<ReturnType = void> = ThunkAction<ReturnType,
     RootState,
     unknown,
     Action<string>>;

@@ -11,10 +11,7 @@ import {
 } from "@material-ui/core";
 import MenuIcon from '@material-ui/icons/Menu'
 import SearchIcon from '@material-ui/icons/Search'
-import {useAppDispatch, useAppSelector} from "../hooks";
-import {RootState} from "../store";
-import {getAuthUrl} from "../auth/usecase/authSlice";
-import {AuthType} from "../../domain/auth/model/auth-type";
+import {useAppDispatch} from "../hooks";
 import {Link} from "react-router-dom";
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -82,13 +79,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 export default function Header() {
     const classes = useStyles()
-    const url = useAppSelector((state: RootState) => state.auth.authUrl)
     const dispatch = useAppDispatch()
-
-    const onClickLogin = () => {
-        console.log('onClickLogin')
-        dispatch(getAuthUrl(AuthType.Facebook))
-    }
 
     return (
         <div className={classes.root}>
@@ -104,7 +95,7 @@ export default function Header() {
                     </IconButton>
                     <Typography className={classes.title} variant="h6" noWrap>
                         <Link to={`/`}>
-                            {`anyString: ${url}`}
+                            {`Kaita`}
                         </Link>
                     </Typography>
                     <div className={classes.halfGrow}/>
@@ -124,7 +115,6 @@ export default function Header() {
                     <div className={classes.grow}/>
                     <Link to={`/auth`}>
                         註冊/登入
-                        {/*<Button color="inherit" onClick={onClickLogin}>Login</Button>*/}
                     </Link>
                 </Toolbar>
             </AppBar>

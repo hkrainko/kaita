@@ -6,13 +6,29 @@ import {BrowserRouter, Route, Switch} from "react-router-dom";
 import Home from "./app/home/Home";
 import Auth from "./app/auth/Auth";
 import Artist from "./app/artist/Artist";
+import {Button, Snackbar} from "@material-ui/core";
+import {useAppDispatch, useAppSelector} from "./app/hooks";
+import {dismissErrorAlert, showErrorAlert} from "./app/error/usecase/errorSlice";
+import {UserTerminatedError} from "./domain/error/model/user-error";
+import Loading from "./app/loading/Loading";
 
 
 function App() {
+
+    const dispatch = useAppDispatch();
+    const errorSelector = useAppSelector((state) => state.error)
+    const loadingSelector = useAppSelector((state) => state.loading)
+
+    const handleCloseAlert = () => {
+        console.log('handleCloseAlert')
+        dispatch(dismissErrorAlert())
+    }
+
     return (
         <div className="App">
             <BrowserRouter>
                 <Header/>
+                {loadingSelector.loading && <Loading/>}
                 <Switch>
                     <Route path="/auth">
                         <Auth/>
@@ -24,7 +40,14 @@ function App() {
                         <Home/>
                     </Route>
                 </Switch>
+                <Button onClick={() => {dispatch(showErrorAlert(new UserTerminatedError()))}}>Show Alert</Button>
             </BrowserRouter>
+            <Snackbar
+                open={errorSelector.message != null}
+                message={errorSelector.message}
+                onClose={handleCloseAlert}
+                autoHideDuration={5000}
+            />
             {/*<header className="App-header">*/}
             {/*    <img src={logo} className="App-logo" alt="logo"/>*/}
             {/*    <Button variant="contained">Default</Button>*/}
