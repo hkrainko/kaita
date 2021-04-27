@@ -18,11 +18,9 @@ export const errorSlice = createSlice({
     initialState,
     reducers: {
         dismissErrorAlert: (state => {
-            console.log('dismissErrorAlert')
             state.message = null
         }),
         showErrorMessage: ((state, action: PayloadAction<string>) => {
-            console.log('showErrorAlert')
             state.message = action.payload
         })
     },
@@ -34,7 +32,7 @@ export const errorSlice = createSlice({
                 }
             })
             .addCase(submitAuthCallback.rejected, (state, action) => {
-                console.log(`error:${action.error}`)
+                console.log(`error:${JSON.stringify(action.error)}`)
                 state.message = new UnAuthError().message
             })
     })

@@ -1,5 +1,6 @@
 export enum AuthState {
-    UnAuth = 'UnAuth',
+    Idle = 'Idle',
     Authing = 'Authing',
     Authed = 'Authed',
+    Failed = 'Failed',
 }

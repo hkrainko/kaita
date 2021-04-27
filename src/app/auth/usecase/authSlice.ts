@@ -10,7 +10,7 @@ export interface AuthState {
 }
 
 const initialState: AuthState = {
-    authState: AuthStatus.UnAuth,
+    authState: AuthStatus.Idle,
     user: null
 };
 
@@ -27,7 +27,7 @@ export const authSlice = createSlice({
     initialState,
     reducers: {
         logout: (state) => {
-            state.authState = AuthStatus.UnAuth
+            state.authState = AuthStatus.Idle
             state.user = null
         }
     },
@@ -46,11 +46,14 @@ export const authSlice = createSlice({
                         state.authState = AuthStatus.Authing
                         break;
                     case UserState.Terminated:
-                        state.authState = AuthStatus.UnAuth
+                        state.authState = AuthStatus.Failed
                         break;
                     default:
                         break;
                 }
+            })
+            .addCase(submitAuthCallback.rejected, (state, action) => {
+                state.authState = AuthStatus.Failed
             })
     })
 })

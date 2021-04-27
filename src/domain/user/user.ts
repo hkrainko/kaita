@@ -8,8 +8,8 @@ export interface User {
   gender?: Gender;
   profilePath?: string;
   isArtist: boolean;
-  regTime: Date;
-  lastUpdateTime?: Date;
+  regTime?: string;
+  lastUpdateTime?: string;
   state: UserState;
 }
 

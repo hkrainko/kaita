@@ -4,13 +4,15 @@ import './App.css';
 import Header from "./app/header/Header";
 import {BrowserRouter, Route, Switch} from "react-router-dom";
 import Home from "./app/home/Home";
-import Auth from "./app/auth/Auth";
+import AuthView from "./app/auth/AuthView";
 import Artist from "./app/artist/Artist";
 import {Button, Snackbar} from "@material-ui/core";
 import {useAppDispatch, useAppSelector} from "./app/hooks";
 import {dismissErrorAlert, showErrorAlert} from "./app/error/usecase/errorSlice";
 import {UserTerminatedError} from "./domain/error/model/user-error";
 import Loading from "./app/loading/Loading";
+import RegisterView from "./app/register/RegisterView";
+import RegisterForm from "./app/auth/register-form/RegisterForm";
 
 
 function App() {
@@ -20,7 +22,6 @@ function App() {
     const loadingSelector = useAppSelector((state) => state.loading)
 
     const handleCloseAlert = () => {
-        console.log('handleCloseAlert')
         dispatch(dismissErrorAlert())
     }
 
@@ -30,15 +31,11 @@ function App() {
                 <Header/>
                 {loadingSelector.loading && <Loading/>}
                 <Switch>
-                    <Route path="/auth">
-                        <Auth/>
-                    </Route>
-                    <Route exact path="/artists/:id" component={Artist}>
-
-                    </Route>
-                    <Route exact path="/">
-                        <Home/>
-                    </Route>
+                    <Route path="/auth" component={AuthView}/>
+                    <Route exact path="/register" component={RegisterView}/>
+                    <Route path="/register/form" component={RegisterForm}/>
+                    <Route exact path="/artists/:id" component={Artist}/>
+                    <Route exact path="/" component={Home}/>
                 </Switch>
                 <Button onClick={() => {dispatch(showErrorAlert(new UserTerminatedError()))}}>Show Alert</Button>
             </BrowserRouter>

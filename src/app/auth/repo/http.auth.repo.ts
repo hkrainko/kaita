@@ -36,6 +36,7 @@ export class HttpAuthRepo implements AuthRepo {
         return this.http
             .get<AuthCallbackRepoModel>(`${this.apiPath}/auth/callback?auth_type=${type}&code=${code}&state=${state}`)
             .then(response => {
+                console.log(JSON.stringify(response.data))
                 return this.authCallbackMapper.mapFrom(response.data)
             })
     }
