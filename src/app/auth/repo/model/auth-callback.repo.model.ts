@@ -9,7 +9,7 @@
 // PhotoURL string `json:"photoUrl"`
 // State    string `json:"state"`
 
-import {AuthType} from '../../../../domain/auth/auth-type';
+import {AuthType} from '../../../../domain/auth/model/auth-type';
 import {Gender} from '../../../../domain/user/gender';
 import {Mapper} from '../../../../domain/mapper';
 import {UserState} from '../../../../domain/user/user';

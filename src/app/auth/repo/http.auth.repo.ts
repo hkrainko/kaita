@@ -1,4 +1,4 @@
-import {AuthType} from '../../../domain/auth/auth-type';
+import {AuthType} from '../../../domain/auth/model/auth-type';
 import {AuthRepo} from '../../../domain/auth/auth.repo';
 import {GetAuthUrlRepoModel, GetAuthUrlMapper} from './model/get-auth-url.repo.model';
 import {AuthCallbackMapper, AuthCallbackRepoModel} from './model/auth-callback.repo.model';

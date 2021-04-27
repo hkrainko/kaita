@@ -1,4 +1,4 @@
-import {AuthType} from './auth-type';
+import {AuthType} from './model/auth-type';
 import {AuthCallback} from './model/auth-callback';
 
 export interface AuthRepo {

@@ -1,11 +1,11 @@
-import {Box, Button, createStyles, Grid, makeStyles, Theme} from "@material-ui/core";
+import {Box, Button, createStyles, Grid, makeStyles, Theme, useMediaQuery} from "@material-ui/core";
 import React from "react";
 import {useAppDispatch} from "../hooks";
-import {AuthType} from "../../domain/auth/auth-type";
+import {AuthType} from "../../domain/auth/model/auth-type";
 import {useInjection} from "../../iocReact";
 import {TYPES} from "../../types";
 import AuthUseCase from "../../domain/auth/auth.usecase";
-import { useHistory } from 'react-router-dom';
+import {useHistory, useLocation} from 'react-router-dom';
 
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -16,12 +16,29 @@ const useStyles = makeStyles((theme: Theme) =>
     }),
 );
 
+interface LocationState {
+    search: string
+}
 
 export default function Auth() {
 
-    const dispatch = useAppDispatch();
-    const history = useHistory();
     const authUseCase = useInjection<AuthUseCase>(TYPES.AuthUseCase)
+    const dispatch = useAppDispatch();
+
+    const location = useLocation<LocationState>()
+    const history = useHistory();
+
+    const query = new URLSearchParams(location.search)
+    const authType = query.get('auth_type')
+    const code = query.get('code')
+    const state = query.get('state')
+
+    if (authType && code && state) {
+
+
+        // history.push('/register')
+        return <></>
+    }
 
     const onButtonClick = (authType: AuthType) => {
         console.log(authType)

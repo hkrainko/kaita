@@ -1,4 +1,4 @@
-import {AuthType} from '../auth/auth-type';
+import {AuthType} from '../auth/model/auth-type';
 import {Gender} from '../user/gender';
 import {User, UserState} from '../user/user';
 

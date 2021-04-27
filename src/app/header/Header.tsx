@@ -14,7 +14,7 @@ import SearchIcon from '@material-ui/icons/Search'
 import {useAppDispatch, useAppSelector} from "../hooks";
 import {RootState} from "../store";
 import {getAuthUrl} from "../auth/usecase/authSlice";
-import {AuthType} from "../../domain/auth/auth-type";
+import {AuthType} from "../../domain/auth/model/auth-type";
 import {Link} from "react-router-dom";
 
 const useStyles = makeStyles((theme: Theme) =>

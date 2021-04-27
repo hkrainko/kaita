@@ -1,5 +1,5 @@
 import {AuthRepo} from "../../../domain/auth/auth.repo";
-import {AuthType} from "../../../domain/auth/auth-type";
+import {AuthType} from "../../../domain/auth/model/auth-type";
 import {injectable} from "inversify";
 import AuthUseCase from "../../../domain/auth/auth.usecase";
 import {TYPES} from "../../../types";

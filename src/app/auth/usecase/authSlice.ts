@@ -1,52 +1,56 @@
 import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
 import AppDependency from "../../di";
-import {AuthType} from "../../../domain/auth/auth-type";
+import {AuthType} from "../../../domain/auth/model/auth-type";
+import {AuthState as AuthStatus} from "../../../domain/auth/model/auth-state";
+import {User, UserState} from "../../../domain/user/user";
 
 export interface AuthState {
-    value: number
-    status: 'loggedIn' | 'loggingIn' | 'notLoggedIn'
-    authUrl: string | null
+    authState: AuthStatus
+    user: User | null
 }
 
 const initialState: AuthState = {
-    value: 0,
-    status: 'notLoggedIn',
-    authUrl: null,
+    authState: AuthStatus.UnAuth,
+    user: null
 };
 
-export const getAuthUrl = createAsyncThunk(
-    'auth/getAuthUrl',
-    async (authType: AuthType, thunkAPI) => {
+export const submitAuthCallback = createAsyncThunk(
+    'auth/submitAuthCallback',
+    async ({authType, code, state}: { authType: AuthType, code: string, state: string }, thunkAPI) => {
         const ad = thunkAPI.extra as AppDependency
-        const callback = await ad.authRepo.getAuthUrl(authType)
-
-
-
-        return await ad.authRepo.getAuthUrl(authType)
+        return await ad.authRepo.authCallback(authType, code, state);
     }
-);
+)
 
 export const authSlice = createSlice({
     name: 'auth',
     initialState,
     reducers: {
         logout: (state) => {
-
+            state.authState = AuthStatus.UnAuth
+            state.user = null
         }
     },
     extraReducers: (builder => {
         builder
-            .addCase(getAuthUrl.pending, (state) => {
-                state.status = 'loggingIn'
+            .addCase(submitAuthCallback.pending, (state) => {
+                state.authState = AuthStatus.Authing
             })
-            .addCase(getAuthUrl.fulfilled, (state, action) => {
-                state.status = 'loggedIn'
-                state.authUrl = action.payload
-            })
-            .addCase(getAuthUrl.rejected, (state, action) => {
-                state.status = 'notLoggedIn'
-                console.log(`getAuthUrl.rejected:${action.payload}`)
-                state.authUrl = null
+            .addCase(submitAuthCallback.fulfilled, (state, action) => {
+                switch (action.payload.state) {
+                    case UserState.Active:
+                        state.authState = AuthStatus.Authed
+                        state.user = action.payload
+                        break;
+                    case UserState.Pending:
+                        state.authState = AuthStatus.Authing
+                        break;
+                    case UserState.Terminated:
+                        state.authState = AuthStatus.UnAuth
+                        break;
+                    default:
+                        break;
+                }
             })
     })
 })
