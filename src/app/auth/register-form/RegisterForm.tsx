@@ -1,12 +1,12 @@
 import {
-    Box,
+    Box, Checkbox, Container,
     createStyles,
-    FormControl,
+    FormControl, FormControlLabel,
     FormGroup,
-    FormHelperText, Grid, Input,
+    FormHelperText, FormLabel, Grid, Input,
     InputLabel,
-    makeStyles, TextField,
-    Theme
+    makeStyles, Paper, Radio, RadioGroup, TextField,
+    Theme, Typography
 } from "@material-ui/core";
 import {useHistory} from "react-router-dom";
 import React from "react";
@@ -17,6 +17,30 @@ const useStyles = makeStyles((theme: Theme) =>
         root: {
             flexGrow: 1,
         },
+        paper: {
+            marginTop: theme.spacing(8),
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+        },
+        container: {
+            marginTop: theme.spacing(4),
+            marginBottom: theme.spacing(4)
+        },
+        formLabel: {
+            alignSelf: 'center',
+        },
+        // avatar: {
+        //     margin: theme.spacing(1),
+        //     backgroundColor: theme.palette.secondary.main,
+        // },
+        form: {
+            width: '100%', // Fix IE 11 issue.
+            marginTop: theme.spacing(3),
+        },
+        submit: {
+            margin: theme.spacing(3, 0, 2),
+        },
     }),
 );
 
@@ -24,35 +48,81 @@ export default function RegisterForm() {
     const classes = useStyles()
     const history = useHistory();
 
+    const [gender, setGender] = React.useState('female');
+
     return (
-        <Box mt={4} className={classes.root}>
-            <Grid container spacing={3} justify={"center"}>
-                <Grid item xs={10} md={8}>
-                    <h1>Register As </h1>
-                </Grid>
-                <Grid item xs={10} md={8}>
-                    <FormGroup>
-                        <FormControl>
-                            <TextField
-                                id="my-input"
-                                aria-describedby="my-helper-text"
-                                label="客戶名稱"
-                                InputLabelProps={{shrink: true}}
-                                variant="outlined"/>
-                            <FormHelperText id="my-helper-text">We'll never share your email.</FormHelperText>
-                        </FormControl>
-                        <FormControl>
-                            <TextField
-                                id="my-input"
-                                aria-describedby="my-helper-text"
-                                label="電郵地址"
-                                InputLabelProps={{shrink: true}}
-                                variant="outlined"/>
-                            <FormHelperText id="my-helper-text">We'll never share your email.</FormHelperText>
-                        </FormControl>
-                    </FormGroup>
-                </Grid>
-            </Grid>
-        </Box>
+        <Container maxWidth="sm">
+            <Paper className={classes.paper}>
+                <Container maxWidth="xs" className={classes.container}>
+                    <Typography component="h1" variant="h5">
+                        Register as Artist
+                    </Typography>
+                    <form className={classes.form} noValidate>
+                        <Grid container spacing={2}>
+                            <Grid item xs={12}>
+                                <TextField
+                                    name="userId"
+                                    variant="outlined"
+                                    required
+                                    fullWidth
+                                    id="userId"
+                                    label="用戶帳號"
+                                    autoFocus
+                                />
+                            </Grid>
+                            <Grid item xs={12}>
+                                <TextField
+                                    name="displayName"
+                                    variant="outlined"
+                                    required
+                                    fullWidth
+                                    id="displayName"
+                                    label="顯示名稱"
+                                    autoFocus
+                                />
+                            </Grid>
+                            <Grid item xs={12}>
+                                <TextField
+                                    variant="outlined"
+                                    required
+                                    fullWidth
+                                    id="email"
+                                    label="電郵"
+                                    name="email"
+                                    autoComplete="email"
+                                    aria-required
+                                />
+                            </Grid>
+                            <Grid item xs={12}>
+                                <TextField
+                                    variant="outlined"
+                                    fullWidth
+                                    id="date"
+                                    label="出生日期"
+                                    type="date"
+                                    // defaultValue="2017-05-24"
+                                    InputLabelProps={{
+                                        shrink: true,
+                                    }}
+                                />
+                            </Grid>
+                            <Grid item xs={12}>
+                                <RadioGroup row aria-label="gender" name="gender1" value={gender} onChange={(e) => setGender(e.target.value)}>
+                                    <FormLabel component="legend" className={classes.formLabel}>Gender</FormLabel>
+                                    <FormControlLabel value="male" control={<Radio />} label="男" labelPlacement="start"/>
+                                    <FormControlLabel value="female" control={<Radio />} label="女" labelPlacement="start"/>
+                                </RadioGroup>
+                            </Grid>
+                            <Grid item xs={12}>
+                                <FormControlLabel
+                                    control={<Checkbox value="allowExtraEmails" color="primary" />}
+                                    label="I want to receive inspiration, marketing promotions and updates via email."
+                                />
+                            </Grid>
+                        </Grid>
+                    </form>
+                </Container>
+            </Paper>
+        </Container>
     );
 }
