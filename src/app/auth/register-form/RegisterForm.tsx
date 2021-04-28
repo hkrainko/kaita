@@ -1,5 +1,5 @@
 import {
-    Box, Checkbox, Container,
+    Box, Button, Checkbox, Container,
     createStyles,
     FormControl, FormControlLabel,
     FormGroup,
@@ -9,7 +9,10 @@ import {
     Theme, Typography
 } from "@material-ui/core";
 import {useHistory} from "react-router-dom";
-import React from "react";
+import React, {useCallback} from "react";
+import Dropzone from "react-dropzone";
+import AppDropzone from "../../component/AppDropzone";
+import AppImageCrop from "../../component/AppImageCrop";
 
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -49,6 +52,21 @@ export default function RegisterForm() {
     const history = useHistory();
 
     const [gender, setGender] = React.useState('female');
+    const [imagePath, setImagePath] = React.useState<string | null>(null);
+
+    const filesCallback = useCallback(
+        (files: File[]) => {
+            console.log(files)
+            if (files.length <= 0) {
+                setImagePath(null)
+                return
+            }
+            const reader = new FileReader();
+            reader.onload = () => {
+                setImagePath(reader.result as string)
+            };
+            reader.readAsDataURL(files[0]);
+        }, []);
 
     return (
         <Container maxWidth="sm">
@@ -107,15 +125,25 @@ export default function RegisterForm() {
                                 />
                             </Grid>
                             <Grid item xs={12}>
-                                <RadioGroup row aria-label="gender" name="gender1" value={gender} onChange={(e) => setGender(e.target.value)}>
+                                <RadioGroup row aria-label="gender" name="gender1" value={gender}
+                                            onChange={(e) => setGender(e.target.value)}>
                                     <FormLabel component="legend" className={classes.formLabel}>Gender</FormLabel>
-                                    <FormControlLabel value="male" control={<Radio />} label="男" labelPlacement="start"/>
-                                    <FormControlLabel value="female" control={<Radio />} label="女" labelPlacement="start"/>
+                                    <FormControlLabel value="male" control={<Radio/>} label="男" labelPlacement="start"/>
+                                    <FormControlLabel value="female" control={<Radio/>} label="女"
+                                                      labelPlacement="start"/>
                                 </RadioGroup>
                             </Grid>
                             <Grid item xs={12}>
+                                {
+                                    imagePath ? <AppImageCrop src={imagePath}/> : null
+                                }
+                            </Grid>
+                            <Grid item xs={12}>
+                                <AppDropzone onDrop={filesCallback}/>
+                            </Grid>
+                            <Grid item xs={12}>
                                 <FormControlLabel
-                                    control={<Checkbox value="allowExtraEmails" color="primary" />}
+                                    control={<Checkbox value="allowExtraEmails" color="primary"/>}
                                     label="I want to receive inspiration, marketing promotions and updates via email."
                                 />
                             </Grid>
