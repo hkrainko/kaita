@@ -9,9 +9,10 @@ import {
     Theme, Typography
 } from "@material-ui/core";
 import {useHistory} from "react-router-dom";
-import React, {useCallback} from "react";
+import React, {useCallback, useState} from "react";
 import AppDropzone from "../../component/AppDropzone";
 import AppImageCrop from "../../component/AppImageCrop";
+import moment from "moment";
 
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -54,7 +55,13 @@ export default function RegisterForm() {
     const classes = useStyles()
     const history = useHistory();
 
-    const [gender, setGender] = React.useState('female');
+    const [userId, setUserId] = useState('');
+    const [displayName, setDisplayName] = useState('');
+    const [email, setEmail] = useState('');
+    const [birthday, setBirthday] = useState<Date | null>(null);
+    const [gender, setGender] = useState('F');
+    const [profile, setProfile] = useState(null);
+
     const [imagePath, setImagePath] = React.useState<string | null>(null);
 
     const filesCallback = useCallback(
@@ -81,13 +88,15 @@ export default function RegisterForm() {
             <Paper className={classes.paper}>
                 <Container maxWidth="xs" className={classes.container}>
                     <Typography component="h1" variant="h5">
-                        Register as Artist
+                        註冊成為本站繪師
                     </Typography>
                     <form className={classes.form} noValidate>
                         <Grid container spacing={2}>
                             <Grid item xs={12}>
                                 <TextField
                                     name="userId"
+                                    value={userId}
+                                    onChange={(e) => {setUserId(e.target.value)}}
                                     variant="outlined"
                                     required
                                     fullWidth
@@ -99,6 +108,8 @@ export default function RegisterForm() {
                             <Grid item xs={12}>
                                 <TextField
                                     name="displayName"
+                                    value={displayName}
+                                    onChange={(e) => {setDisplayName(e.target.value)}}
                                     variant="outlined"
                                     required
                                     fullWidth
@@ -109,18 +120,23 @@ export default function RegisterForm() {
                             </Grid>
                             <Grid item xs={12}>
                                 <TextField
+                                    name="email"
+                                    value={email}
+                                    onChange={(e) => {setEmail(e.target.value)}}
                                     variant="outlined"
                                     required
                                     fullWidth
                                     id="email"
                                     label="電郵"
-                                    name="email"
                                     autoComplete="email"
                                     aria-required
                                 />
                             </Grid>
                             <Grid item xs={12}>
                                 <TextField
+                                    name="birthday"
+                                    value={moment(birthday).format('YYYY-MM-DD')}
+                                    onChange={(e) => {setBirthday(new Date(e.target.value))}}
                                     variant="outlined"
                                     fullWidth
                                     id="date"
@@ -136,8 +152,8 @@ export default function RegisterForm() {
                                 <RadioGroup row aria-label="gender" name="gender1" value={gender}
                                             onChange={(e) => setGender(e.target.value)}>
                                     <FormLabel component="legend" className={classes.genderLabel} >姓別</FormLabel>
-                                    <FormControlLabel value="male" control={<Radio/>} label="男" labelPlacement="start"/>
-                                    <FormControlLabel value="female" control={<Radio/>} label="女"
+                                    <FormControlLabel value="M" control={<Radio/>} label="男" labelPlacement="start"/>
+                                    <FormControlLabel value="F" control={<Radio/>} label="女"
                                                       labelPlacement="start"/>
                                 </RadioGroup>
                             </Grid>
@@ -147,11 +163,27 @@ export default function RegisterForm() {
                                     <AppImageCrop src={imagePath as string} onClickDelete={() => {setImagePath(null)}} onCroppedImg={onCroppedImg} /> :
                                     <AppDropzone onDrop={filesCallback}/>}
                             </Grid>
-                            <Grid item xs={12}>
+                            <Grid container item xs={12}>
                                 <FormControlLabel
                                     control={<Checkbox value="allowExtraEmails" color="primary"/>}
-                                    label="I want to receive inspiration, marketing promotions and updates via email."
+                                    label="同意遵守站內繪師守則"
                                 />
+                            </Grid>
+                            <Grid container item xs={12}>
+                                <FormControlLabel
+                                    control={<Checkbox value="allowExtraEmails" color="primary"/>}
+                                    label="我願意接收推廣訊息"
+                                />
+                            </Grid>
+                            <Grid container item xs={6}>
+                                <Button variant="contained" fullWidth>
+                                    取消
+                                </Button>
+                            </Grid>
+                            <Grid container item xs={6}>
+                                <Button type="submit" variant="contained" color="primary" fullWidth>
+                                    確定
+                                </Button>
                             </Grid>
                         </Grid>
                     </form>
