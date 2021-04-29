@@ -1,10 +1,8 @@
 import {
-    Box, Button, Checkbox, Container,
+    Button, Checkbox, Container,
     createStyles,
-    FormControl, FormControlLabel,
-    FormGroup,
-    FormHelperText, FormLabel, Grid, Input,
-    InputLabel,
+    FormControlLabel,
+    FormLabel, Grid,
     makeStyles, Paper, Radio, RadioGroup, TextField,
     Theme, Typography
 } from "@material-ui/core";
@@ -60,7 +58,7 @@ export default function RegisterForm() {
     const [email, setEmail] = useState('');
     const [birthday, setBirthday] = useState<Date | null>(null);
     const [gender, setGender] = useState('F');
-    const [profile, setProfile] = useState(null);
+    const [profile, setProfile] = useState<string | null>(null);
 
     const [imagePath, setImagePath] = React.useState<string | null>(null);
 
@@ -81,7 +79,21 @@ export default function RegisterForm() {
     const onCroppedImg = useCallback(
         (base64Img?: string) => {
             console.log(`base64Img:${base64Img?.length}`)
+            setProfile(base64Img ?? null)
         }, [])
+
+    const onClickDeleteImage = useCallback(
+        () => {
+            setImagePath(null)
+            setProfile(null)
+        }
+        ,[])
+
+    const onSubmitForm = useCallback(
+        (event) => {
+            console.log(profile)
+            event.preventDefault()
+        }, [profile])
 
     return (
         <Container maxWidth="sm">
@@ -90,7 +102,7 @@ export default function RegisterForm() {
                     <Typography component="h1" variant="h5">
                         註冊成為本站繪師
                     </Typography>
-                    <form className={classes.form} noValidate>
+                    <form className={classes.form} onSubmit={onSubmitForm} noValidate>
                         <Grid container spacing={2}>
                             <Grid item xs={12}>
                                 <TextField
@@ -160,7 +172,7 @@ export default function RegisterForm() {
                             <Grid item xs={12}>
                                 <FormLabel component="legend" className={classes.formLabel}>個人頭像</FormLabel>
                                 {imagePath ?
-                                    <AppImageCrop src={imagePath as string} onClickDelete={() => {setImagePath(null)}} onCroppedImg={onCroppedImg} /> :
+                                    <AppImageCrop src={imagePath as string} onClickDelete={onClickDeleteImage} onCroppedImg={onCroppedImg} /> :
                                     <AppDropzone onDrop={filesCallback}/>}
                             </Grid>
                             <Grid container item xs={12}>
