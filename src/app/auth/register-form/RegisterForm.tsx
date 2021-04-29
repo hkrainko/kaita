@@ -10,7 +10,6 @@ import {
 } from "@material-ui/core";
 import {useHistory} from "react-router-dom";
 import React, {useCallback} from "react";
-import Dropzone from "react-dropzone";
 import AppDropzone from "../../component/AppDropzone";
 import AppImageCrop from "../../component/AppImageCrop";
 
@@ -30,8 +29,12 @@ const useStyles = makeStyles((theme: Theme) =>
             marginTop: theme.spacing(4),
             marginBottom: theme.spacing(4)
         },
-        formLabel: {
+        genderLabel: {
             alignSelf: 'center',
+        },
+        formLabel: {
+            textAlign: 'left',
+            paddingBottom: theme.spacing(1)
         },
         // avatar: {
         //     margin: theme.spacing(1),
@@ -67,6 +70,11 @@ export default function RegisterForm() {
             };
             reader.readAsDataURL(files[0]);
         }, []);
+
+    const onCroppedImg = useCallback(
+        (base64Img?: string) => {
+            console.log(`base64Img:${base64Img?.length}`)
+        }, [])
 
     return (
         <Container maxWidth="sm">
@@ -127,19 +135,17 @@ export default function RegisterForm() {
                             <Grid item xs={12}>
                                 <RadioGroup row aria-label="gender" name="gender1" value={gender}
                                             onChange={(e) => setGender(e.target.value)}>
-                                    <FormLabel component="legend" className={classes.formLabel}>Gender</FormLabel>
+                                    <FormLabel component="legend" className={classes.genderLabel} >姓別</FormLabel>
                                     <FormControlLabel value="male" control={<Radio/>} label="男" labelPlacement="start"/>
                                     <FormControlLabel value="female" control={<Radio/>} label="女"
                                                       labelPlacement="start"/>
                                 </RadioGroup>
                             </Grid>
                             <Grid item xs={12}>
-                                {
-                                    imagePath ? <AppImageCrop src={imagePath}/> : null
-                                }
-                            </Grid>
-                            <Grid item xs={12}>
-                                <AppDropzone onDrop={filesCallback}/>
+                                <FormLabel component="legend" className={classes.formLabel}>個人頭像</FormLabel>
+                                {imagePath ?
+                                    <AppImageCrop src={imagePath as string} onClickDelete={() => {setImagePath(null)}} onCroppedImg={onCroppedImg} /> :
+                                    <AppDropzone onDrop={filesCallback}/>}
                             </Grid>
                             <Grid item xs={12}>
                                 <FormControlLabel
