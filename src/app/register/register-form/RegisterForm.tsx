@@ -16,7 +16,6 @@ import {useInjection} from "../../../iocReact";
 import {TYPES} from "../../../types";
 import {RegisterUseCase} from "../../../domain/register/register.usecase";
 import {Gender} from "../../../domain/user/gender";
-import {red} from "@material-ui/core/colors";
 
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -42,12 +41,10 @@ const useStyles = makeStyles((theme: Theme) =>
             paddingBottom: theme.spacing(1)
         },
         helperText: {
-            marginLeft: theme.spacing(2)
+            marginTop: theme.spacing(0),
+            marginLeft: theme.spacing(0),
+            alignSelf: 'center'
         },
-        // avatar: {
-        //     margin: theme.spacing(1),
-        //     backgroundColor: theme.palette.secondary.main,
-        // },
         form: {
             width: '100%', // Fix IE 11 issue.
             marginTop: theme.spacing(3),
@@ -64,7 +61,10 @@ type Inputs = {
     email: string,
     birthday: Date,
     gender: Gender,
-    // profile: string
+    profile: string
+    agreeArtistRule: boolean,
+    allowAdsEmail: boolean,
+
 }
 
 export default function RegisterForm() {
@@ -239,14 +239,24 @@ export default function RegisterForm() {
                                     <AppDropzone onDrop={filesCallback}/>}
                             </Grid>
                             <Grid container item xs={12}>
-                                <FormControlLabel
-                                    control={<Checkbox value="agreeArtistRule" color="primary"/>}
-                                    label="同意遵守站內繪師守則"
+                                <Controller
+                                    name="agreeArtistRule"
+                                    control={control}
+                                    rules={{required: true, validate: (value) => value}}
+                                    render={({field: {onChange, value}, fieldState: {error}}) =>
+                                        <FormControlLabel
+                                            value={value}
+                                            onChange={onChange}
+                                            control={<Checkbox value="agreeArtistRule" color="primary"/>}
+                                            label="同意遵守站內繪師守則"
+                                        />
+                                    }
                                 />
+                                {errors.agreeArtistRule && <FormHelperText error className={classes.helperText}>你必需同意繪師守則</FormHelperText>}
                             </Grid>
                             <Grid container item xs={12}>
                                 <FormControlLabel
-                                    control={<Checkbox value="allowExtraEmails" color="primary"/>}
+                                    control={<Checkbox value="allowAdsEmail" color="primary"/>}
                                     label="我願意接收推廣訊息"
                                 />
                             </Grid>
