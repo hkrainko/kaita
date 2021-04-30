@@ -72,15 +72,8 @@ export default function RegisterForm() {
     const history = useHistory();
     const registerUseCase = useInjection<RegisterUseCase>(TYPES.RegisterUseCase)
 
-    const {register, handleSubmit, control, watch, formState: {errors}} = useForm<Inputs>();
-
-    // const [userId, setUserId] = useState('');
-    // const [displayName, setDisplayName] = useState('');
-    // const [email, setEmail] = useState('');
-    // const [birthday, setBirthday] = useState<Date | null>(null);
-    // const [gender, setGender] = useState('F');
+    const {register, handleSubmit, control, formState: {errors}} = useForm<Inputs>();
     const [profile, setProfile] = useState<string | null>(null);
-
     const [imagePath, setImagePath] = React.useState<string | null>(null);
 
     const filesCallback = useCallback(
@@ -110,10 +103,9 @@ export default function RegisterForm() {
         }
         , [])
 
-    const onSubmitForm = useCallback(
-        (event) => {
-            console.log(profile)
-            event.preventDefault()
+    const onSubmit = useCallback(
+        (data) => {
+            console.log(JSON.stringify(data))
         }, [profile])
 
     return (
@@ -123,12 +115,13 @@ export default function RegisterForm() {
                     <Typography component="h1" variant="h5">
                         註冊成為本站繪師
                     </Typography>
-                    <form className={classes.form} onSubmit={handleSubmit(onSubmitForm)} noValidate>
+                    <form className={classes.form} onSubmit={handleSubmit(onSubmit)} noValidate>
                         <Grid container spacing={2}>
                             <Grid item xs={12}>
                                 <Controller
                                     name="userId"
                                     control={control}
+                                    defaultValue={""}
                                     rules={{required: true, validate: registerUseCase.isUserIdValid}}
                                     render={({field: {onChange, value}, fieldState: {error}}) =>
                                         <TextField
@@ -136,10 +129,11 @@ export default function RegisterForm() {
                                             onChange={onChange}
                                             error={!!error}
                                             variant="outlined"
+                                            required
                                             fullWidth
                                             label="用戶帳號"
                                             autoFocus
-                                            helperText="可供其他用戶查看，只接受(0-9 a-z _ .)。"
+                                            helperText="4-12 字元，只接受(0-9 a-z _ .)，註冊後不能更改。"
                                         />
                                     }
                                 />
@@ -148,6 +142,7 @@ export default function RegisterForm() {
                                 <Controller
                                     name="displayName"
                                     control={control}
+                                    defaultValue={""}
                                     rules={{required: true, validate: registerUseCase.isDisplayNameValid}}
                                     render={({field: {onChange, value}, fieldState: {error}}) =>
                                         <TextField
@@ -169,6 +164,7 @@ export default function RegisterForm() {
                                 <Controller
                                     name="email"
                                     control={control}
+                                    defaultValue={""}
                                     rules={{required: true, validate: registerUseCase.isEmailValid}}
                                     render={({field: {onChange, value}, fieldState: {error}}) =>
                                         <TextField
@@ -191,6 +187,7 @@ export default function RegisterForm() {
                                 <Controller
                                     name="birthday"
                                     control={control}
+                                    defaultValue={""}
                                     rules={{required: true, validate: registerUseCase.isBirthdayValid}}
                                     render={({field: {onChange, value}, fieldState: {error}}) =>
                                         <TextField
@@ -215,6 +212,7 @@ export default function RegisterForm() {
                                 <Controller
                                     name="gender"
                                     control={control}
+                                    defaultValue={""}
                                     rules={{required: true, validate: registerUseCase.isBirthdayValid}}
                                     render={({field: {onChange, value}, fieldState: {error}}) =>
                                         <RadioGroup
