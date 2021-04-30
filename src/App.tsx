@@ -12,7 +12,7 @@ import {dismissErrorAlert, showErrorAlert} from "./app/error/usecase/errorSlice"
 import {UserTerminatedError} from "./domain/error/model/user-error";
 import Loading from "./app/loading/Loading";
 import RegisterView from "./app/register/RegisterView";
-import RegisterForm from "./app/auth/register-form/RegisterForm";
+import RegisterForm from "./app/register/register-form/RegisterForm";
 
 
 function App() {

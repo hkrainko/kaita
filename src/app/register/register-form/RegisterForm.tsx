@@ -10,7 +10,11 @@ import {useHistory} from "react-router-dom";
 import React, {useCallback, useState} from "react";
 import AppDropzone from "../../component/AppDropzone";
 import AppImageCrop from "../../component/AppImageCrop";
-import moment from "moment";
+import {Controller, useForm} from "react-hook-form";
+import {useInjection} from "../../../iocReact";
+import {TYPES} from "../../../types";
+import {RegisterUseCase} from "../../../domain/register/register.usecase";
+import {Gender} from "../../../domain/user/gender";
 
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -49,15 +53,27 @@ const useStyles = makeStyles((theme: Theme) =>
     }),
 );
 
+type Inputs = {
+    userId: string,
+    displayName: string,
+    email: string,
+    birthday: Date,
+    gender: Gender,
+    // profile: string
+}
+
 export default function RegisterForm() {
     const classes = useStyles()
     const history = useHistory();
+    const registerUseCase = useInjection<RegisterUseCase>(TYPES.RegisterUseCase)
 
-    const [userId, setUserId] = useState('');
-    const [displayName, setDisplayName] = useState('');
-    const [email, setEmail] = useState('');
-    const [birthday, setBirthday] = useState<Date | null>(null);
-    const [gender, setGender] = useState('F');
+    const {register, handleSubmit, control, watch, formState: {errors}} = useForm<Inputs>();
+
+    // const [userId, setUserId] = useState('');
+    // const [displayName, setDisplayName] = useState('');
+    // const [email, setEmail] = useState('');
+    // const [birthday, setBirthday] = useState<Date | null>(null);
+    // const [gender, setGender] = useState('F');
     const [profile, setProfile] = useState<string | null>(null);
 
     const [imagePath, setImagePath] = React.useState<string | null>(null);
@@ -87,7 +103,7 @@ export default function RegisterForm() {
             setImagePath(null)
             setProfile(null)
         }
-        ,[])
+        , [])
 
     const onSubmitForm = useCallback(
         (event) => {
@@ -102,53 +118,76 @@ export default function RegisterForm() {
                     <Typography component="h1" variant="h5">
                         註冊成為本站繪師
                     </Typography>
-                    <form className={classes.form} onSubmit={onSubmitForm} noValidate>
+                    <form className={classes.form} onSubmit={handleSubmit(onSubmitForm)} noValidate>
                         <Grid container spacing={2}>
                             <Grid item xs={12}>
-                                <TextField
+                                <Controller
                                     name="userId"
-                                    value={userId}
-                                    onChange={(e) => {setUserId(e.target.value)}}
-                                    variant="outlined"
-                                    required
-                                    fullWidth
-                                    id="userId"
-                                    label="用戶帳號"
-                                    autoFocus
+                                    control={control}
+                                    rules={{required: true, validate: registerUseCase.isUserIdValid}}
+                                    render={({field: {onChange, value}, fieldState: {error}}) =>
+                                        <TextField
+                                            value={value}
+                                            onChange={onChange}
+                                            error={!!error}
+                                            variant="outlined"
+                                            fullWidth
+                                            label="用戶帳號"
+                                            autoFocus
+                                            helperText="可供其他用戶查看，只接受(0-9 a-z _ .)。"
+                                        />
+                                    }
                                 />
                             </Grid>
                             <Grid item xs={12}>
-                                <TextField
+                                <Controller
                                     name="displayName"
-                                    value={displayName}
-                                    onChange={(e) => {setDisplayName(e.target.value)}}
-                                    variant="outlined"
-                                    required
-                                    fullWidth
-                                    id="displayName"
-                                    label="顯示名稱"
-                                    autoFocus
+                                    control={control}
+                                    rules={{required: true, validate: registerUseCase.isDisplayNameValid}}
+                                    render={({field: {onChange, value}, fieldState: {error}}) =>
+                                        <TextField
+                                            value={value}
+                                            onChange={onChange}
+                                            error={!!error}
+                                            variant="outlined"
+                                            required
+                                            fullWidth
+                                            id="displayName"
+                                            label="顯示名稱"
+                                            autoFocus
+                                            helperText="12字元內"
+                                        />
+                                    }
                                 />
                             </Grid>
                             <Grid item xs={12}>
-                                <TextField
+                                <Controller
                                     name="email"
-                                    value={email}
-                                    onChange={(e) => {setEmail(e.target.value)}}
-                                    variant="outlined"
-                                    required
-                                    fullWidth
-                                    id="email"
-                                    label="電郵"
-                                    autoComplete="email"
-                                    aria-required
+                                    control={control}
+                                    rules={{required: true, validate: registerUseCase.isEmailValid}}
+                                    render={({field: {onChange, value}, fieldState: {error}}) =>
+                                        <TextField
+                                            value={value}
+                                            onChange={onChange}
+                                            error={!!error}
+                                            variant="outlined"
+                                            required
+                                            fullWidth
+                                            id="email"
+                                            label="電郵"
+                                            autoComplete="email"
+                                            aria-required
+                                            helperText="不會公開"
+                                        />
+                                    }
                                 />
                             </Grid>
                             <Grid item xs={12}>
                                 <TextField
-                                    name="birthday"
-                                    value={moment(birthday).format('YYYY-MM-DD')}
-                                    onChange={(e) => {setBirthday(new Date(e.target.value))}}
+                                    {...register("birthday", {
+                                        required: true,
+                                        validate: registerUseCase.isBirthdayValid
+                                    })}
                                     variant="outlined"
                                     fullWidth
                                     id="date"
@@ -161,9 +200,11 @@ export default function RegisterForm() {
                                 />
                             </Grid>
                             <Grid item xs={12}>
-                                <RadioGroup row aria-label="gender" name="gender1" value={gender}
-                                            onChange={(e) => setGender(e.target.value)}>
-                                    <FormLabel component="legend" className={classes.genderLabel} >姓別</FormLabel>
+                                <RadioGroup row aria-label="gender" {...register("gender", {
+                                    required: true,
+                                    validate: registerUseCase.isGenderValid
+                                })}>
+                                    <FormLabel component="legend" className={classes.genderLabel}>姓別</FormLabel>
                                     <FormControlLabel value="M" control={<Radio/>} label="男" labelPlacement="start"/>
                                     <FormControlLabel value="F" control={<Radio/>} label="女"
                                                       labelPlacement="start"/>
@@ -172,12 +213,13 @@ export default function RegisterForm() {
                             <Grid item xs={12}>
                                 <FormLabel component="legend" className={classes.formLabel}>個人頭像</FormLabel>
                                 {imagePath ?
-                                    <AppImageCrop src={imagePath as string} onClickDelete={onClickDeleteImage} onCroppedImg={onCroppedImg} /> :
+                                    <AppImageCrop src={imagePath as string} onClickDelete={onClickDeleteImage}
+                                                  onCroppedImg={onCroppedImg}/> :
                                     <AppDropzone onDrop={filesCallback}/>}
                             </Grid>
                             <Grid container item xs={12}>
                                 <FormControlLabel
-                                    control={<Checkbox value="allowExtraEmails" color="primary"/>}
+                                    control={<Checkbox value="agreeArtistRule" color="primary"/>}
                                     label="同意遵守站內繪師守則"
                                 />
                             </Grid>
