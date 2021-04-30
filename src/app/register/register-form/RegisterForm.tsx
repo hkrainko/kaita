@@ -2,8 +2,9 @@ import {
     Button, Checkbox, Container,
     createStyles,
     FormControlLabel,
+    FormHelperText,
     FormLabel, Grid,
-    makeStyles, Paper, Radio, RadioGroup, TextField,
+    makeStyles, Paper, Radio, RadioGroup, RadioProps, TextField,
     Theme, Typography
 } from "@material-ui/core";
 import {useHistory} from "react-router-dom";
@@ -15,6 +16,7 @@ import {useInjection} from "../../../iocReact";
 import {TYPES} from "../../../types";
 import {RegisterUseCase} from "../../../domain/register/register.usecase";
 import {Gender} from "../../../domain/user/gender";
+import {red} from "@material-ui/core/colors";
 
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -38,6 +40,9 @@ const useStyles = makeStyles((theme: Theme) =>
         formLabel: {
             textAlign: 'left',
             paddingBottom: theme.spacing(1)
+        },
+        helperText: {
+            marginLeft: theme.spacing(2)
         },
         // avatar: {
         //     margin: theme.spacing(1),
@@ -183,32 +188,48 @@ export default function RegisterForm() {
                                 />
                             </Grid>
                             <Grid item xs={12}>
-                                <TextField
-                                    {...register("birthday", {
-                                        required: true,
-                                        validate: registerUseCase.isBirthdayValid
-                                    })}
-                                    variant="outlined"
-                                    fullWidth
-                                    id="date"
-                                    label="出生日期"
-                                    type="date"
-                                    // defaultValue="2017-05-24"
-                                    InputLabelProps={{
-                                        shrink: true,
-                                    }}
+                                <Controller
+                                    name="birthday"
+                                    control={control}
+                                    rules={{required: true, validate: registerUseCase.isBirthdayValid}}
+                                    render={({field: {onChange, value}, fieldState: {error}}) =>
+                                        <TextField
+                                            value={value}
+                                            onChange={onChange}
+                                            error={!!error}
+                                            variant="outlined"
+                                            required
+                                            fullWidth
+                                            id="date"
+                                            label="出生日期"
+                                            type="date"
+                                            // defaultValue="2017-05-24"
+                                            InputLabelProps={{
+                                                shrink: true,
+                                            }}
+                                        />
+                                    }
                                 />
                             </Grid>
                             <Grid item xs={12}>
-                                <RadioGroup row aria-label="gender" {...register("gender", {
-                                    required: true,
-                                    validate: registerUseCase.isGenderValid
-                                })}>
-                                    <FormLabel component="legend" className={classes.genderLabel}>姓別</FormLabel>
-                                    <FormControlLabel value="M" control={<Radio/>} label="男" labelPlacement="start"/>
-                                    <FormControlLabel value="F" control={<Radio/>} label="女"
-                                                      labelPlacement="start"/>
-                                </RadioGroup>
+                                <Controller
+                                    name="gender"
+                                    control={control}
+                                    rules={{required: true, validate: registerUseCase.isBirthdayValid}}
+                                    render={({field: {onChange, value}, fieldState: {error}}) =>
+                                        <RadioGroup
+                                            row aria-label="gender"
+                                            value={value}
+                                            onChange={onChange}
+                                        >
+                                            <FormLabel component="legend" className={classes.genderLabel}>姓別*</FormLabel>
+                                            <FormControlLabel value="M" control={<Radio color="primary"/>} label="男" labelPlacement="start"/>
+                                            <FormControlLabel value="F" control={<Radio color="primary"/>} label="女"
+                                                              labelPlacement="start"/>
+                                        </RadioGroup>
+                                    }
+                                />
+                                {errors.gender && <FormHelperText error className={classes.helperText}>請輸入姓別</FormHelperText>}
                             </Grid>
                             <Grid item xs={12}>
                                 <FormLabel component="legend" className={classes.formLabel}>個人頭像</FormLabel>
