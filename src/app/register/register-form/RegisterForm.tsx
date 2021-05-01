@@ -19,6 +19,7 @@ import {Gender} from "../../../domain/user/gender";
 import {register} from "../usecase/registerSlice";
 import {useAppDispatch, useAppSelector} from "../../hooks";
 import moment from "moment";
+import {UserState} from "../../../domain/user/user";
 
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -71,9 +72,18 @@ type Inputs = {
 }
 
 export default function RegisterForm() {
+    const classes = useStyles()
+
+    const registerUseCase = useInjection<RegisterUseCase>(TYPES.RegisterUseCase)
     const location = useLocation()
-    const query = new URLSearchParams(location.search)
     const history = useHistory();
+    const {handleSubmit, control, formState: {errors}} = useForm<Inputs>();
+    const [profile, setProfile] = useState<File | null>(null);
+    const [file, setFile] = useState<File | null>(null);
+    const auth = useAppSelector(state => state.auth)
+    const dispatch = useAppDispatch()
+
+    const query = new URLSearchParams(location.search)
     const regType = query.get('type')
 
     useEffect(() => {
@@ -82,15 +92,20 @@ export default function RegisterForm() {
             return
         }
     })
+    useEffect(() => {
+        switch (auth.authUser?.state) {
+            case UserState.Active:
+                history.push('')
+                break
+            case UserState.Terminated:
+                history.push('')
+                break
+            default:
+                break
+        }
+    }, [auth, history])
 
-    const classes = useStyles()
-    const registerUseCase = useInjection<RegisterUseCase>(TYPES.RegisterUseCase)
 
-    const {handleSubmit, control, formState: {errors}} = useForm<Inputs>();
-    const [profile, setProfile] = useState<File | null>(null);
-    const [file, setFile] = useState<File | null>(null);
-    const authUser = useAppSelector(state => state.auth.authUser)
-    const dispatch = useAppDispatch()
     const filesCallback = useCallback(
         (files: File[]) => {
             console.log(files)
@@ -113,12 +128,12 @@ export default function RegisterForm() {
 
     const onSubmit = useCallback(
         (data: Inputs) => {
-            if (!authUser) {
+            if (!auth.authUser) {
                 return
             }
             console.log(JSON.stringify(data))
             dispatch(register({
-                authId: authUser.authId,
+                authId: auth.authUser.authId,
                 birthday: moment(data.birthday).format("YYYY-MM-DD"),
                 displayName: data.displayName,
                 email: data.email,
@@ -127,7 +142,7 @@ export default function RegisterForm() {
                 regAsArtist: regType === 'artist',
                 userId: data.userId
             }))
-        }, [authUser, profile, regType])
+        }, [auth, dispatch, profile, regType])
 
     return (
         <Container maxWidth="sm">
@@ -241,14 +256,17 @@ export default function RegisterForm() {
                                             value={value}
                                             onChange={onChange}
                                         >
-                                            <FormLabel component="legend" className={classes.genderLabel}>姓別*</FormLabel>
-                                            <FormControlLabel value="M" control={<Radio color="primary"/>} label="男" labelPlacement="start"/>
+                                            <FormLabel component="legend"
+                                                       className={classes.genderLabel}>姓別*</FormLabel>
+                                            <FormControlLabel value="M" control={<Radio color="primary"/>} label="男"
+                                                              labelPlacement="start"/>
                                             <FormControlLabel value="F" control={<Radio color="primary"/>} label="女"
                                                               labelPlacement="start"/>
                                         </RadioGroup>
                                     }
                                 />
-                                {errors.gender && <FormHelperText error className={classes.helperText}>請輸入姓別</FormHelperText>}
+                                {errors.gender &&
+                                <FormHelperText error className={classes.helperText}>請輸入姓別</FormHelperText>}
                             </Grid>
                             <Grid item xs={12}>
                                 <FormLabel component="legend" className={classes.formLabel}>個人頭像</FormLabel>
@@ -271,7 +289,8 @@ export default function RegisterForm() {
                                         />
                                     }
                                 />
-                                {errors.agreeArtistRule && <FormHelperText error className={classes.helperText}>你必需同意繪師守則</FormHelperText>}
+                                {errors.agreeArtistRule &&
+                                <FormHelperText error className={classes.helperText}>你必需同意繪師守則</FormHelperText>}
                             </Grid>
                             <Grid container item xs={12}>
                                 <FormControlLabel

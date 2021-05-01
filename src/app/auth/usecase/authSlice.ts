@@ -58,8 +58,8 @@ export const authSlice = createSlice({
             .addCase(submitAuthCallback.rejected, (state, action) => {
                 state.authState = AuthStatus.Failed
             })
-            .addCase(register.pending, (state) => {
-                
+            .addCase(register.fulfilled, (state, action) => {
+                state.authUser = action.payload
             })
     })
 })

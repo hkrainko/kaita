@@ -32,8 +32,8 @@ export const registerSlice = createSlice({
 
     },
     extraReducers: (builder => {
-        builder.addCase(register.pending, (state) => {
-
+        builder.addCase(register.fulfilled, (state, action) => {
+            
         })
     })
 })

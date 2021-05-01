@@ -4,15 +4,20 @@ import {
     fade,
     IconButton,
     InputBase,
-    makeStyles,
+    makeStyles, Menu, MenuItem,
     Theme,
     Toolbar,
     Typography
 } from "@material-ui/core";
 import MenuIcon from '@material-ui/icons/Menu'
 import SearchIcon from '@material-ui/icons/Search'
-import {useAppDispatch} from "../hooks";
-import {Link} from "react-router-dom";
+import {useAppDispatch, useAppSelector} from "../hooks";
+import {Link, useHistory} from "react-router-dom";
+import React, {ChangeEvent, useState} from "react";
+import {AccountCircle} from "@material-ui/icons";
+import {AuthUser} from "../../domain/auth-user/auth-user";
+import {AuthState} from "../../domain/auth/model/auth-state";
+import {logout} from "../auth/usecase/authSlice";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -80,6 +85,14 @@ const useStyles = makeStyles((theme: Theme) =>
 export default function Header() {
     const classes = useStyles()
     const dispatch = useAppDispatch()
+    const history = useHistory()
+
+    const auth = useAppSelector((state) => state.auth)
+
+    const onClickLogout = () => {
+        dispatch(logout())
+        history.push('')
+    }
 
     return (
         <div className={classes.root}>
@@ -113,11 +126,74 @@ export default function Header() {
                         />
                     </div>
                     <div className={classes.grow}/>
-                    <Link to={`/auth`}>
-                        註冊/登入
-                    </Link>
+                    {auth.authState === AuthState.Authed && auth.authUser
+                        ? <UserProfileButton authUser={auth.authUser} onClickLogout={onClickLogout}/>
+                        : <Link to={`/auth`}>註冊/登入</Link>
+                    }
                 </Toolbar>
             </AppBar>
         </div>
     );
+}
+
+interface UserProfileProps {
+    authUser: AuthUser,
+    onClickUserProfile?: () => void,
+    onClickLogout: () => void,
+}
+
+function UserProfileButton({authUser, onClickUserProfile, onClickLogout}: UserProfileProps) {
+
+    const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+    const open = Boolean(anchorEl);
+
+    const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
+        setAnchorEl(event.currentTarget);
+    };
+
+    const handleClose = () => {
+        setAnchorEl(null);
+    };
+
+    const handleClickUserProfile = () => {
+        setAnchorEl(null);
+        onClickUserProfile && onClickUserProfile()
+    }
+
+    const handleClickLogout = () => {
+        setAnchorEl(null);
+        onClickLogout()
+    }
+
+    return (
+        <div>
+            <IconButton
+                aria-label="account of current user"
+                aria-controls="menu-appbar"
+                aria-haspopup="true"
+                onClick={handleMenu}
+                color="inherit"
+            >
+                <AccountCircle />
+            </IconButton>
+            <Menu
+                id="menu-appbar"
+                anchorEl={anchorEl}
+                anchorOrigin={{
+                    vertical: 'top',
+                    horizontal: 'right',
+                }}
+                keepMounted
+                transformOrigin={{
+                    vertical: 'top',
+                    horizontal: 'right',
+                }}
+                open={open}
+                onClose={handleClose}
+            >
+                <MenuItem onClick={handleClickUserProfile}>用戶資料</MenuItem>
+                <MenuItem onClick={handleClickLogout}>登出</MenuItem>
+            </Menu>
+        </div>
+    )
 }

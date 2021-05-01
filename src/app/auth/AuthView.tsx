@@ -27,7 +27,7 @@ export default function AuthView() {
 
     const authUseCase = useInjection<AuthUseCase>(TYPES.AuthUseCase)
     const dispatch = useAppDispatch();
-    const authSelector = useAppSelector((state) => state.auth)
+    const authState = useAppSelector((state) => state.auth)
 
     const location = useLocation<LocationState>()
     const history = useHistory();
@@ -37,13 +37,13 @@ export default function AuthView() {
     const code = query.get('code')
     const state = query.get('state')
 
-    if (authType && code && state && authSelector.authState === AuthState.Idle) {
+    if (authType && code && state && authState.authState === AuthState.Idle) {
         dispatch(submitAuthCallback({authType: (authType as AuthType), code, state}))
         console.log('1')
         return <></>
-    } else if (authSelector.authState === AuthState.Authed) {
+    } else if (authState.authState === AuthState.Authed) {
         console.log('2')
-        switch (authSelector?.authUser?.state) {
+        switch (authState?.authUser?.state) {
             case UserState.Active:
                 return <Redirect to='/'/>
             case UserState.Pending:
