@@ -3,15 +3,17 @@ import AppDependency from "../../di";
 import {AuthType} from "../../../domain/auth/model/auth-type";
 import {AuthState as AuthStatus} from "../../../domain/auth/model/auth-state";
 import {User, UserState} from "../../../domain/user/user";
+import {AuthUser} from "../../../domain/auth-user/auth-user";
+import {register} from "../../register/usecase/registerSlice";
 
 export interface AuthState {
     authState: AuthStatus
-    user: User | null
+    authUser: AuthUser | null
 }
 
 const initialState: AuthState = {
     authState: AuthStatus.Idle,
-    user: null
+    authUser: null
 };
 
 export const submitAuthCallback = createAsyncThunk(
@@ -28,7 +30,7 @@ export const authSlice = createSlice({
     reducers: {
         logout: (state) => {
             state.authState = AuthStatus.Idle
-            state.user = null
+            state.authUser = null
         }
     },
     extraReducers: (builder => {
@@ -40,11 +42,11 @@ export const authSlice = createSlice({
                 switch (action.payload.state) {
                     case UserState.Active:
                         state.authState = AuthStatus.Authed
-                        state.user = action.payload
+                        state.authUser = action.payload
                         break;
                     case UserState.Pending:
                         state.authState = AuthStatus.Authed
-                        state.user = action.payload
+                        state.authUser = action.payload
                         break;
                     case UserState.Terminated:
                         state.authState = AuthStatus.Failed
@@ -55,6 +57,9 @@ export const authSlice = createSlice({
             })
             .addCase(submitAuthCallback.rejected, (state, action) => {
                 state.authState = AuthStatus.Failed
+            })
+            .addCase(register.pending, (state) => {
+                
             })
     })
 })

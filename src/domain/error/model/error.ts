@@ -1,6 +1,11 @@
 export class UnAuthError implements AppError {
-    message: string = 'NotFoundError'
+    message: string = 'UnAuthError'
     name: string = 'UnAuthError'
+}
+
+export class RegisterError implements AppError {
+    message: string = 'RegisterError'
+    name: string = 'RegisterError'
 }
 
 export class NotFoundError implements AppError {

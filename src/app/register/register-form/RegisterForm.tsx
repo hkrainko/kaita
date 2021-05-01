@@ -16,6 +16,8 @@ import {useInjection} from "../../../iocReact";
 import {TYPES} from "../../../types";
 import {RegisterUseCase} from "../../../domain/register/register.usecase";
 import {Gender} from "../../../domain/user/gender";
+import {register} from "../usecase/registerSlice";
+import {useAppSelector} from "../../hooks";
 
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -72,10 +74,10 @@ export default function RegisterForm() {
     const history = useHistory();
     const registerUseCase = useInjection<RegisterUseCase>(TYPES.RegisterUseCase)
 
-    const {register, handleSubmit, control, formState: {errors}} = useForm<Inputs>();
+    const {handleSubmit, control, formState: {errors}} = useForm<Inputs>();
     const [profile, setProfile] = useState<string | null>(null);
-    const [imagePath, setImagePath] = React.useState<string | null>(null);
-
+    const [imagePath, setImagePath] = useState<string | null>(null);
+    const authUser = useAppSelector(state => state.auth.authUser)
     const filesCallback = useCallback(
         (files: File[]) => {
             console.log(files)
@@ -104,8 +106,21 @@ export default function RegisterForm() {
         , [])
 
     const onSubmit = useCallback(
-        (data) => {
+        (data: Inputs) => {
+            if (!authUser) {
+                return
+            }
             console.log(JSON.stringify(data))
+            register({
+                authId: authUser.authId,
+                birthday: data.birthday,
+                displayName: data.displayName,
+                email: data.email,
+                gender: data.gender,
+                profile: data.profile,
+                regAsArtist: false,
+                userId: data.userId
+            })
         }, [profile])
 
     return (

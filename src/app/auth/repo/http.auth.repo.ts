@@ -9,15 +9,12 @@ import {injectable} from "inversify";
 @injectable()
 export class HttpAuthRepo implements AuthRepo {
 
-    private http: AxiosStatic
     getAuthUrlMapper = new GetAuthUrlMapper();
     authCallbackMapper = new AuthCallbackMapper();
 
     apiPath = 'http://192.168.64.12:31398/api';
 
-    constructor() {
-        this.http = axios
-    }
+    private http: AxiosStatic = axios
 
     getText(anyStr: string): string {
         return `echo ${anyStr}`

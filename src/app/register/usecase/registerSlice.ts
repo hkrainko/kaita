@@ -1,12 +1,41 @@
-import {createAsyncThunk} from "@reduxjs/toolkit";
+import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
 import {AuthType} from "../../../domain/auth/model/auth-type";
 import AppDependency from "../../di";
+import {RegisterInfo} from "../../../domain/register/model/register-info";
+import {RootState} from "../../store";
+import {AuthUser} from "../../../domain/auth-user/auth-user";
+import {authSlice} from "../../auth/usecase/authSlice";
+import {RegisterErrorUnknown} from "../../../domain/register/model/register-error";
 
 
-export const register = createAsyncThunk(
+export const register = createAsyncThunk<
+    AuthUser,
+    RegisterInfo,
+    {
+        state: RootState,
+        extra: AppDependency
+    }
+    >(
     'register/register',
-    async ({authType, code, state}: { authType: AuthType, code: string, state: string }, thunkAPI) => {
+    async (regInfo, thunkAPI) => {
+        const regToken = thunkAPI.getState().auth.authUser?.regToken
+        if (!regToken) {
+            throw RegisterErrorUnknown
+        }
         const ad = thunkAPI.extra as AppDependency
-        return await ad.authRepo.authCallback(authType, code, state);
+        return await ad.registerRepo.register(regInfo, regToken)
     }
 )
+
+export const registerSlice = createSlice({
+    name: 'register',
+    initialState: undefined,
+    reducers: {
+
+    },
+    extraReducers: (builder => {
+        builder.addCase(register.pending, (state) => {
+
+        })
+    })
+})

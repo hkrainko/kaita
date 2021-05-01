@@ -1,9 +1,10 @@
-import {AppError, UnAuthError} from "../../../domain/error/model/error";
-import {AnyAction, createSlice, PayloadAction} from "@reduxjs/toolkit";
+import {AppError, RegisterError, UnAuthError} from "../../../domain/error/model/error";
+import {createSlice, PayloadAction} from "@reduxjs/toolkit";
 import {submitAuthCallback} from "../../auth/usecase/authSlice";
 import {UserState} from "../../../domain/user/user";
 import {UserTerminatedError} from "../../../domain/error/model/user-error";
 import {AppThunk} from "../../store";
+import {register} from "../../register/usecase/registerSlice";
 
 export interface ErrorState {
     message: string | null
@@ -34,6 +35,10 @@ export const errorSlice = createSlice({
             .addCase(submitAuthCallback.rejected, (state, action) => {
                 console.log(`error:${JSON.stringify(action.error)}`)
                 state.message = new UnAuthError().message
+            })
+            .addCase(register.rejected, (state, action) => {
+                console.log(`error:${JSON.stringify(action.error)}`)
+                state.message = new RegisterError().message
             })
     })
 })

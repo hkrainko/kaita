@@ -7,7 +7,6 @@ import {TYPES} from "../../types";
 import AuthUseCase from "../../domain/auth/auth.usecase";
 import {Redirect, useHistory, useLocation} from 'react-router-dom';
 import {submitAuthCallback} from "./usecase/authSlice";
-import {Auth} from "../../domain/auth/model/auth";
 import {AuthState} from "../../domain/auth/model/auth-state";
 import {UserState} from "../../domain/user/user";
 
@@ -44,7 +43,7 @@ export default function AuthView() {
         return <></>
     } else if (authSelector.authState === AuthState.Authed) {
         console.log('2')
-        switch (authSelector?.user?.state) {
+        switch (authSelector?.authUser?.state) {
             case UserState.Active:
                 return <Redirect to='/'/>
             case UserState.Pending:
