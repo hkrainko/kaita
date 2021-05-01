@@ -1,5 +1,5 @@
 import 'react-image-crop/dist/ReactCrop.css';
-import React, {useCallback, useRef, useState} from "react";
+import React, {useCallback, useEffect, useRef, useState} from "react";
 import ReactCrop from "react-image-crop";
 import {Box, createStyles, IconButton, makeStyles, Theme} from "@material-ui/core";
 import CancelIcon from '@material-ui/icons/Cancel';
@@ -23,14 +23,15 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 export interface AppImageCropProps {
-    src: string,
+    file: File,
     onClickDelete: () => void
-    onCroppedImg: (base64Img?: string) => void
+    onCroppedImg: (file: File | null) => void
 }
 
-export default function AppImageCrop({src, onClickDelete, onCroppedImg}: AppImageCropProps) {
+export default function AppImageCrop({file, onClickDelete, onCroppedImg}: AppImageCropProps) {
     const classes = useStyles();
 
+    const [fileSrc, setFileSrc] = useState<string | null>(null)
     const [crop, setCrop] = useState({
         unit: '%' as '%',
         width: 50,
@@ -38,6 +39,14 @@ export default function AppImageCrop({src, onClickDelete, onCroppedImg}: AppImag
         aspect: 1,
     });
     const imgRef = useRef<any>(null);
+
+    useEffect(() => {
+        const reader = new FileReader();
+        reader.onload = () => {
+            setFileSrc(reader.result as string)
+        };
+        reader.readAsDataURL(file);
+    }, [file])
 
     const onImageLoaded = useCallback((img) => {
         imgRef.current = img;
@@ -67,16 +76,26 @@ export default function AppImageCrop({src, onClickDelete, onCroppedImg}: AppImag
             crop.width,
             crop.height,
         );
-        const base64Image = canvas.toDataURL('image/jpeg');
-        onCroppedImg(base64Image)
-
+        // const base64Image = canvas.toDataURL('image/jpeg');
+        // onCroppedImg(base64Image)
+        return new Promise<File | null>((resolve, reject) => {
+            canvas.toBlob(blob => {
+                if (!blob) {
+                    return resolve(null)
+                }
+                const nameWithOutExt = file.name.split('.').slice(0, -1).join('.')
+                resolve(new File([blob!], nameWithOutExt + '.jpg'))
+            }, 'image/jpeg', 1);
+        }).then((file: File | null) => {
+            onCroppedImg(file)
+        });
     }, [onCroppedImg]);
 
     return (
         <Box>
             <div className={classes.div}>
                 <ReactCrop
-                    src={src}
+                    src={fileSrc!}
                     onImageLoaded={onImageLoaded}
                     crop={crop}
                     onChange={(newCrop: any) => setCrop(newCrop)}

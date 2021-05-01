@@ -8,6 +8,6 @@ export interface RegisterInfo {
   birthday: string;
   gender: string;
   regAsArtist: boolean;
-  profile: File;
+  profile?: File;
   artistIntro?: ArtistIntro;
 }

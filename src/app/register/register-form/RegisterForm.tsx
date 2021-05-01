@@ -7,8 +7,8 @@ import {
     makeStyles, Paper, Radio, RadioGroup, RadioProps, TextField,
     Theme, Typography
 } from "@material-ui/core";
-import {useHistory} from "react-router-dom";
-import React, {useCallback, useState} from "react";
+import {useHistory, useLocation} from "react-router-dom";
+import React, {useCallback, useEffect, useState} from "react";
 import AppDropzone from "../../component/AppDropzone";
 import AppImageCrop from "../../component/AppImageCrop";
 import {Controller, useForm} from "react-hook-form";
@@ -17,7 +17,8 @@ import {TYPES} from "../../../types";
 import {RegisterUseCase} from "../../../domain/register/register.usecase";
 import {Gender} from "../../../domain/user/gender";
 import {register} from "../usecase/registerSlice";
-import {useAppSelector} from "../../hooks";
+import {useAppDispatch, useAppSelector} from "../../hooks";
+import moment from "moment";
 
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -70,37 +71,42 @@ type Inputs = {
 }
 
 export default function RegisterForm() {
-    const classes = useStyles()
+    const location = useLocation()
+    const query = new URLSearchParams(location.search)
     const history = useHistory();
+    const regType = query.get('type')
+
+    useEffect(() => {
+        if (regType !== 'normal-user' && regType !== 'artist') {
+            history.push('')
+            return
+        }
+    })
+
+    const classes = useStyles()
     const registerUseCase = useInjection<RegisterUseCase>(TYPES.RegisterUseCase)
 
     const {handleSubmit, control, formState: {errors}} = useForm<Inputs>();
-    const [profile, setProfile] = useState<string | null>(null);
-    const [imagePath, setImagePath] = useState<string | null>(null);
+    const [profile, setProfile] = useState<File | null>(null);
+    const [file, setFile] = useState<File | null>(null);
     const authUser = useAppSelector(state => state.auth.authUser)
+    const dispatch = useAppDispatch()
     const filesCallback = useCallback(
         (files: File[]) => {
             console.log(files)
-            if (files.length <= 0) {
-                setImagePath(null)
-                return
-            }
-            const reader = new FileReader();
-            reader.onload = () => {
-                setImagePath(reader.result as string)
-            };
-            reader.readAsDataURL(files[0]);
+            files.length ? setFile(files[0]) : setFile(null)
         }, []);
 
     const onCroppedImg = useCallback(
-        (base64Img?: string) => {
-            console.log(`base64Img:${base64Img?.length}`)
-            setProfile(base64Img ?? null)
+        (file: File | null) => {
+            // console.log(`base64Img:${base64Img?.length}`)
+            console.log(`file:${file?.name}`)
+            setProfile(file)
         }, [])
 
     const onClickDeleteImage = useCallback(
         () => {
-            setImagePath(null)
+            setFile(null)
             setProfile(null)
         }
         , [])
@@ -111,17 +117,17 @@ export default function RegisterForm() {
                 return
             }
             console.log(JSON.stringify(data))
-            register({
+            dispatch(register({
                 authId: authUser.authId,
-                birthday: data.birthday,
+                birthday: moment(data.birthday).format("YYYY-MM-DD"),
                 displayName: data.displayName,
                 email: data.email,
                 gender: data.gender,
-                profile: data.profile,
-                regAsArtist: false,
+                profile: profile ?? undefined,
+                regAsArtist: regType === 'artist',
                 userId: data.userId
-            })
-        }, [profile])
+            }))
+        }, [authUser, profile, regType])
 
     return (
         <Container maxWidth="sm">
@@ -246,8 +252,8 @@ export default function RegisterForm() {
                             </Grid>
                             <Grid item xs={12}>
                                 <FormLabel component="legend" className={classes.formLabel}>個人頭像</FormLabel>
-                                {imagePath ?
-                                    <AppImageCrop src={imagePath as string} onClickDelete={onClickDeleteImage}
+                                {file ?
+                                    <AppImageCrop file={file} onClickDelete={onClickDeleteImage}
                                                   onCroppedImg={onCroppedImg}/> :
                                     <AppDropzone onDrop={filesCallback}/>}
                             </Grid>
