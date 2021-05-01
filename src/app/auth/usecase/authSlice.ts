@@ -2,7 +2,7 @@ import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
 import AppDependency from "../../di";
 import {AuthType} from "../../../domain/auth/model/auth-type";
 import {AuthState as AuthStatus} from "../../../domain/auth/model/auth-state";
-import {User, UserState} from "../../../domain/user/user";
+import {UserState} from "../../../domain/user/user";
 import {AuthUser} from "../../../domain/auth-user/auth-user";
 import {register} from "../../register/usecase/registerSlice";
 

@@ -1,15 +1,9 @@
 import {RegisterUseCase} from "../../../domain/register/register.usecase";
-import {AuthUser} from "../../../domain/auth-user/auth-user";
-import {RegisterInfo} from "../../../domain/register/model/register-info";
 import {Gender} from "../../../domain/user/gender";
 import {injectable} from "inversify";
 
 @injectable()
 export class DefaultRegisterUseCase implements RegisterUseCase {
-    register(registerInfo: RegisterInfo, regToken: string): Promise<AuthUser> {
-        return new Promise<AuthUser>(()=>{})
-    }
-
     isUserIdValid(value: string): boolean {
         if (value.length > 12 || value.length < 4) {
             return false
