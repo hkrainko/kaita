@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import logo from './logo.svg';
 import './App.css';
 import Header from "./app/header/Header";
@@ -13,6 +13,7 @@ import {UserTerminatedError} from "./domain/error/model/user-error";
 import Loading from "./app/loading/Loading";
 import RegisterView from "./app/register/RegisterView";
 import RegisterForm from "./app/register/register-form/RegisterForm";
+import applyHttpInterceptors from "./app/error/httpInterceptors";
 
 
 function App() {
@@ -24,6 +25,11 @@ function App() {
     const handleCloseAlert = () => {
         dispatch(dismissErrorAlert())
     }
+
+    useEffect(() => {
+        console.log(`applyHttpInterceptors()`)
+        applyHttpInterceptors()
+    }, [])
 
     return (
         <div className="App">

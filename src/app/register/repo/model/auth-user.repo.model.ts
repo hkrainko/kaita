@@ -17,7 +17,7 @@ export interface AuthUserRepoModel {
   profilePath?: string;
   isArtist: boolean;
   state: UserState;
-  regTime?: Date;
+  regTime?: string;
 }
 
 export class AuthUserMapper extends Mapper<AuthUserRepoModel, AuthUser> {
@@ -35,7 +35,7 @@ export class AuthUserMapper extends Mapper<AuthUserRepoModel, AuthUser> {
       profilePath: param.profilePath,
       isArtist: param.isArtist,
       state: param.state,
-      regTime: param.regTime?.toISOString(),
+      regTime: param.regTime,
     };
   }
 
@@ -53,7 +53,7 @@ export class AuthUserMapper extends Mapper<AuthUserRepoModel, AuthUser> {
       profilePath: param.profilePath,
       isArtist: param.isArtist,
       state: param.state,
-      regTime: param.regTime ? new Date(param.regTime) : undefined,
+      regTime: param.regTime,
     };
   }
 

@@ -30,8 +30,8 @@ export interface AuthCallbackRepoModel {
     oAuthServiceProfileUrl: string | undefined;
     isArtist: boolean;
     state: UserState;
-    regTime: Date | undefined;
-    lastUpdateTime: Date | undefined;
+    regTime?: string;
+    lastUpdateTime?: string;
 }
 
 export class AuthCallbackMapper extends Mapper<AuthCallbackRepoModel, AuthCallback> {
@@ -44,10 +44,10 @@ export class AuthCallbackMapper extends Mapper<AuthCallbackRepoModel, AuthCallba
             email: param.email,
             gender: param.gender,
             isArtist: param.isArtist,
-            lastUpdateTime: param.lastUpdateTime?.toISOString(),
+            lastUpdateTime: param.lastUpdateTime,
             oAuthServiceProfileUrl: param.oAuthServiceProfileUrl,
             profilePath: param.profilePath,
-            regTime: param.regTime?.toISOString(),
+            regTime: param.regTime,
             regToken: param.regToken,
             state: param.state,
             userId: param.userId,
@@ -70,8 +70,8 @@ export class AuthCallbackMapper extends Mapper<AuthCallbackRepoModel, AuthCallba
             oAuthServiceProfileUrl: param.oAuthServiceProfileUrl?.toString(),
             isArtist: param.isArtist,
             state: param.state,
-            regTime: param.regTime ? new Date(param.regTime) : undefined,
-            lastUpdateTime: param.lastUpdateTime ? new Date(param.lastUpdateTime) : undefined,
+            regTime: param.regTime,
+            lastUpdateTime: param.lastUpdateTime,
         };
     }
 }
