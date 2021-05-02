@@ -18,11 +18,11 @@ export default function applyHttpInterceptors() {
             console.log(`API response:${JSON.stringify(err)}`)
             switch (err.status) {
                 case 409:
-                    return Promise.reject(RegisterErrorDuplicated)
+                    return Promise.reject(new RegisterErrorDuplicated())
                 case 403:
-                    return Promise.reject(RegisterErrorAuthIDAlreadyRegister)
+                    return Promise.reject(new RegisterErrorAuthIDAlreadyRegister())
                 default:
-                    return Promise.reject(UnknownError)
+                    return Promise.reject(new UnknownError())
             }
         }
     )

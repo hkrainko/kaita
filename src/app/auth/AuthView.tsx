@@ -1,4 +1,4 @@
-import {Box, Button, createStyles, Grid, makeStyles, Theme, useMediaQuery} from "@material-ui/core";
+import {Box, Button, createStyles, Grid, makeStyles, Theme} from "@material-ui/core";
 import React from "react";
 import {useAppDispatch, useAppSelector} from "../hooks";
 import {AuthType} from "../../domain/auth/model/auth-type";
@@ -9,6 +9,7 @@ import {Redirect, useHistory, useLocation} from 'react-router-dom';
 import {submitAuthCallback} from "./usecase/authSlice";
 import {AuthState} from "../../domain/auth/model/auth-state";
 import {UserState} from "../../domain/user/user";
+import {showErrorAlert} from "../error/usecase/errorSlice";
 
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -62,6 +63,9 @@ export default function AuthView() {
             .then(r => {
                 console.log(r)
                 document.location.href = r
+            })
+            .catch(err => {
+                dispatch(showErrorAlert(err))
             })
     }
 
