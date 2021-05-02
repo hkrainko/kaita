@@ -1,18 +1,24 @@
 import {
+    Box,
     Button,
     Card,
     CardActionArea, CardActions,
-    CardContent,
+    CardContent, CardHeader,
     CardMedia,
     createStyles,
     makeStyles,
     StandardProps,
     Theme, Typography
 } from "@material-ui/core";
+import {AttachMoneyOutlined, LocalOfferOutlined} from "@material-ui/icons";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
-
+        title: {
+            marginTop: 0,
+            marginBottom: 0,
+            fontSize: '16px',
+        }
     }),
 );
 
@@ -27,6 +33,19 @@ export default function ArtworkCard(props: Props) {
     return (
         <Card>
             <CardActionArea>
+                <CardHeader
+                    title={
+                        <Box display={"flex"} justifyContent={"space-between"}>
+                            <p className={classes.title}>Q版頭像</p>
+                            <Box display={"flex"}>
+                                <AttachMoneyOutlined/>
+                                <p className={classes.title}>
+                                    5,000 HKD
+                                </p>
+                            </Box>
+                        </Box>
+                    }
+                />
                 <CardMedia
                     component="img"
                     alt="Contemplative Reptile"
