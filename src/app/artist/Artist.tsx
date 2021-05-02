@@ -6,6 +6,7 @@ import UserAvatar from "../component/UserAvatar";
 import ArtistNameCard from "./ArtistNameCard";
 import ArtistInfo from "./artist-info/ArtistInfo";
 import React from "react";
+import Artworks from "../artwork/Artworks";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -36,10 +37,10 @@ function Artist() {
             <ArtistBanner className={classes.banner}/>
             <Container>
                 <Grid container>
-                    <Grid item xs={3} className={classes.artistNameCardGrid}>
+                    <Grid item xs={12} md={3} className={classes.artistNameCardGrid}>
                         <ArtistNameCard/>
                     </Grid>
-                    <Grid item xs={9}>
+                    <Grid item xs={12} md={9}>
                         <Typography variant={"body1"}>
                             可用於個人收藏、網路發佈、同人與中小型獨立遊戲販售
                             價格不含人設，若需做角色設計，依複雜度與需求酌量加價
@@ -49,11 +50,11 @@ function Artist() {
                             一般公司企業商用委託、整套企畫用圖請另外來信詢價
                         </Typography>
                     </Grid>
-                    <Grid item xs={3}>
+                    <Grid item xs={12} md={3}>
                         <ArtistInfo/>
                     </Grid>
-                    <Grid item xs={9}>
-                        artwork
+                    <Grid item xs={12} md={9}>
+                        <Artworks/>
                     </Grid>
                 </Grid>
             </Container>

@@ -1,4 +1,4 @@
-import {Box, Container, createStyles, Grid, makeStyles, StandardProps, Theme} from "@material-ui/core";
+import {Container, createStyles, Grid, makeStyles, StandardProps, Theme} from "@material-ui/core";
 import UserAvatar from "../component/UserAvatar";
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -31,8 +31,8 @@ export default function ArtistNameCard(props: Props) {
     return (
         <Container className={classes.root}>
             <UserAvatar/>
-            <h6 className={classes.displayName}>Display Name</h6>
-            <h6 className={classes.userId}>@121_3232</h6>
+            <p className={classes.displayName}>Display Name</p>
+            <p className={classes.userId}>@121_3232</p>
         </Container>
     )
 }
