@@ -6,10 +6,9 @@ import {BrowserRouter, Route, Switch} from "react-router-dom";
 import Home from "./app/home/Home";
 import AuthView from "./app/auth/AuthView";
 import Artist from "./app/artist/Artist";
-import {Button, Snackbar} from "@material-ui/core";
+import {Snackbar} from "@material-ui/core";
 import {useAppDispatch, useAppSelector} from "./app/hooks";
-import {dismissErrorAlert, showErrorAlert} from "./app/error/usecase/errorSlice";
-import {UserTerminatedError} from "./domain/error/model/user-error";
+import {dismissErrorAlert} from "./app/error/usecase/errorSlice";
 import Loading from "./app/loading/Loading";
 import RegisterView from "./app/register/RegisterView";
 import RegisterForm from "./app/register/register-form/RegisterForm";
@@ -42,8 +41,8 @@ function App() {
                     <Route path="/register/form" component={RegisterForm}/>
                     <Route exact path="/artists/:id" component={Artist}/>
                     <Route exact path="/" component={Home}/>
+                    <Route path="*" component={Home}/>
                 </Switch>
-                <Button onClick={() => {dispatch(showErrorAlert(new UserTerminatedError()))}}>Show Alert</Button>
             </BrowserRouter>
             <Snackbar
                 open={errorSelector.message != null}

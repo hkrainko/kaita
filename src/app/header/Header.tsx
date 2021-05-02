@@ -2,26 +2,19 @@ import {
     AppBar,
     createStyles,
     fade,
-    IconButton,
     InputBase,
-    makeStyles, Menu, MenuItem,
+    makeStyles,
     Theme,
     Toolbar,
     Typography
 } from "@material-ui/core";
-import MenuIcon from '@material-ui/icons/Menu'
 import SearchIcon from '@material-ui/icons/Search'
 import {useAppDispatch, useAppSelector} from "../hooks";
-import {Link, useHistory} from "react-router-dom";
+import {Link, useHistory, useLocation} from "react-router-dom";
 import React, {useState} from "react";
-import {
-    AccountCircleRounded,
-    AssignmentRounded,
-    ViewCompactRounded
-} from "@material-ui/icons";
-import {AuthUser} from "../../domain/auth-user/auth-user";
 import {AuthState} from "../../domain/auth/model/auth-state";
 import {logout} from "../auth/usecase/authSlice";
+import HeaderDesktopMenu from "./HeaderDesktopMenu";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -34,8 +27,11 @@ const useStyles = makeStyles((theme: Theme) =>
         halfGrow: {
             flexGrow: 0.5,
         },
-        menuButton: {
-            marginRight: theme.spacing(2),
+        toolBar: {
+
+        },
+        artistPageToolBar: {
+            // backgroundColor: 'white'
         },
         title: {
             // flexGrow: 0,
@@ -90,7 +86,7 @@ export default function Header() {
     const classes = useStyles()
     const dispatch = useAppDispatch()
     const history = useHistory()
-
+    const location = useLocation()
     const auth = useAppSelector((state) => state.auth)
 
     const onClickCommission = () => {
@@ -98,7 +94,10 @@ export default function Header() {
     }
 
     const onClickArtist = () => {
-
+        if (!auth.authUser) {
+            return
+        }
+        history.push(`/artists/${auth.authUser.userId}`)
     }
 
     const onClickUserProfile = () => {
@@ -110,18 +109,16 @@ export default function Header() {
         history.push('')
     }
 
+    const isInArtistPage = (): boolean => {
+        return location.pathname.indexOf('/artists') !== -1
+    }
+
+    console.log(`pathname:${location.pathname}`)
+
     return (
         <div className={classes.root}>
             <AppBar position="static">
-                <Toolbar>
-                    <IconButton
-                        edge="start"
-                        className={classes.menuButton}
-                        color="inherit"
-                        aria-label="open drawer"
-                    >
-                        <MenuIcon/>
-                    </IconButton>
+                <Toolbar className={isInArtistPage()? classes.artistPageToolBar : classes.toolBar}>
                     <Typography className={classes.title} variant="h6" noWrap>
                         <Link to={`/`}>
                             {`Kaita`}
@@ -143,7 +140,7 @@ export default function Header() {
                     </div>
                     <div className={classes.grow}/>
                     {auth.authState === AuthState.Authed && auth.authUser
-                        ? <UserProfileButton
+                        ? <HeaderDesktopMenu
                             authUser={auth.authUser}
                             onClickCommission={onClickCommission}
                             onClickArtist={onClickArtist}
@@ -156,99 +153,4 @@ export default function Header() {
             </AppBar>
         </div>
     );
-}
-
-interface UserProfileProps {
-    authUser: AuthUser,
-    onClickCommission: () => void,
-    onClickArtist: () => void,
-    onClickUserProfile: () => void,
-    onClickLogout: () => void,
-}
-
-function UserProfileButton({authUser, onClickCommission, onClickArtist, onClickUserProfile, onClickLogout}: UserProfileProps) {
-
-    const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-    const open = Boolean(anchorEl);
-
-    const handleCommission = (event: React.MouseEvent<HTMLElement>) => {
-        setAnchorEl(null);
-        onClickCommission()
-    };
-
-    const handleArtist = (event: React.MouseEvent<HTMLElement>) => {
-        setAnchorEl(null);
-        onClickArtist()
-    };
-
-    const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
-        setAnchorEl(event.currentTarget);
-    };
-
-    const handleClose = () => {
-        setAnchorEl(null);
-    };
-
-    const handleClickUserProfile = () => {
-        setAnchorEl(null);
-        onClickUserProfile()
-    }
-
-    const handleClickLogout = () => {
-        setAnchorEl(null);
-        onClickLogout()
-    }
-
-    return (
-        <div>
-            <IconButton
-                aria-label="account of current user"
-                aria-controls="menu-appbar"
-                aria-haspopup="true"
-                onClick={handleCommission}
-                color="inherit"
-            >
-                <AssignmentRounded />
-            </IconButton>
-            {authUser.isArtist &&
-            <IconButton
-                aria-label="account of current user"
-                aria-controls="menu-appbar"
-                aria-haspopup="true"
-                onClick={handleArtist}
-                color="inherit"
-            >
-                <ViewCompactRounded />
-            </IconButton>
-            }
-            <IconButton
-                aria-label="account of current user"
-                aria-controls="menu-appbar"
-                aria-haspopup="true"
-                onClick={handleMenu}
-                color="inherit"
-            >
-                <AccountCircleRounded />
-            </IconButton>
-            <Menu
-                id="menu-appbar"
-                anchorEl={anchorEl}
-                getContentAnchorEl={null}
-                anchorOrigin={{
-                    vertical: 'bottom',
-                    horizontal: 'right',
-                }}
-                keepMounted
-                transformOrigin={{
-                    vertical: 'top',
-                    horizontal: 'right',
-                }}
-                open={open}
-                onClose={handleClose}
-            >
-                <MenuItem onClick={handleClickUserProfile}>用戶資料</MenuItem>
-                <MenuItem onClick={handleClickLogout}>登出</MenuItem>
-            </Menu>
-        </div>
-    )
 }
