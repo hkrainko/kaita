@@ -1,5 +1,5 @@
 import {
-    AppBar, Button,
+    AppBar,
     createStyles,
     fade,
     IconButton,
@@ -13,8 +13,12 @@ import MenuIcon from '@material-ui/icons/Menu'
 import SearchIcon from '@material-ui/icons/Search'
 import {useAppDispatch, useAppSelector} from "../hooks";
 import {Link, useHistory} from "react-router-dom";
-import React, {ChangeEvent, useState} from "react";
-import {AccountCircle} from "@material-ui/icons";
+import React, {useState} from "react";
+import {
+    AccountCircleRounded,
+    AssignmentRounded,
+    ViewCompactRounded
+} from "@material-ui/icons";
 import {AuthUser} from "../../domain/auth-user/auth-user";
 import {AuthState} from "../../domain/auth/model/auth-state";
 import {logout} from "../auth/usecase/authSlice";
@@ -89,6 +93,18 @@ export default function Header() {
 
     const auth = useAppSelector((state) => state.auth)
 
+    const onClickCommission = () => {
+
+    }
+
+    const onClickArtist = () => {
+
+    }
+
+    const onClickUserProfile = () => {
+
+    }
+
     const onClickLogout = () => {
         dispatch(logout())
         history.push('')
@@ -127,7 +143,13 @@ export default function Header() {
                     </div>
                     <div className={classes.grow}/>
                     {auth.authState === AuthState.Authed && auth.authUser
-                        ? <UserProfileButton authUser={auth.authUser} onClickLogout={onClickLogout}/>
+                        ? <UserProfileButton
+                            authUser={auth.authUser}
+                            onClickCommission={onClickCommission}
+                            onClickArtist={onClickArtist}
+                            onClickUserProfile={onClickUserProfile}
+                            onClickLogout={onClickLogout}
+                        />
                         : <Link to={`/auth`}>註冊/登入</Link>
                     }
                 </Toolbar>
@@ -138,14 +160,26 @@ export default function Header() {
 
 interface UserProfileProps {
     authUser: AuthUser,
-    onClickUserProfile?: () => void,
+    onClickCommission: () => void,
+    onClickArtist: () => void,
+    onClickUserProfile: () => void,
     onClickLogout: () => void,
 }
 
-function UserProfileButton({authUser, onClickUserProfile, onClickLogout}: UserProfileProps) {
+function UserProfileButton({authUser, onClickCommission, onClickArtist, onClickUserProfile, onClickLogout}: UserProfileProps) {
 
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
+
+    const handleCommission = (event: React.MouseEvent<HTMLElement>) => {
+        setAnchorEl(null);
+        onClickCommission()
+    };
+
+    const handleArtist = (event: React.MouseEvent<HTMLElement>) => {
+        setAnchorEl(null);
+        onClickArtist()
+    };
 
     const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
         setAnchorEl(event.currentTarget);
@@ -157,7 +191,7 @@ function UserProfileButton({authUser, onClickUserProfile, onClickLogout}: UserPr
 
     const handleClickUserProfile = () => {
         setAnchorEl(null);
-        onClickUserProfile && onClickUserProfile()
+        onClickUserProfile()
     }
 
     const handleClickLogout = () => {
@@ -171,16 +205,37 @@ function UserProfileButton({authUser, onClickUserProfile, onClickLogout}: UserPr
                 aria-label="account of current user"
                 aria-controls="menu-appbar"
                 aria-haspopup="true"
+                onClick={handleCommission}
+                color="inherit"
+            >
+                <AssignmentRounded />
+            </IconButton>
+            {authUser.isArtist &&
+            <IconButton
+                aria-label="account of current user"
+                aria-controls="menu-appbar"
+                aria-haspopup="true"
+                onClick={handleArtist}
+                color="inherit"
+            >
+                <ViewCompactRounded />
+            </IconButton>
+            }
+            <IconButton
+                aria-label="account of current user"
+                aria-controls="menu-appbar"
+                aria-haspopup="true"
                 onClick={handleMenu}
                 color="inherit"
             >
-                <AccountCircle />
+                <AccountCircleRounded />
             </IconButton>
             <Menu
                 id="menu-appbar"
                 anchorEl={anchorEl}
+                getContentAnchorEl={null}
                 anchorOrigin={{
-                    vertical: 'top',
+                    vertical: 'bottom',
                     horizontal: 'right',
                 }}
                 keepMounted
