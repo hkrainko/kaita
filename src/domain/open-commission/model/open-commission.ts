@@ -15,8 +15,8 @@ export interface OpenCommission {
   allowBePrivate: boolean;
   allowAnonymous: boolean;
   state: OpenCommissionState;
-  createDate: Date;
-  lastUpdateDate: Date;
+  createDate: string;
+  lastUpdateDate: string;
 }
 
 export enum OpenCommissionState {

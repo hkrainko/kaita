@@ -1,5 +1,4 @@
 import {User} from '../../user/user';
-import {Fan} from './fan';
 import {OpenCommission} from '../../open-commission/model/open-commission';
 import {Artwork} from '../../artwork/artwork';
 import {Fans} from './fans';
@@ -25,7 +24,7 @@ export interface CommissionDetails {
   commissionAcceptCount: number;
   commissionSuccessCount: number;
   avgRatings?: number;
-  lastRequestTime?: Date;
+  lastRequestTime?: string;
 }
 
 export interface ArtistBoard {
