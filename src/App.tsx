@@ -39,7 +39,7 @@ function App() {
                     <Route path="/auth" component={AuthView}/>
                     <Route exact path="/register" component={RegisterView}/>
                     <Route path="/register/form" component={RegisterForm}/>
-                    <Route exact path="/artists/:id" component={Artist}/>
+                    <Route path="/artists/:id" component={Artist}/>
                     <Route exact path="/" component={Home}/>
                     <Route path="*" component={Home}/>
                 </Switch>

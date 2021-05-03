@@ -16,17 +16,19 @@ export default function Artworks(props: Props) {
     const classes = useStyles(props.className)
 
     return (
-        <Grid container spacing={2}>
-            <Grid item xs={6} md={4}>
-                <ArtworkCard/>
+        <Box>
+            <Grid container spacing={2}>
+                <Grid item xs={6} md={4}>
+                    <ArtworkCard/>
+                </Grid>
+                <Grid item xs={6} md={4}>
+                    <ArtworkCard/>
+                </Grid>
+                <Grid item xs={6} md={4}>
+                    <ArtworkCard/>
+                </Grid>
             </Grid>
-            <Grid item xs={6} md={4}>
-                <ArtworkCard/>
-            </Grid>
-            <Grid item xs={6} md={4}>
-                <ArtworkCard/>
-            </Grid>
-        </Grid>
+        </Box>
     )
 
 }
