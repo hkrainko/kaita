@@ -270,10 +270,16 @@ export default function RegisterForm() {
                             </Grid>
                             <Grid item xs={12}>
                                 <FormLabel component="legend" className={classes.formLabel}>個人頭像</FormLabel>
-                                {file ?
-                                    <AppImageCrop file={file} onClickDelete={onClickDeleteImage}
-                                                  onCroppedImg={onCroppedImg}/> :
-                                    <AppDropzone onDrop={filesCallback}/>}
+                                {file
+                                    ? <AppImageCrop
+                                        file={file}
+                                        onClickDelete={onClickDeleteImage}
+                                        onCroppedImg={onCroppedImg}
+                                        preCropWidthPercent={50}
+                                        circularCrop={true}
+                                        aspect={1}/>
+                                    : <AppDropzone onDrop={filesCallback}/>
+                                }
                             </Grid>
                             <Grid container item xs={12}>
                                 <Controller

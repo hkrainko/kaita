@@ -1,8 +1,7 @@
-import 'react-image-crop/dist/ReactCrop.css';
 import React, {useCallback, useEffect, useRef, useState} from "react";
 import ReactCrop from "react-image-crop";
 import {Box, createStyles, IconButton, makeStyles, Theme} from "@material-ui/core";
-import CancelIcon from '@material-ui/icons/Cancel';
+import CancelIcon from "@material-ui/icons/Cancel";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -26,22 +25,16 @@ export interface AppImageCropProps {
     file: File,
     onClickDelete: () => void
     onCroppedImg: (file: File | null) => void
-    preCropHeightPercent?: number
-    preCropWidthPercent?: number
-    circularCrop?: boolean
-    aspect?: number
 }
 
-export default function AppImageCrop({...props}: AppImageCropProps) {
+export default function AppRemovableImage({file, onClickDelete, onCroppedImg}: AppImageCropProps) {
     const classes = useStyles();
 
     const [fileSrc, setFileSrc] = useState<string | null>(null)
     const [crop, setCrop] = useState({
         unit: '%' as '%',
-        height: props.preCropHeightPercent,
-        width: props.preCropWidthPercent,
-        x: 25,
-        aspect: props.aspect,
+        width: 100,
+        height: 100,
     });
     const imgRef = useRef<any>(null);
 
@@ -50,8 +43,8 @@ export default function AppImageCrop({...props}: AppImageCropProps) {
         reader.onload = () => {
             setFileSrc(reader.result as string)
         };
-        reader.readAsDataURL(props.file);
-    }, [props.file])
+        reader.readAsDataURL(file);
+    }, [file])
 
     const onImageLoaded = useCallback((img) => {
         imgRef.current = img;
@@ -86,13 +79,13 @@ export default function AppImageCrop({...props}: AppImageCropProps) {
                 if (!blob) {
                     return resolve(null)
                 }
-                const nameWithOutExt = props.file.name.split('.').slice(0, -1).join('.')
+                const nameWithOutExt = file.name.split('.').slice(0, -1).join('.')
                 resolve(new File([blob!], nameWithOutExt + '.jpg'))
             }, 'image/jpeg', 1);
         }).then((file: File | null) => {
-            props.onCroppedImg(file)
+            onCroppedImg(file)
         });
-    }, [props.onCroppedImg]);
+    }, [file.name, onCroppedImg]);
 
     return (
         <Box>
@@ -103,11 +96,11 @@ export default function AppImageCrop({...props}: AppImageCropProps) {
                     crop={crop}
                     onChange={(newCrop: any) => setCrop(newCrop)}
                     onComplete={onComplete}
-                    circularCrop={props.circularCrop}
-                    // locked={true}
+                    circularCrop={true}
+                    locked={true}
                     keepSelection={true}
                 />
-                <IconButton aria-label="delete" className={classes.iconButton} onClick={props.onClickDelete}>
+                <IconButton aria-label="delete" className={classes.iconButton} onClick={onClickDelete}>
                     <CancelIcon fontSize="large"/>
                 </IconButton>
             </div>

@@ -1,7 +1,7 @@
 import {Box, Container, createStyles, Grid, makeStyles, Tab, Tabs, Theme, Typography} from "@material-ui/core";
 import {Link, Route, Switch, useRouteMatch, useLocation, useParams} from "react-router-dom";
 import {useAppSelector} from "../hooks";
-import ArtistBanner from "./ArtistBanner";
+import ArtistBanner from "./banner/ArtistBanner";
 import ArtistNameCard from "./ArtistNameCard";
 import ArtistInfo from "./artist-info/ArtistInfo";
 import React from "react";
@@ -34,7 +34,7 @@ function Artist() {
 
     return (
         <React.Fragment>
-            <ArtistBanner className={classes.banner}/>
+            <ArtistBanner className={classes.banner} editable={true}/>
             <Container>
                 <Grid container>
                     <Grid item xs={12} md={3} className={classes.artistNameCardGrid}>
