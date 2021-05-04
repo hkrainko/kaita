@@ -78,6 +78,8 @@ export default function EditBannerModal(props: Props)  {
 
     return (
         <Dialog
+            fullWidth={true}
+            maxWidth={"sm"}
             open={props.open}
             onClose={props.onClose}
             aria-labelledby="draggable-dialog-title"

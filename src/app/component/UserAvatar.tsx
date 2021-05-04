@@ -11,7 +11,7 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 interface Props extends StandardProps<any, any> {
-
+    path?: string
 }
 
 export default function UserAvatar(props: Props) {
@@ -21,7 +21,7 @@ export default function UserAvatar(props: Props) {
     return (
         <Avatar
             alt="alt"
-            src="https://https://cdn.pixabay.com/photo/2016/08/08/09/17/avatar-1577909_1280.png"
+            src={props.path}
             className={classes.avatar}
             // style={{alignSelf: "center"}}
         />

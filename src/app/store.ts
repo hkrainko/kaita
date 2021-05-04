@@ -1,6 +1,7 @@
 import {Action, combineReducers, configureStore, getDefaultMiddleware, ThunkAction} from "@reduxjs/toolkit";
 import AppDependency from "./di";
 import authReducer from './auth/usecase/authSlice'
+import artistReducer from './artist/usecase/artistSlice'
 import loadingReducer from './loading/usecase/loadingSlice'
 import errorReducer from './error/usecase/errorSlice'
 import {
@@ -16,6 +17,7 @@ import storage from 'redux-persist/lib/storage'
 const reducers = combineReducers(
     {
         auth: authReducer,
+        artist: artistReducer,
         loading: loadingReducer,
         error: errorReducer
     })

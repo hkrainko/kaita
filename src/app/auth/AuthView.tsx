@@ -25,7 +25,7 @@ interface LocationState {
 }
 
 export default function AuthView() {
-
+    const classes = useStyles()
     const authUseCase = useInjection<AuthUseCase>(TYPES.AuthUseCase)
     const dispatch = useAppDispatch();
     const authState = useAppSelector((state) => state.auth)

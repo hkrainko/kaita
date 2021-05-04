@@ -1,5 +1,6 @@
 import {Container, createStyles, Grid, makeStyles, StandardProps, Theme} from "@material-ui/core";
 import UserAvatar from "../component/UserAvatar";
+import {Artist} from "../../domain/artist/model/artist";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -22,7 +23,7 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 interface Props extends StandardProps<any, any> {
-
+    artist?: Artist
 }
 
 export default function ArtistNameCard(props: Props) {
@@ -30,9 +31,9 @@ export default function ArtistNameCard(props: Props) {
 
     return (
         <Container className={classes.root}>
-            <UserAvatar/>
-            <p className={classes.displayName}>Display Name</p>
-            <p className={classes.userId}>@121_3232</p>
+            <UserAvatar path={props.artist?.profilePath}/>
+            <p className={classes.displayName}>{props.artist?.userName}</p>
+            <p className={classes.userId}>{`@${props.artist?.artistId}`}</p>
         </Container>
     )
 }

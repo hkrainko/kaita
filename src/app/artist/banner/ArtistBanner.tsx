@@ -26,6 +26,7 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 interface Props extends StandardProps<any, any> {
+    path?: string
     editable: boolean
 }
 
