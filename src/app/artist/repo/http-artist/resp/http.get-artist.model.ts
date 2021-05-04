@@ -7,54 +7,56 @@ import {Mapper} from '../../../../../domain/mapper';
 
 
 export interface HttpGetArtistModel extends User {
-  artistId: string;
-  fans: Fans;
-  artistIntro: ArtistIntro;
-  artistBoard: ArtistBoard;
-  paymentMethods: string[];
-  commissionDetails: CommissionDetails;
-  openCommissions: OpenCommission[];
-  artworks: Artwork[];
+    artistId: string;
+    fans: Fans;
+    artistIntro: ArtistIntro;
+    artistBoard: ArtistBoard;
+    paymentMethods: string[];
+    commissionDetails: CommissionDetails;
+    openCommissions: OpenCommission[];
+    artworks: Artwork[];
 }
 
 export class HttpGetArtistMapper extends Mapper<HttpGetArtistModel, Artist> {
-  mapFrom(param: HttpGetArtistModel): Artist {
-    return {
-      artistId: param.artistId,
-      fans: param.fans,
-      artistIntro: param.artistIntro,
-      artistBoard: param.artistBoard,
-      paymentMethods: param.paymentMethods,
-      commissionDetails: param.commissionDetails,
-      openCommissions: param.openCommissions,
-      artworks: param.artworks,
-      isArtist: param.isArtist,
-      regTime: param.regTime,
-      state: param.state,
-      userId: param.userId,
-      userName: param.userName,
-      profilePath: param.profilePath,
-    };
-  }
+    mapFrom(param: HttpGetArtistModel): Artist {
+        return {
+            artistId: param.artistId,
+            fans: param.fans,
+            artistIntro: param.artistIntro,
+            artistBoard: param.artistBoard,
+            paymentMethods: param.paymentMethods,
+            commissionDetails: param.commissionDetails,
+            openCommissions: param.openCommissions,
+            artworks: param.artworks,
+            isArtist: param.isArtist,
+            regTime: param.regTime,
+            lastUpdatedTime: param.lastUpdatedTime,
+            state: param.state,
+            userId: param.userId,
+            userName: param.userName,
+            profilePath: param.profilePath,
+        };
+    }
 
-  mapTo(param: Artist): HttpGetArtistModel {
-    return {
-      artistId: param.artistId,
-      fans: param.fans,
-      artistIntro: param.artistIntro,
-      artistBoard: param.artistBoard,
-      paymentMethods: param.paymentMethods,
-      commissionDetails: param.commissionDetails,
-      openCommissions: param.openCommissions,
-      artworks: param.artworks,
-      isArtist: param.isArtist,
-      regTime: param.regTime,
-      state: param.state,
-      userId: param.userId,
-      userName: param.userName,
-      profilePath: param.profilePath,
-    };
-  }
+    mapTo(param: Artist): HttpGetArtistModel {
+        return {
+            artistId: param.artistId,
+            fans: param.fans,
+            artistIntro: param.artistIntro,
+            artistBoard: param.artistBoard,
+            paymentMethods: param.paymentMethods,
+            commissionDetails: param.commissionDetails,
+            openCommissions: param.openCommissions,
+            artworks: param.artworks,
+            isArtist: param.isArtist,
+            regTime: param.regTime,
+            lastUpdatedTime: param.lastUpdatedTime,
+            state: param.state,
+            userId: param.userId,
+            userName: param.userName,
+            profilePath: param.profilePath,
+        };
+    }
 
 }
 

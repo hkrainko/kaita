@@ -1,17 +1,15 @@
 import {Mapper} from '../../../../../domain/mapper';
 
 export interface HttpUpdateArtistModel {
-  artistId: string;
+  data: string;
 }
 
-export class HttpUpdateArtistMapper extends Mapper<HttpUpdateArtistModel, string> {
-  mapFrom(param: HttpUpdateArtistModel): string {
-    return param.artistId;
+export class HttpUpdateArtistMapper extends Mapper<string, string> {
+  mapFrom(param: string): string {
+    return param;
   }
 
-  mapTo(param: string): HttpUpdateArtistModel {
-    return {
-      artistId: param
-    };
+  mapTo(param: string): string {
+    return param;
   }
 }

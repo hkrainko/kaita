@@ -9,7 +9,7 @@ export interface User {
   profilePath?: string;
   isArtist: boolean;
   regTime?: string;
-  lastUpdateTime?: string;
+  lastUpdatedTime?: string;
   state: UserState;
 }
 

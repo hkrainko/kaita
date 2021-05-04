@@ -1,19 +1,16 @@
 import {
-    Box, Button,
+    Button,
     createStyles,
     Dialog, DialogActions, DialogContent, DialogContentText,
     DialogTitle,
-    IconButton,
     makeStyles,
-    Modal, Paper,
-    StandardProps,
     Theme
 } from "@material-ui/core";
 import React, {useCallback, useState} from "react";
-import {Edit} from "@material-ui/icons";
 import AppImageCrop from "../../component/AppImageCrop";
 import AppDropzone from "../../component/AppDropzone";
-import AppRemovableImage from "../../component/AppRemovableImage";
+import {useAppDispatch, useAppSelector} from "../../hooks";
+import {updateArtistBanner} from "../usecase/artistSlice";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -31,17 +28,6 @@ const useStyles = makeStyles((theme: Theme) =>
     }),
 );
 
-function getModalStyle() {
-    const top = 50;
-    const left = 50;
-
-    return {
-        top: `${top}%`,
-        left: `${left}%`,
-        transform: `translate(-${top}%, -${left}%)`,
-    };
-}
-
 interface Props {
     open: boolean
     onClose: () => void
@@ -49,13 +35,10 @@ interface Props {
 
 export default function EditBannerModal(props: Props)  {
     const classes = useStyles();
-    const [modalStyle] = React.useState(getModalStyle)
     const [file, setFile] = useState<File | null>(null);
-    const [bannerfile, setBannerFile] = useState<File | null>(null);
-    const onClickedCancel = useCallback(() => {
-
-    }, [])
-
+    const [bannerFile, setBannerFile] = useState<File | null>(null);
+    const userId = useAppSelector((state) => state.auth?.authUser?.userId)
+    const dispatch = useAppDispatch()
     const filesCallback = useCallback(
         (files: File[]) => {
             console.log(files)
@@ -75,6 +58,15 @@ export default function EditBannerModal(props: Props)  {
             setBannerFile(null)
         }
         , [])
+
+    const onClickedSubmit = useCallback(() => {
+        if (!bannerFile || !userId) {
+            props.onClose()
+            return
+        }
+        dispatch(updateArtistBanner({artistId: userId, bannerImage: bannerFile}))
+        props.onClose()
+    }, [bannerFile, dispatch, props, userId])
 
     return (
         <Dialog
@@ -103,10 +95,10 @@ export default function EditBannerModal(props: Props)  {
                 }
             </DialogContent>
             <DialogActions>
-                <Button autoFocus onClick={props.onClose} color="primary">
+                <Button onClick={props.onClose} color="primary">
                     Cancel
                 </Button>
-                <Button onClick={props.onClose} color="primary">
+                <Button onClick={onClickedSubmit} color="primary">
                     Subscribe
                 </Button>
             </DialogActions>

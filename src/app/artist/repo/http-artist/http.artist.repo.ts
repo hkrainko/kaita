@@ -47,7 +47,7 @@ export class HttpArtistRepo extends ArtistRepo {
             Authorization: 'Bearer ' + token,
         };
 
-        return axios.patch<HttpUpdateArtistModel>(`${this.apiPath}/artists/${artistId}`, formData, {
+        return axios.patch<string>(`${this.apiPath}/artists/${artistId}`, formData, {
             headers
         }).then(resp => {
             return this.updateArtistMapper.mapFrom(resp.data)

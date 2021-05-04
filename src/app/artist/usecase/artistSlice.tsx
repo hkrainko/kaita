@@ -50,11 +50,20 @@ export const artistSlice = createSlice({
     extraReducers: (builder => {
         builder
             .addCase(getArtist.fulfilled, (state, action) => {
+                console.log(`getArtist.fulfilled:${action.payload}`)
+                const index = state.allIds.indexOf(action.payload.artistId)
+                if (index !== -1) {
+                    state.allIds.splice(index, 1)
+                }
                 state.allIds.push(action.payload.artistId)
                 state.byId[action.payload.artistId] = action.payload
             })
             .addCase(updateArtistBanner.fulfilled, (state, action) => {
-                delete state.allIds[state.allIds.indexOf(action.payload, 0)]
+                console.log(`updateArtistBanner.fulfilled:${action.payload}`)
+                const index = state.allIds.indexOf(action.payload)
+                if (index !== -1) {
+                    state.allIds.splice(index, 1)
+                }
                 delete state.byId[action.payload]
             })
     })

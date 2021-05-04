@@ -31,18 +31,20 @@ function Artist() {
     const routeMatch = useRouteMatch()
     const location = useLocation()
     let {id} = useParams<{ id: string }>()
-    const authId = useAppSelector((state) => state.auth?.authUser?.authId)
-    const artist = useAppSelector((state) => state.artist.byId[id])
+    const userId = useAppSelector((state) => state.auth?.authUser?.userId)
+    const artist = useAppSelector((state) => {
+        return state.artist.byId[id]
+    })
     const dispatch = useAppDispatch()
 
     useEffect(() => {
         dispatch(getArtist({artistId: id}))
-    }, [dispatch, id])
+    }, [dispatch, id, artist?.artistId])
 
     if (!artist) {
         return <NotFound/>
     }
-    const isOwner = artist.artistId === authId
+    const isOwner = artist.artistId === userId
 
     return (
         <React.Fragment>
@@ -67,11 +69,11 @@ function Artist() {
                             <Tab label="開放委托"
                                  value={routeMatch.url}
                                  component={Link}
-                                 to={routeMatch.url} />
+                                 to={routeMatch.url}/>
                             <Tab label="過去作品"
                                  value={`${routeMatch.url}/artworks`}
                                  component={Link}
-                                 to={`${routeMatch.url}/artworks`} />
+                                 to={`${routeMatch.url}/artworks`}/>
                         </Tabs>
                         <Box mt={2}>
                             <Switch>
