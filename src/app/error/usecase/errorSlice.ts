@@ -1,5 +1,5 @@
 import {AppError, RegisterError, UnAuthError} from "../../../domain/error/model/error";
-import {createSlice, PayloadAction} from "@reduxjs/toolkit";
+import {AnyAction, createSlice, PayloadAction} from "@reduxjs/toolkit";
 import {submitAuthCallback} from "../../auth/usecase/authSlice";
 import {UserState} from "../../../domain/user/user";
 import {UserTerminatedError} from "../../../domain/error/model/user-error";
@@ -12,6 +12,10 @@ export interface ErrorState {
 
 const initialState: ErrorState = {
     message: null
+}
+
+function isRejectedAction(action: AnyAction): boolean {
+    return action.type.endsWith("/rejected");
 }
 
 export const errorSlice = createSlice({
@@ -39,6 +43,9 @@ export const errorSlice = createSlice({
             .addCase(register.rejected, (state, action) => {
                 console.log(`error:${JSON.stringify(action.error)}`)
                 state.message = new RegisterError().message
+            })
+            .addMatcher(isRejectedAction, (state, action) => {
+                state.message = action.error.message
             })
     })
 })

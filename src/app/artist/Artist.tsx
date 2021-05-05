@@ -39,7 +39,7 @@ function Artist() {
 
     useEffect(() => {
         dispatch(getArtist({artistId: id}))
-    }, [dispatch, id, artist?.artistId])
+    }, [dispatch, id])
 
     if (!artist) {
         return <NotFound/>

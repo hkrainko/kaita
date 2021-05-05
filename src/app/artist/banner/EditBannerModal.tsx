@@ -10,7 +10,7 @@ import React, {useCallback, useState} from "react";
 import AppImageCrop from "../../component/AppImageCrop";
 import AppDropzone from "../../component/AppDropzone";
 import {useAppDispatch, useAppSelector} from "../../hooks";
-import {updateArtistBanner} from "../usecase/artistSlice";
+import {getArtist, updateArtistBanner} from "../usecase/artistSlice";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -64,7 +64,9 @@ export default function EditBannerModal(props: Props)  {
             props.onClose()
             return
         }
-        dispatch(updateArtistBanner({artistId: userId, bannerImage: bannerFile}))
+        dispatch(updateArtistBanner({artistId: userId, bannerImage: bannerFile})).then(() => {
+            dispatch(getArtist({artistId: userId}))
+        })
         props.onClose()
     }, [bannerFile, dispatch, props, userId])
 
