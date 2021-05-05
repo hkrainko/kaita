@@ -63,26 +63,26 @@ export default function AppImageCrop({...props}: AppImageCropProps) {
         if (!imgRef.current || crop.x === undefined || crop.y === undefined || crop.width === undefined || crop.height === undefined) {
             return
         }
-        const canvas = document.createElement('canvas');
         const scaleX = imgRef.current.naturalWidth / imgRef.current.width;
         const scaleY = imgRef.current.naturalHeight / imgRef.current.height;
-        canvas.width = crop.width as number;
-        canvas.height = crop.height as number;
-        const ctx = canvas.getContext('2d');
-
+        const tmpCanvas = document.createElement("canvas");
+        tmpCanvas.width = Math.ceil(crop.width*scaleX);
+        tmpCanvas.height = Math.ceil(crop.height*scaleY);
+        const ctx = tmpCanvas.getContext("2d");
+        const image = imgRef.current;
         ctx!.drawImage(
-            imgRef.current,
+            image,
             crop.x * scaleX,
             crop.y * scaleY,
             crop.width * scaleX,
             crop.height * scaleY,
             0,
             0,
-            crop.width,
-            crop.height,
+            crop.width*scaleX,
+            crop.height*scaleY,
         );
         return new Promise<File | null>((resolve, reject) => {
-            canvas.toBlob(blob => {
+            tmpCanvas.toBlob(blob => {
                 if (!blob) {
                     return resolve(null)
                 }
@@ -92,7 +92,7 @@ export default function AppImageCrop({...props}: AppImageCropProps) {
         }).then((file: File | null) => {
             props.onCroppedImg(file)
         });
-    }, [props.onCroppedImg]);
+    }, [props]);
 
     return (
         <Box>
