@@ -1,5 +1,5 @@
 
-import {Box, createStyles, IconButton, makeStyles, Modal, StandardProps, Theme} from "@material-ui/core";
+import {Box, createStyles, IconButton, makeStyles, StandardProps, Theme} from "@material-ui/core";
 import React, {useCallback} from "react";
 import {Edit} from "@material-ui/icons";
 import EditBannerModal from "./EditBannerModal";
@@ -20,7 +20,9 @@ const useStyles = makeStyles((theme: Theme) =>
             padding: theme.spacing(0),
         },
         banner: {
-            high: 133
+            height: "100%",
+            width: "100%",
+            objectFit: "cover"
         }
     }),
 );
@@ -39,7 +41,7 @@ export default function ArtistBanner(props: Props)  {
     }, [])
 
     return (
-        <Box className={props.className}>
+        <div className={props.className}>
             <div className={classes.div}>
                 {
                     props.editable &&
@@ -48,10 +50,11 @@ export default function ArtistBanner(props: Props)  {
                     </IconButton>
                 }
             </div>
+            <img src={`http://192.168.64.12:31398/${props.path}`} alt={""} className={classes.banner}/>
             <EditBannerModal
                 open={editing}
                 onClose={() => setEditing(false)}
             />
-        </Box>
+        </div>
     )
 }

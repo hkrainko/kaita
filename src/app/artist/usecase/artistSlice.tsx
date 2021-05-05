@@ -58,7 +58,7 @@ export const artistSlice = createSlice({
                 state.byId[action.payload.artistId] = action.payload
             })
             .addCase(updateArtistBanner.fulfilled, (state, action) => {
-                
+
             })
     })
 })
