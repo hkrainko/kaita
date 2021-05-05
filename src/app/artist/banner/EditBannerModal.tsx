@@ -98,10 +98,10 @@ export default function EditBannerModal(props: Props)  {
             </DialogContent>
             <DialogActions>
                 <Button onClick={props.onClose} color="primary">
-                    Cancel
+                    取消
                 </Button>
                 <Button onClick={onClickedSubmit} color="primary">
-                    Subscribe
+                    確定
                 </Button>
             </DialogActions>
         </Dialog>

@@ -9,6 +9,7 @@ import Artworks from "../artwork/Artworks";
 import OpenCommissions from "../open-commission/OpenCommissions";
 import NotFound from "../error/NotFound";
 import {getArtist} from "./usecase/artistSlice";
+import ArtistDesc from "./artist-intro/ArtistDesc";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -56,9 +57,7 @@ function Artist() {
                     </Grid>
                     <Grid item xs={12} md={9}>
                         <Box my={2}>
-                            <Typography variant={"body1"}>
-                                {artist.artistBoard.desc}
-                            </Typography>
+                            <ArtistDesc desc={artist.artistBoard.desc} editable={isOwner}/>
                         </Box>
                     </Grid>
                     <Grid item xs={12} md={3}>

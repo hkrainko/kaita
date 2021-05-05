@@ -1,8 +1,7 @@
-
-import {createStyles, IconButton, makeStyles, StandardProps, Theme} from "@material-ui/core";
+import {createStyles, IconButton, makeStyles, StandardProps, Theme, Typography} from "@material-ui/core";
 import React, {useCallback} from "react";
 import {Edit} from "@material-ui/icons";
-import EditBannerModal from "./EditBannerModal";
+import EditIntroModal from "./EditIntroModal";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -28,11 +27,11 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 interface Props extends StandardProps<any, any> {
-    path?: string
+    desc?: string
     editable: boolean
 }
 
-export default function ArtistBanner(props: Props)  {
+export default function ArtistDesc(props: Props)  {
     const classes = useStyles();
     const [editing, setEditing] = React.useState(false);
 
@@ -50,8 +49,10 @@ export default function ArtistBanner(props: Props)  {
                     </IconButton>
                 }
             </div>
-            <img src={`http://192.168.64.12:31398/${props.path}`} alt={""} className={classes.banner}/>
-            <EditBannerModal
+            <Typography variant={"body1"}>
+                {props.desc}
+            </Typography>
+            <EditIntroModal
                 open={editing}
                 onClose={() => setEditing(false)}
             />
