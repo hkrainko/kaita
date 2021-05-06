@@ -1,5 +1,5 @@
-import {Box, Container, createStyles, Grid, makeStyles, Tab, Tabs, Theme, Typography} from "@material-ui/core";
-import {Link, Route, Switch, useRouteMatch, useLocation, useParams} from "react-router-dom";
+import {Box, Container, createStyles, Grid, makeStyles, Tab, Tabs, Theme} from "@material-ui/core";
+import {Link, Route, Switch, useLocation, useParams, useRouteMatch} from "react-router-dom";
 import {useAppDispatch, useAppSelector} from "../hooks";
 import ArtistBanner from "./banner/ArtistBanner";
 import ArtistNameCard from "./ArtistNameCard";

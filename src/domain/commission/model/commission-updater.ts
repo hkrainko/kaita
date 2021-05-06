@@ -1,4 +1,4 @@
-import {CommissionDecision, CommissionState} from './commission';
+import {CommissionDecision} from './commission';
 import {Price} from '../../price/price';
 import {Size} from '../../artwork/size';
 

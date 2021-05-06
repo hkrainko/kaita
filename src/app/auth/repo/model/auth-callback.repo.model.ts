@@ -14,7 +14,6 @@ import {Gender} from '../../../../domain/user/gender';
 import {Mapper} from '../../../../domain/mapper';
 import {UserState} from '../../../../domain/user/user';
 import {AuthCallback} from '../../../../domain/auth/model/auth-callback';
-import moment from "moment";
 
 export interface AuthCallbackRepoModel {
     authId: string;

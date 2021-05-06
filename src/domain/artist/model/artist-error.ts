@@ -1,7 +1,5 @@
 export abstract class ArtistError extends Error {
-  constructor() {
-    super();
-  }
+
 }
 
 export class ArtistErrorNotFound extends ArtistError {

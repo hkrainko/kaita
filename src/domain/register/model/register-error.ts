@@ -1,7 +1,4 @@
 export abstract class RegisterError extends Error {
-  constructor() {
-    super();
-  }
 }
 
 export class RegisterErrorUnknown extends RegisterError{}

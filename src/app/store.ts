@@ -4,14 +4,7 @@ import authReducer from './auth/usecase/authSlice'
 import artistReducer from './artist/usecase/artistSlice'
 import loadingReducer from './loading/usecase/loadingSlice'
 import errorReducer from './error/usecase/errorSlice'
-import {
-    persistReducer, FLUSH,
-    REHYDRATE,
-    PAUSE,
-    PERSIST,
-    PURGE,
-    REGISTER
-} from 'redux-persist'
+import {FLUSH, PAUSE, PERSIST, persistReducer, PURGE, REGISTER, REHYDRATE} from 'redux-persist'
 import storage from 'redux-persist/lib/storage'
 
 const reducers = combineReducers(

@@ -1,7 +1,10 @@
 import {
     Button,
     createStyles,
-    Dialog, DialogActions, DialogContent, DialogContentText,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogContentText,
     DialogTitle,
     makeStyles,
     Theme

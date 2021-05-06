@@ -1,5 +1,5 @@
 import {Price} from '../../price/price';
-import {DayNeed, OpenCommissionState} from './open-commission';
+import {DayNeed} from './open-commission';
 
 export interface OpenCommissionCreator {
   title: string;

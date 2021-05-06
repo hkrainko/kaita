@@ -1,5 +1,4 @@
 import {Observable} from 'rxjs';
-import {Artist} from '../artist/model/artist';
 import {OpenCommissionCreator} from './model/open-commission-creator';
 import {OpenCommission} from './model/open-commission';
 import {OpenCommissionFilter} from './model/open-commission-filter';

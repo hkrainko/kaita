@@ -1,7 +1,5 @@
 import {Box, Button, createStyles, Grid, makeStyles, Theme} from "@material-ui/core";
-import {useAppDispatch} from "../hooks";
 import React from "react";
-import {AuthType} from "../../domain/auth/model/auth-type";
 import {useHistory} from "react-router-dom";
 
 
@@ -15,7 +13,6 @@ const useStyles = makeStyles((theme: Theme) =>
 
 export default function RegisterView() {
     const classes = useStyles()
-    const dispatch = useAppDispatch();
     const history = useHistory();
 
     const onClickedRegisterButton = (type: 'normal-user' | 'artist') => {

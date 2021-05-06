@@ -1,4 +1,4 @@
-import {Container, createStyles, Grid, makeStyles, StandardProps, Theme} from "@material-ui/core";
+import {Container, createStyles, makeStyles, StandardProps, Theme} from "@material-ui/core";
 import UserAvatar from "../component/UserAvatar";
 import {Artist} from "../../domain/artist/model/artist";
 

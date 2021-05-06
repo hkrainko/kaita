@@ -1,5 +1,3 @@
-import {ArtistBoard, ArtistIntro} from './artist';
-
 export interface ArtistUpdater {
   artistIntro?: ArtistIntroUpdater;
   artistBoard?: ArtistBoardUpdater;

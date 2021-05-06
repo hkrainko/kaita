@@ -1,4 +1,4 @@
-import {Box, Container, createStyles, makeStyles, Theme} from "@material-ui/core";
+import {Container, createStyles, makeStyles, Theme} from "@material-ui/core";
 import {Link, useHistory} from "react-router-dom";
 
 

@@ -1,16 +1,16 @@
 import {
-    Box,
     Button,
     Card,
-    CardActionArea, CardActions,
+    CardActionArea,
+    CardActions,
     CardContent,
     CardMedia,
     createStyles,
     makeStyles,
     StandardProps,
-    Theme, Typography
+    Theme,
+    Typography
 } from "@material-ui/core";
-import {AttachMoneyOutlined, LocalOfferOutlined} from "@material-ui/icons";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({

@@ -1,4 +1,4 @@
-import {BehaviorSubject, Observable, Subject} from 'rxjs';
+import {BehaviorSubject, Observable} from 'rxjs';
 import {Artist} from './model/artist';
 import {OpenCommission} from '../open-commission/model/open-commission';
 import {OpenCommissionUpdater} from '../open-commission/model/open-commission-updater';

@@ -1,5 +1,4 @@
 import {Price} from '../../price/price';
-import {DayNeed, OpenCommissionState} from '../../open-commission/model/open-commission';
 import {Size} from '../../artwork/size';
 
 export interface CommissionCreator {

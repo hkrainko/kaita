@@ -1,4 +1,3 @@
-import {AuthType} from './auth-type';
 import {Gender} from '../../user/gender';
 import {UserState} from '../../user/user';
 import {AuthUser} from '../../auth-user/auth-user';

@@ -1,5 +1,4 @@
 import React, {useEffect} from 'react';
-import logo from './logo.svg';
 import './App.css';
 import Header from "./app/header/Header";
 import {BrowserRouter, Route, Switch} from "react-router-dom";

@@ -1,9 +1,9 @@
 import {AuthType} from '../../../domain/auth/model/auth-type';
 import {AuthRepo} from '../../../domain/auth/auth.repo';
-import {GetAuthUrlRepoModel, GetAuthUrlMapper} from './model/get-auth-url.repo.model';
+import {GetAuthUrlMapper, GetAuthUrlRepoModel} from './model/get-auth-url.repo.model';
 import {AuthCallbackMapper, AuthCallbackRepoModel} from './model/auth-callback.repo.model';
 import {AuthCallback} from '../../../domain/auth/model/auth-callback';
-import axios, {AxiosStatic} from "axios";
+import axios from "axios";
 import {injectable} from "inversify";
 
 @injectable()

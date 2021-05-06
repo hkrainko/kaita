@@ -1,14 +1,16 @@
 import {
     Button,
     createStyles,
-    Dialog, DialogActions,
+    Dialog,
+    DialogActions,
     DialogContent,
     DialogContentText,
     DialogTitle,
-    makeStyles, TextareaAutosize,
+    makeStyles,
+    TextareaAutosize,
     Theme
 } from "@material-ui/core";
-import React, {ChangeEvent, ChangeEventHandler, useCallback, useState} from "react";
+import React, {ChangeEvent, useCallback, useState} from "react";
 import {useAppDispatch, useAppSelector} from "../../hooks";
 import {getArtist, updateArtistDesc} from "../usecase/artistSlice";
 

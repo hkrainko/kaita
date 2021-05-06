@@ -2,7 +2,7 @@ import {ArtistRepo} from '../../../../domain/artist/artist.repo';
 import {Artist} from '../../../../domain/artist/model/artist';
 import {HttpGetArtistMapper, HttpGetArtistModel} from './resp/http.get-artist.model';
 import {ArtistUpdater} from '../../../../domain/artist/model/artist-updater';
-import {HttpUpdateArtistMapper, HttpUpdateArtistModel} from './resp/http.update-artist.model';
+import {HttpUpdateArtistMapper} from './resp/http.update-artist.model';
 import {injectable} from "inversify";
 import axios from "axios";
 

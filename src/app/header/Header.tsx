@@ -1,17 +1,8 @@
-import {
-    AppBar,
-    createStyles,
-    fade,
-    InputBase,
-    makeStyles,
-    Theme,
-    Toolbar,
-    Typography
-} from "@material-ui/core";
+import {AppBar, createStyles, fade, InputBase, makeStyles, Theme, Toolbar, Typography} from "@material-ui/core";
 import SearchIcon from '@material-ui/icons/Search'
 import {useAppDispatch, useAppSelector} from "../hooks";
 import {Link, useHistory, useLocation} from "react-router-dom";
-import React, {useState} from "react";
+import React from "react";
 import {AuthState} from "../../domain/auth/model/auth-state";
 import {logout} from "../auth/usecase/authSlice";
 import HeaderDesktopMenu from "./HeaderDesktopMenu";

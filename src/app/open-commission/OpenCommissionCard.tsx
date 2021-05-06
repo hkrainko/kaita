@@ -1,13 +1,17 @@
 import {
-    Box, Button,
+    Box,
+    Button,
     Card,
-    CardActionArea, CardActions, CardContent,
+    CardActionArea,
+    CardActions,
+    CardContent,
     CardHeader,
     CardMedia,
     createStyles,
     makeStyles,
     StandardProps,
-    Theme, Typography
+    Theme,
+    Typography
 } from "@material-ui/core";
 import {AttachMoneyOutlined} from "@material-ui/icons";
 
