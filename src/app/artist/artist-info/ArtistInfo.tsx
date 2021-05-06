@@ -65,21 +65,19 @@ export default function ArtistInfo(props: Props) {
                 <ListItemIcon className={classes.listItemIcon}>
                     <BrushOutlined/>
                 </ListItemIcon>
-                <ListItemText primary="繪齡" secondary={!props.artist?.artistIntro.yearOfDrawing && '-'}/>
+                <ListItemText primary="繪齡" secondary={!props.artist?.artistIntro.yearOfDrawing && "-"}/>
             </ListItem>
             <ListItem className={classes.listItem}>
                 <ListItemIcon className={classes.listItemIcon}>
                     <PhotoLibraryOutlined/>
                 </ListItemIcon>
                 <ListItemText primary="作品類型" secondary={
-                    <div>
-                        {props.artists?.artistIntro.artTypes.length
-                            ? props.artists?.artistIntro.artTypes.map((value: string, index: number) => {
-                                return <Chip size="small" label={value}/>
-                            })
-                            : '-'
-                        }
-                    </div>
+                    props.artists?.artistIntro.artTypes.length
+                        ? props.artists?.artistIntro.artTypes.map((value: string, index: number) => {
+                            return <Chip size="small" label={value}/>
+                        })
+                        : "-"
+
                 }/>
             </ListItem>
             <ListItem className={classes.listItem}>
@@ -87,14 +85,11 @@ export default function ArtistInfo(props: Props) {
                     <PaymentOutlined/>
                 </ListItemIcon>
                 <ListItemText primary="付款方式" secondary={
-                    <div>
-                        {props.artists?.paymentMethod.length
-                            ? props.artists?.paymentMethod.map((value: string, index: number) => {
-                                return <Chip size="small" label={value}/>
-                            })
-                            : '-'
-                        }
-                    </div>
+                    props.artists?.paymentMethod.length
+                        ? props.artists?.paymentMethod.map((value: string, index: number) => {
+                            return <Chip size="small" label={value}/>
+                        })
+                        : "-"
                 }/>
             </ListItem>
             <ListItem className={classes.listItem}>
@@ -119,7 +114,7 @@ export default function ArtistInfo(props: Props) {
                 <ListItemIcon className={classes.listItemIcon}>
                     <SentimentSatisfiedAltOutlined/>
                 </ListItemIcon>
-                <ListItemText primary="評價" secondary={!props.artist?.commissionDetails.avgRatings && '-'}/>
+                <ListItemText primary="評價" secondary={!props.artist?.commissionDetails.avgRatings && "-"}/>
             </ListItem>
             <ListItem className={classes.listItem}>
                 <ListItemIcon className={classes.listItemIcon}>
@@ -130,7 +125,7 @@ export default function ArtistInfo(props: Props) {
                     secondary={
                         props.artist?.commissionDetails.lastRequestTime
                             ? moment(props.artist?.commissionDetails.lastRequestTime).format('YYYY-MM-DD')
-                            : '-'
+                            : "-"
                     }
                 />
             </ListItem>
