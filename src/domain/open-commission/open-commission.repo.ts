@@ -1,22 +1,21 @@
-import {Observable} from 'rxjs';
 import {OpenCommissionCreator} from './model/open-commission-creator';
 import {OpenCommission} from './model/open-commission';
 import {OpenCommissionFilter} from './model/open-commission-filter';
 import {OpenCommissionUpdater} from './model/open-commission-updater';
 
-export abstract class OpenCommissionRepo {
-  abstract getOpenCommission(token: string | null, openCommId: string): Observable<OpenCommission>;
+export interface OpenCommissionRepo {
+    getOpenCommission(token: string | null, openCommId: string): Promise<OpenCommission>;
 
-  abstract getOpenCommissions(filter: OpenCommissionFilter): Observable<OpenCommission[]>;
+    getOpenCommissions(filter: OpenCommissionFilter): Promise<OpenCommission[]>;
 
-  abstract getOpenCommissionsForArtist(artistId: string): Observable<OpenCommission[]>;
+    getOpenCommissionsForArtist(artistId: string): Promise<OpenCommission[]>;
 
-  abstract getOpenCommissionsDetailsForArtist(token: string, artistId: string): Observable<OpenCommission[]>;
+    getOpenCommissionsDetailsForArtist(token: string, artistId: string): Promise<OpenCommission[]>;
 
-  abstract addOpenCommission(token: string, artistId: string, openCommCreator: OpenCommissionCreator): Observable<string>;
+    addOpenCommission(token: string, artistId: string, openCommCreator: OpenCommissionCreator): Promise<string>;
 
-  abstract updateOpenCommission(token: string, openCommUpdater: OpenCommissionUpdater): Observable<string>;
+    updateOpenCommission(token: string, openCommUpdater: OpenCommissionUpdater): Promise<string>;
 
-  abstract deleteOpenCommission(token: string, OpenCommId: string): Observable<string>;
+    deleteOpenCommission(token: string, OpenCommId: string): Promise<string>;
 
 }

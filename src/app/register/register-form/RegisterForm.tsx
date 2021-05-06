@@ -15,7 +15,7 @@ import {
     Theme,
     Typography
 } from "@material-ui/core";
-import {useHistory, useLocation} from "react-router-dom";
+import {Link, useHistory, useLocation} from "react-router-dom";
 import React, {useCallback, useEffect, useState} from "react";
 import AppDropzone from "../../component/AppDropzone";
 import AppImageCrop from "../../component/AppImageCrop";
@@ -313,7 +313,7 @@ export default function RegisterForm() {
                                 />
                             </Grid>
                             <Grid container item xs={6}>
-                                <Button variant="contained" fullWidth>
+                                <Button component={Link} to="/register" variant="contained" fullWidth>
                                     取消
                                 </Button>
                             </Grid>

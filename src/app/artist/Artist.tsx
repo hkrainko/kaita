@@ -4,12 +4,13 @@ import {useAppDispatch, useAppSelector} from "../hooks";
 import ArtistBanner from "./banner/ArtistBanner";
 import ArtistNameCard from "./ArtistNameCard";
 import ArtistInfo from "./artist-info/ArtistInfo";
-import React, {useEffect} from "react";
+import React, {useEffect, useState} from "react";
 import Artworks from "../artwork/Artworks";
 import OpenCommissions from "../open-commission/OpenCommissions";
 import NotFound from "../error/NotFound";
 import {getArtist} from "./usecase/artistSlice";
 import ArtistDesc from "./artist-intro/ArtistDesc";
+import NewOpenCommissionModal from "../open-commission/new/NewOpenCommissionModal";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -33,9 +34,8 @@ function Artist() {
     const location = useLocation()
     let {id} = useParams<{ id: string }>()
     const userId = useAppSelector((state) => state.auth?.authUser?.userId)
-    const artist = useAppSelector((state) => {
-        return state.artist.byId[id]
-    })
+    const artist = useAppSelector((state) => state.artist.byId[id])
+    const [showNewComm, setShowNewComm] = useState(false)
     const dispatch = useAppDispatch()
 
     useEffect(() => {
@@ -83,6 +83,7 @@ function Artist() {
                     </Grid>
                 </Grid>
             </Container>
+            <NewOpenCommissionModal open={showNewComm} onClose={() => setShowNewComm(false)}/>
         </React.Fragment>
     )
 }
