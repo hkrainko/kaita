@@ -19,7 +19,11 @@ const useStyles = makeStyles((theme: Theme) =>
             padding: theme.spacing(0),
         },
         desc: {
-            textAlign: 'left'
+            textAlign: 'left',
+            whiteSpace: 'pre-line',
+            maxHeight: '240px',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
         }
     }),
 );
