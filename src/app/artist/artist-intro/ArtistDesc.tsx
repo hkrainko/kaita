@@ -18,10 +18,8 @@ const useStyles = makeStyles((theme: Theme) =>
             right: "0",
             padding: theme.spacing(0),
         },
-        banner: {
-            height: "100%",
-            width: "100%",
-            objectFit: "cover"
+        desc: {
+            textAlign: 'left'
         }
     }),
 );
@@ -49,7 +47,7 @@ export default function ArtistDesc(props: Props)  {
                     </IconButton>
                 }
             </div>
-            <Typography variant={"body1"}>
+            <Typography variant={"body1"} className={classes.desc}>
                 {props.desc}
             </Typography>
             <EditIntroModal

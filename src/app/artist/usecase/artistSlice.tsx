@@ -43,6 +43,20 @@ export const updateArtistBanner = createAsyncThunk<string,
     }
 )
 
+export const updateArtistDesc = createAsyncThunk<string,
+    { artistId: string, desc: string },
+    { state: RootState, extra: AppDependency }>(
+    'artist/updateArtistIntro',
+    async ({artistId, desc}, thunkAPI) => {
+        const apiToken = thunkAPI.getState().auth.authUser?.apiToken
+        if (!apiToken) {
+            throw ArtistErrorUnknown
+        }
+        const ad = thunkAPI.extra as AppDependency
+        return await ad.artistRepo.updateArtist(apiToken, artistId, {artistBoard: {desc}})
+    }
+)
+
 export const artistSlice = createSlice({
     name: 'artist',
     initialState: initialState,

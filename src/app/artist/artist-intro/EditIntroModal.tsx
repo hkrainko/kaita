@@ -5,16 +5,25 @@ import {
     DialogContent,
     DialogContentText,
     DialogTitle,
-    makeStyles,
+    makeStyles, TextareaAutosize,
     Theme
 } from "@material-ui/core";
-import React, {useCallback} from "react";
+import React, {ChangeEvent, ChangeEventHandler, useCallback, useState} from "react";
+import {useAppDispatch, useAppSelector} from "../../hooks";
+import {getArtist, updateArtistDesc} from "../usecase/artistSlice";
 
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         root: {
             flexGrow: 1,
+        },
+        textArea: {
+            height: '100%',
+            minWidth: '99.0%',
+            maxWidth: '99.0%',
+            fontSize: theme.typography.body1.fontSize,
+            font: theme.typography.fontFamily,
         },
         paper: {
             position: 'absolute',
@@ -35,10 +44,22 @@ interface Props {
 
 export default function EditIntroModal(props: Props) {
     const classes = useStyles();
+    const dispatch = useAppDispatch()
+    const userId = useAppSelector((state) => state.auth?.authUser?.userId)
+    const [editedIntro, setEditedIntro] = useState("")
 
     const onClickedSubmit = useCallback(() => {
-
+        if (!userId) {
+            return
+        }
+        dispatch(updateArtistDesc({artistId: userId, desc: editedIntro})).then(() => {
+            dispatch(getArtist({artistId: userId}))
+        })
         props.onClose()
+    }, [dispatch, editedIntro, props, userId])
+
+    const textOnChange = useCallback((e: ChangeEvent<HTMLTextAreaElement>): void => {
+        setEditedIntro(e.currentTarget.value)
     }, [])
 
     return (
@@ -49,14 +70,21 @@ export default function EditIntroModal(props: Props) {
             onClose={props.onClose}
             aria-labelledby="draggable-dialog-title"
         >
-            <DialogTitle style={{ cursor: 'move' }} id="draggable-dialog-title">
+            <DialogTitle style={{cursor: 'move'}} id="draggable-dialog-title">
                 編輯自我介紹
             </DialogTitle>
             <DialogContent>
                 <DialogContentText>
                     字體將會顯示在繪師個人專頁上
                 </DialogContentText>
-                {props.intro}
+                <TextareaAutosize
+                    className={classes.textArea}
+                    rowsMin={5}
+                    rowsMax={10}
+                    defaultValue={props.intro}
+                    value={editedIntro}
+                    onChange={textOnChange}
+                />
             </DialogContent>
             <DialogActions>
                 <Button onClick={props.onClose} color="primary">
