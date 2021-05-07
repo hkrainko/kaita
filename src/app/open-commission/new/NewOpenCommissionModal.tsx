@@ -10,7 +10,9 @@ import {
     FormControl,
     FormControlLabel,
     FormHelperText,
-    Grid, InputLabel,
+    FormLabel,
+    Grid,
+    InputLabel,
     makeStyles,
     MenuItem,
     Select,
@@ -18,12 +20,14 @@ import {
     Theme
 } from "@material-ui/core";
 import {useAppDispatch, useAppSelector} from "../../hooks";
-import React, {useCallback} from "react";
+import React, {useCallback, useState} from "react";
 import {Controller, useForm} from "react-hook-form";
 import {Currency} from "../../../domain/price/price";
 import {useInjection} from "../../../iocReact";
 import {TYPES} from "../../../types";
 import {OpenCommissionUseCase} from "../../../domain/open-commission/open-commission.usecase";
+import AppDropzone from "../../component/AppDropzone";
+import AppRemovableImage from "../../component/AppRemovableImage";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -74,10 +78,36 @@ interface Props {
 export default function NewOpenCommissionModal(props: Props) {
     const classes = useStyles();
 
+    const [regImages, setRegImages] = useState<File[]>([]);
+    const [downscaledRegImages, setDownscaledRegImages] = useState<File[]>([]);
     const openCommUseCase = useInjection<OpenCommissionUseCase>(TYPES.OpenCommissionUseCase)
     const dispatch = useAppDispatch()
     const userId = useAppSelector((state) => state.auth?.authUser?.userId)
     const {handleSubmit, control, formState: {errors}} = useForm<Inputs>();
+
+    const filesCallback = useCallback(
+        (files: File[]) => {
+            console.log(files)
+            if (regImages.length + files.length > 3) {
+                return
+            }
+            files.length && setRegImages([...regImages, ...files])
+        }, [regImages]);
+
+    const onClickDeleteImage = useCallback(
+        (index) => {
+            setRegImages(regImages.splice(index, 1))
+            setDownscaledRegImages(downscaledRegImages.splice(index, 1))
+        }
+        , [downscaledRegImages, regImages])
+
+    const onCroppedImg = useCallback(
+        (file: File | null) => {
+            if (!file) {
+                return
+            }
+            setDownscaledRegImages([...downscaledRegImages, file])
+        }, [])
 
     const onSubmit = useCallback(
         (data: Inputs) => {
@@ -320,6 +350,20 @@ export default function NewOpenCommissionModal(props: Props) {
                                     />
                                 }
                             />
+                        </Grid>
+                        <Grid item xs={12}>
+                            <FormControl>
+                                <FormLabel component="legend">參考圖片</FormLabel>
+                                {
+                                    regImages.map((image, index) => {
+                                        return <AppRemovableImage
+                                            file={image}
+                                            onClickDelete={() => onClickDeleteImage(index)}
+                                            onCroppedImg={onCroppedImg}/>
+                                    })
+                                }
+                                <AppDropzone onDrop={filesCallback}/>
+                            </FormControl>
                         </Grid>
                         <Grid item xs={12}>
                             <Controller
