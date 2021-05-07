@@ -93,10 +93,13 @@ export default function NewOpenCommissionModal(props: Props) {
     const filesCallback = useCallback(
         (files: File[]) => {
             console.log(files)
-            if (regImages.length + files.length > 3) {
+            const addFiles = files.filter((file, index) => {
+                return index + regImages.length < 3
+            })
+            if (addFiles.length <= 0) {
                 return
             }
-            files.length && setRegImages([...regImages, ...files])
+            setRegImages([...regImages, ...addFiles])
         }, [regImages]);
 
     const onClickDeleteImage = useCallback(
@@ -118,7 +121,7 @@ export default function NewOpenCommissionModal(props: Props) {
         (data: Inputs) => {
             console.log(JSON.stringify(data))
 
-            
+
         }, [])
 
     return (
