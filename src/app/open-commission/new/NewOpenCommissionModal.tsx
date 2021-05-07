@@ -92,7 +92,6 @@ export default function NewOpenCommissionModal(props: Props) {
 
     const filesCallback = useCallback(
         (files: File[]) => {
-            console.log(files)
             const addFiles = files.filter((file, index) => {
                 return index + regImages.length < 3
             })

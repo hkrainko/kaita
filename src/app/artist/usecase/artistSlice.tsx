@@ -15,6 +15,7 @@ const initialState: ArtistState = {
     byId: {}
 }
 
+/** Async methods **/
 export const getArtist = createAsyncThunk<Artist,
     { artistId: string },
     { state: RootState, extra: AppDependency }>(
@@ -56,6 +57,7 @@ export const updateArtistDesc = createAsyncThunk<string,
         return await ad.artistRepo.updateArtist(apiToken, artistId, {artistBoard: {desc}})
     }
 )
+/****************/
 
 export const artistSlice = createSlice({
     name: 'artist',
