@@ -1,6 +1,8 @@
 import {Box, Button, createStyles, Grid, IconButton, makeStyles, StandardProps, Theme} from "@material-ui/core";
 import OpenCommissionCard from "./OpenCommissionCard";
 import {Add, MoreHoriz} from "@material-ui/icons";
+import NewOpenCommissionModal from "./new/NewOpenCommissionModal";
+import React, {useState} from "react";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -15,8 +17,9 @@ interface Props extends StandardProps<any, any> {
 }
 
 export default function OpenCommissions(props: Props) {
-
     const classes = useStyles(props.className)
+
+    const [showNewComm, setShowNewComm] = useState(false)
 
     return (
         <Box>
@@ -39,9 +42,11 @@ export default function OpenCommissions(props: Props) {
                 <Button variant="contained"
                         color="default"
                         size="small"
+                        onClick={() => setShowNewComm(true)}
                         className={classes.addButton}
                         startIcon={<Add />}>新增</Button>
             </Box>
+            <NewOpenCommissionModal open={showNewComm} onClose={() => setShowNewComm(false)}/>
         </Box>
     )
 

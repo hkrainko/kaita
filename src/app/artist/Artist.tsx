@@ -35,7 +35,6 @@ function Artist() {
     let {id} = useParams<{ id: string }>()
     const userId = useAppSelector((state) => state.auth?.authUser?.userId)
     const artist = useAppSelector((state) => state.artist.byId[id])
-    const [showNewComm, setShowNewComm] = useState(false)
     const dispatch = useAppDispatch()
 
     useEffect(() => {
@@ -83,7 +82,6 @@ function Artist() {
                     </Grid>
                 </Grid>
             </Container>
-            <NewOpenCommissionModal open={showNewComm} onClose={() => setShowNewComm(false)}/>
         </React.Fragment>
     )
 }

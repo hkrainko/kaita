@@ -1,28 +1,36 @@
 import {
     Button,
+    Checkbox,
     createStyles,
-    Dialog, DialogActions,
+    Dialog,
+    DialogActions,
     DialogContent,
     DialogContentText,
-    DialogTitle, Grid,
-    makeStyles, TextareaAutosize, TextField,
+    DialogTitle,
+    FormControl,
+    FormControlLabel,
+    FormHelperText,
+    Grid, InputLabel,
+    makeStyles,
+    MenuItem,
+    Select,
+    TextField,
     Theme
 } from "@material-ui/core";
 import {useAppDispatch, useAppSelector} from "../../hooks";
-import React, {ChangeEvent, useCallback, useState} from "react";
-import {getArtist, updateArtistDesc} from "../../artist/usecase/artistSlice";
+import React, {useCallback} from "react";
 import {Controller, useForm} from "react-hook-form";
-import {register} from "../../register/usecase/registerSlice";
-import moment from "moment";
+import {Currency} from "../../../domain/price/price";
+import {useInjection} from "../../../iocReact";
+import {TYPES} from "../../../types";
+import {OpenCommissionUseCase} from "../../../domain/open-commission/open-commission.usecase";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         root: {
             flexGrow: 1,
         },
-        form: {
-
-        },
+        form: {},
         textArea: {
             height: '100%',
             minWidth: '99.0%',
@@ -41,6 +49,22 @@ const useStyles = makeStyles((theme: Theme) =>
     }),
 );
 
+type Inputs = {
+    title: string,
+    desc: string,
+    depositRule: string,
+    priceAmount: number,
+    priceCurrency: Currency,
+    dayNeedFrom: number,
+    dayNeedTo: number,
+    timesAllowedDraftToChange: number,
+    timesAllowedCompletionToChange: number,
+    //sampleImages
+    isR18: boolean,
+    allowBePrivate: boolean,
+    allowAnonymous: boolean
+}
+
 interface Props {
     intro?: string
     open: boolean
@@ -49,9 +73,10 @@ interface Props {
 
 export default function NewOpenCommissionModal(props: Props) {
     const classes = useStyles();
+
+    const openCommUseCase = useInjection<OpenCommissionUseCase>(TYPES.OpenCommissionUseCase)
     const dispatch = useAppDispatch()
     const userId = useAppSelector((state) => state.auth?.authUser?.userId)
-    const [editedIntro, setEditedIntro] = useState("")
     const {handleSubmit, control, formState: {errors}} = useForm<Inputs>();
 
     const onSubmit = useCallback(
@@ -67,7 +92,6 @@ export default function NewOpenCommissionModal(props: Props) {
             open={props.open}
             onClose={props.onClose}
             aria-labelledby="draggable-dialog-title"
-            fullScreen
         >
             <DialogTitle style={{cursor: 'move'}} id="draggable-dialog-title">
                 新增開放委托
@@ -78,28 +102,291 @@ export default function NewOpenCommissionModal(props: Props) {
                 </DialogContentText>
                 <form className={classes.form} onSubmit={handleSubmit(onSubmit)}>
                     <Grid container spacing={2}>
-                        <Grid container spacing={2}>
-                            <Grid item xs={12}>
-                                <Controller
-                                    name="userId"
-                                    control={control}
-                                    defaultValue={""}
-                                    rules={{required: true, validate: registerUseCase.isUserIdValid}}
-                                    render={({field: {onChange, value}, fieldState: {error}}) =>
-                                        <TextField
+                        <Grid item xs={12}>
+                            <Controller
+                                name="title"
+                                control={control}
+                                defaultValue={""}
+                                rules={{required: true, validate: openCommUseCase.isTitleValid}}
+                                render={({field: {onChange, value}, fieldState: {error}}) =>
+                                    <TextField
+                                        value={value}
+                                        onChange={onChange}
+                                        error={!!error}
+                                        variant="outlined"
+                                        required
+                                        fullWidth
+                                        label="標題"
+                                        autoFocus
+                                        size="small"
+                                        helperText="4-12 字元。"
+                                    />
+                                }
+                            />
+                        </Grid>
+                        <Grid item xs={6}>
+                            <Controller
+                                name="priceAmount"
+                                control={control}
+                                defaultValue={""}
+                                rules={{required: true, validate: openCommUseCase.isMinPriceAmountValid}}
+                                render={({field: {onChange, value}, fieldState: {error}}) =>
+                                    <TextField
+                                        value={value}
+                                        type="number"
+                                        onChange={onChange}
+                                        error={!!error}
+                                        variant="outlined"
+                                        required
+                                        label="最低價錢"
+                                        autoFocus
+                                        size="small"
+                                        fullWidth
+                                        helperText="委托時提出的價錢下限。"
+                                    />
+                                }
+                            />
+                        </Grid>
+                        <Grid item xs={6}>
+                            <Controller
+                                name="priceCurrency"
+                                control={control}
+                                defaultValue={""}
+                                rules={{required: true, validate: openCommUseCase.isMinPriceCurrencyValid}}
+                                render={({field: {onChange, value}, fieldState: {error}}) =>
+                                    <FormControl
+                                        size="small"
+                                        fullWidth
+                                        variant="outlined"
+                                    >
+                                        <InputLabel id="price-currency-label">貨幣</InputLabel>
+                                        <Select
+                                            labelId="price-currency-label"
                                             value={value}
                                             onChange={onChange}
-                                            error={!!error}
-                                            variant="outlined"
-                                            required
-                                            fullWidth
-                                            label="用戶帳號"
                                             autoFocus
-                                            helperText="4-12 字元，只接受(0-9 a-z _ .)，註冊後不能更改。"
-                                        />
-                                    }
-                                />
-                            </Grid>
+                                            label="貨幣"
+                                        >
+                                            <MenuItem value="">
+                                                <em>-</em>
+                                            </MenuItem>
+                                            <MenuItem value={"TWD"}>台幣</MenuItem>
+                                            <MenuItem value={"HKD"}>港幣</MenuItem>
+                                        </Select>
+                                    </FormControl>
+                                }
+                            />
+                            <FormHelperText>會換算。</FormHelperText>
+                        </Grid>
+                        <Grid item xs={6}>
+                            <Controller
+                                name="dayNeedFrom"
+                                control={control}
+                                defaultValue={""}
+                                rules={{required: true, validate: openCommUseCase.isDayNeedValid}}
+                                render={({field: {onChange, value}, fieldState: {error}}) =>
+                                    <TextField
+                                        type="number"
+                                        value={value}
+                                        onChange={onChange}
+                                        error={!!error}
+                                        variant="outlined"
+                                        required
+                                        label="完成所需日數（最少)"
+                                        fullWidth
+                                        autoFocus
+                                        size="small"
+                                        helperText="所需繪師時間。"
+                                    />
+                                }
+                            />
+                        </Grid>
+                        <Grid item xs={6}>
+                            <Controller
+                                name="dayNeedTo"
+                                control={control}
+                                defaultValue={""}
+                                rules={{required: true, validate: openCommUseCase.isDayNeedValid}}
+                                render={({field: {onChange, value}, fieldState: {error}}) =>
+                                    <TextField
+                                        type="number"
+                                        value={value}
+                                        onChange={onChange}
+                                        error={!!error}
+                                        variant="outlined"
+                                        required
+                                        fullWidth
+                                        autoFocus
+                                        size="small"
+                                        label="（最多)"
+                                    />
+                                }
+                            />
+                        </Grid>
+                        <Grid item xs={12}>
+                            <Controller
+                                name="timesAllowedDraftToChange"
+                                control={control}
+                                defaultValue={""}
+                                rules={{
+                                    required: true,
+                                    validate: openCommUseCase.isTimesAllowedCompletionToChangeValid
+                                }}
+                                render={({field: {onChange, value}, fieldState: {error}}) =>
+                                    <TextField
+                                        type="number"
+                                        value={value}
+                                        onChange={onChange}
+                                        error={!!error}
+                                        variant="outlined"
+                                        required
+                                        fullWidth
+                                        label="草稿可修改次數"
+                                        size="small"
+                                        autoFocus
+                                        helperText="允許委托者提出對草稿修改的次數。"
+                                    />
+                                }
+                            />
+                        </Grid>
+                        <Grid item xs={12}>
+                            <Controller
+                                name="timesAllowedCompletionToChange"
+                                control={control}
+                                defaultValue={""}
+                                rules={{
+                                    required: true,
+                                    validate: openCommUseCase.isTimesAllowedCompletionToChangeValid
+                                }}
+                                render={({field: {onChange, value}, fieldState: {error}}) =>
+                                    <TextField
+                                        type="number"
+                                        aria-valuemin={0}
+                                        value={value}
+                                        onChange={onChange}
+                                        error={!!error}
+                                        variant="outlined"
+                                        required
+                                        fullWidth
+                                        label="完成品可微調次數"
+                                        size="small"
+                                        autoFocus
+                                        helperText="允許委托者提出對完成品微調的次數。"
+                                    />
+                                }
+                            />
+                        </Grid>
+                        <Grid item xs={12}>
+                            <Controller
+                                name="depositRule"
+                                control={control}
+                                defaultValue={""}
+                                rules={{required: true, validate: openCommUseCase.isDepositRuleValid}}
+                                render={({field: {onChange, value}, fieldState: {error}}) =>
+                                    <TextField
+                                        value={value}
+                                        onChange={onChange}
+                                        error={!!error}
+                                        variant="outlined"
+                                        fullWidth
+                                        label="訂金規則(可留空)"
+                                        size="small"
+                                        autoFocus
+                                        helperText="例：價錢的10%。（20字以內）"
+                                    />
+                                }
+                            />
+                        </Grid>
+                        <Grid item xs={12}>
+                            <Controller
+                                name="desc"
+                                control={control}
+                                defaultValue={""}
+                                rules={{required: true, validate: openCommUseCase.isDepositRuleValid}}
+                                render={({field: {onChange, value}, fieldState: {error}}) =>
+                                    <TextField
+                                        value={value}
+                                        onChange={onChange}
+                                        error={!!error}
+                                        variant="outlined"
+                                        fullWidth
+                                        label="補充說明(可留空)"
+                                        size="small"
+                                        autoFocus
+                                        multiline
+                                        rows={4}
+                                        rowsMax={8}
+                                        helperText="（120字以內）"
+                                    />
+                                }
+                            />
+                        </Grid>
+                        <Grid item xs={12}>
+                            <Controller
+                                name="isR18"
+                                control={control}
+                                defaultValue={false}
+                                render={({field: {onChange, value}, fieldState: {error}}) =>
+                                    <FormControlLabel
+                                        control={
+                                            <Checkbox
+                                                checked={value}
+                                                onChange={onChange}
+                                                name="isR18"
+                                                color="primary"
+                                                autoFocus
+                                            />
+                                        }
+                                        label="成人向委托"
+                                    />
+                                }
+                            />
+                            <FormHelperText>成人作品的範例圖將不會公開展示。</FormHelperText>
+                        </Grid>
+                        <Grid item xs={12}>
+                            <Controller
+                                name="allowBePrivate"
+                                control={control}
+                                defaultValue={false}
+                                render={({field: {onChange, value}, fieldState: {error}}) =>
+                                    <FormControlLabel
+                                        control={
+                                            <Checkbox
+                                                checked={value}
+                                                onChange={onChange}
+                                                name="allowBePrivate"
+                                                color="primary"
+                                                autoFocus
+                                            />
+                                        }
+                                        label="允許委托者選擇不公開完成品"
+                                    />
+                                }
+                            />
+                            <FormHelperText>*如委托者選擇不公開，完成品將不可被搜尋以及不會在繪師個人小屋內展示</FormHelperText>
+                        </Grid>
+                        <Grid item xs={12}>
+                            <Controller
+                                name="allowAnonymous"
+                                control={control}
+                                defaultValue={false}
+                                render={({field: {onChange, value}, fieldState: {error}}) =>
+                                    <FormControlLabel
+                                        control={
+                                            <Checkbox
+                                                checked={value}
+                                                onChange={onChange}
+                                                name="allowAnonymous"
+                                                color="primary"
+                                                autoFocus
+                                            />
+                                        }
+                                        label="接受匿名委托"
+                                    />
+                                }
+                            />
+                            <FormHelperText>允許委托者選擇不表明身份。</FormHelperText>
+                        </Grid>
                     </Grid>
                 </form>
             </DialogContent>
