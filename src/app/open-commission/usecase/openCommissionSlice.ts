@@ -4,16 +4,32 @@ import {OpenCommissionCreator} from "../../../domain/open-commission/model/open-
 import {RootState} from "../../store";
 import AppDependency from "../../di";
 import {OpenCommissionErrorUnknown} from "../../../domain/open-commission/model/open-commission-error";
+import {OpenCommissionUpdater} from "../../../domain/open-commission/model/open-commission-updater";
+import {OpenCommissionFilter} from "../../../domain/open-commission/model/open-commission-filter";
 
 export interface OpenCommissionState {
-    addIds: string[]
+    allIds: string[]
     byId: { [id: string]: OpenCommission }
 }
 
 const initialState: OpenCommissionState = {
-    addIds: [],
+    allIds: [],
     byId: {}
 };
+
+export const getOpenCommissions = createAsyncThunk<OpenCommission[],
+    { filter: OpenCommissionFilter },
+    { state: RootState, extra: AppDependency }>(
+    'openCommission/getOpenCommissions',
+    async ({filter}, thunkAPI) => {
+        const authUser = thunkAPI.getState().auth.authUser
+        if (!authUser) {
+            throw OpenCommissionErrorUnknown
+        }
+        const ad = thunkAPI.extra as AppDependency
+        return await ad.openCommRepo.getOpenCommissions(filter)
+    }
+)
 
 export const addOpenCommission = createAsyncThunk<string,
     { creator: OpenCommissionCreator },
@@ -29,12 +45,55 @@ export const addOpenCommission = createAsyncThunk<string,
     }
 )
 
+export const updateOpenCommission = createAsyncThunk<string,
+    { updater: OpenCommissionUpdater },
+    { state: RootState, extra: AppDependency }>(
+    'openCommission/updateOpenCommission',
+    async ({updater}, thunkAPI) => {
+        const apiToken = thunkAPI.getState().auth.authUser?.apiToken
+        if (!apiToken) {
+            throw OpenCommissionErrorUnknown
+        }
+        const ad = thunkAPI.extra as AppDependency
+        return await ad.openCommRepo.updateOpenCommission(apiToken, updater)
+    }
+)
+
+export const deleteOpenCommission = createAsyncThunk<string,
+    { openCommId: string },
+    { state: RootState, extra: AppDependency }>(
+    'openCommission/deleteOpenCommission',
+    async ({openCommId}, thunkAPI) => {
+        const apiToken = thunkAPI.getState().auth.authUser?.apiToken
+        if (!apiToken) {
+            throw OpenCommissionErrorUnknown
+        }
+        const ad = thunkAPI.extra as AppDependency
+        return await ad.openCommRepo.deleteOpenCommission(apiToken, openCommId)
+    }
+)
+
 export const openCommissionSlice = createSlice({
     name: 'openCommission',
     initialState: initialState,
     reducers: {},
     extraReducers: (builder => {
+        builder
+            .addCase(getOpenCommissions.fulfilled, (state, action) => {
+                const index = state.allIds.indexOf(action.payload.)
+                if (index !== -1) {
+                    state.allIds.splice(index, 1)
+                }
+            })
+            .addCase(addOpenCommission.fulfilled, (state, action) => {
 
+            })
+            .addCase(updateOpenCommission.fulfilled, (state, action) => {
+
+            })
+            .addCase(deleteOpenCommission.fulfilled, (state, action) => {
+
+            })
     })
 })
 
