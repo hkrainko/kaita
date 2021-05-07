@@ -1,4 +1,5 @@
 import {
+    Box,
     Button,
     Checkbox,
     createStyles,
@@ -41,6 +42,10 @@ const useStyles = makeStyles((theme: Theme) =>
             maxWidth: '99.0%',
             fontSize: theme.typography.body1.fontSize,
             font: theme.typography.fontFamily,
+        },
+        regImg: {
+            maxWidth: '200px',
+            flex: '1 1 100px'
         },
         paper: {
             position: 'absolute',
@@ -96,10 +101,10 @@ export default function NewOpenCommissionModal(props: Props) {
 
     const onClickDeleteImage = useCallback(
         (index) => {
-            setRegImages(regImages.splice(index, 1))
-            setDownscaledRegImages(downscaledRegImages.splice(index, 1))
+            setRegImages(prevState => prevState.filter((_, i: number) => i !== index))
+            setDownscaledRegImages(prevState => prevState.filter((_, i: number) => i !== index))
         }
-        , [downscaledRegImages, regImages])
+        , [])
 
     const onCroppedImg = useCallback(
         (file: File | null) => {
@@ -107,12 +112,13 @@ export default function NewOpenCommissionModal(props: Props) {
                 return
             }
             setDownscaledRegImages([...downscaledRegImages, file])
-        }, [])
+        }, [downscaledRegImages])
 
     const onSubmit = useCallback(
         (data: Inputs) => {
             console.log(JSON.stringify(data))
 
+            
         }, [])
 
     return (
@@ -147,7 +153,6 @@ export default function NewOpenCommissionModal(props: Props) {
                                         required
                                         fullWidth
                                         label="標題"
-                                        autoFocus
                                         size="small"
                                         helperText="4-12 字元。"
                                     />
@@ -169,7 +174,6 @@ export default function NewOpenCommissionModal(props: Props) {
                                         variant="outlined"
                                         required
                                         label="最低價錢"
-                                        autoFocus
                                         size="small"
                                         fullWidth
                                         helperText="委托時提出的價錢下限。"
@@ -194,7 +198,6 @@ export default function NewOpenCommissionModal(props: Props) {
                                             labelId="price-currency-label"
                                             value={value}
                                             onChange={onChange}
-                                            autoFocus
                                             label="貨幣"
                                         >
                                             <MenuItem value="">
@@ -224,7 +227,6 @@ export default function NewOpenCommissionModal(props: Props) {
                                         required
                                         label="完成所需日數（最少)"
                                         fullWidth
-                                        autoFocus
                                         size="small"
                                         helperText="所需繪師時間。"
                                     />
@@ -246,7 +248,6 @@ export default function NewOpenCommissionModal(props: Props) {
                                         variant="outlined"
                                         required
                                         fullWidth
-                                        autoFocus
                                         size="small"
                                         label="（最多)"
                                     />
@@ -273,7 +274,6 @@ export default function NewOpenCommissionModal(props: Props) {
                                         fullWidth
                                         label="草稿可修改次數"
                                         size="small"
-                                        autoFocus
                                         helperText="允許委托者提出對草稿修改的次數。"
                                     />
                                 }
@@ -300,7 +300,6 @@ export default function NewOpenCommissionModal(props: Props) {
                                         fullWidth
                                         label="完成品可微調次數"
                                         size="small"
-                                        autoFocus
                                         helperText="允許委托者提出對完成品微調的次數。"
                                     />
                                 }
@@ -321,7 +320,6 @@ export default function NewOpenCommissionModal(props: Props) {
                                         fullWidth
                                         label="訂金規則(可留空)"
                                         size="small"
-                                        autoFocus
                                         helperText="例：價錢的10%。（20字以內）"
                                     />
                                 }
@@ -342,7 +340,6 @@ export default function NewOpenCommissionModal(props: Props) {
                                         fullWidth
                                         label="補充說明(可留空)"
                                         size="small"
-                                        autoFocus
                                         multiline
                                         rows={4}
                                         rowsMax={8}
@@ -354,14 +351,17 @@ export default function NewOpenCommissionModal(props: Props) {
                         <Grid item xs={12}>
                             <FormControl>
                                 <FormLabel component="legend">參考圖片</FormLabel>
-                                {
-                                    regImages.map((image, index) => {
-                                        return <AppRemovableImage
-                                            file={image}
-                                            onClickDelete={() => onClickDeleteImage(index)}
-                                            onCroppedImg={onCroppedImg}/>
-                                    })
-                                }
+                                <Box display="inline-flex" alignItems="flex-end">
+                                    {
+                                        regImages.map((image, index) => {
+                                            return <AppRemovableImage
+                                                className={classes.regImg}
+                                                file={image}
+                                                onClickDelete={() => onClickDeleteImage(index)}
+                                                onCroppedImg={onCroppedImg}/>
+                                        })
+                                    }
+                                </Box>
                                 <AppDropzone onDrop={filesCallback}/>
                             </FormControl>
                         </Grid>
@@ -378,7 +378,6 @@ export default function NewOpenCommissionModal(props: Props) {
                                                 onChange={onChange}
                                                 name="isR18"
                                                 color="primary"
-                                                autoFocus
                                             />
                                         }
                                         label="成人向委托"
@@ -400,7 +399,6 @@ export default function NewOpenCommissionModal(props: Props) {
                                                 onChange={onChange}
                                                 name="allowBePrivate"
                                                 color="primary"
-                                                autoFocus
                                             />
                                         }
                                         label="允許委托者選擇不公開完成品"
@@ -422,7 +420,6 @@ export default function NewOpenCommissionModal(props: Props) {
                                                 onChange={onChange}
                                                 name="allowAnonymous"
                                                 color="primary"
-                                                autoFocus
                                             />
                                         }
                                         label="接受匿名委托"
