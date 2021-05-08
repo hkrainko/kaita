@@ -1,7 +1,7 @@
 export interface OpenCommissionFilter {
   artistId?: string;
-  count?: string;
-  offSet?: string;
+  count?: number;
+  offset?: number;
   key?: string;
   priceForm?: string;
   priceTo?: string;

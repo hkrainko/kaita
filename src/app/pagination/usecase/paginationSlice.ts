@@ -1,19 +1,18 @@
-import {LoadingStatus} from "../../../domain/common/loading-status";
+import {RequestState} from "../../../domain/common/request-state";
 
 export interface PaginationState {
     openCommissionsByArtist: {
         artistId: string
-        pages: {
-            ids: string[],
-            loadingStatus: LoadingStatus
-        }[]
-        totalPage: number
+        ids: string[]
+        offset: number
+        total: number
+        loadingStatus: RequestState
     } | null
     artworksByArtist: {
         artistId: string
         pages: {
             ids: string[],
-            loadingStatus: LoadingStatus
+            loadingStatus: RequestState
         }[]
     } | null
 }

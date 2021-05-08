@@ -7,15 +7,32 @@ import {OpenCommissionErrorUnknown} from "../../../domain/open-commission/model/
 import {OpenCommissionUpdater} from "../../../domain/open-commission/model/open-commission-updater";
 import {OpenCommissionFilter} from "../../../domain/open-commission/model/open-commission-filter";
 import GetOpenCommissionsResult from "../../../domain/open-commission/model/get-open-commissions-result";
+import {RequestState} from "../../../domain/common/request-state";
 
 export interface OpenCommissionState {
-    allIds: string[]
     byId: { [id: string]: OpenCommission }
+    forArtist: {
+        artistId?: string
+        ids: string[]
+        fetchCount?: number
+        offset?: number
+        total?: number
+        requestState: RequestState
+        requestId?: string
+    }
 }
 
 const initialState: OpenCommissionState = {
-    allIds: [],
-    byId: {}
+    byId: {},
+    forArtist: {
+        artistId: undefined,
+        ids: [],
+        fetchCount: undefined,
+        offset: undefined,
+        total: undefined,
+        requestState: RequestState.Idle,
+        requestId: undefined,
+    }
 };
 
 export const getOpenCommissions = createAsyncThunk<GetOpenCommissionsResult,
@@ -80,15 +97,46 @@ export const openCommissionSlice = createSlice({
     reducers: {},
     extraReducers: (builder => {
         builder
+            .addCase(getOpenCommissions.pending, (state, action) => {
+                state.forArtist = {
+                    artistId: action.meta.arg.filter.artistId,
+                    ids: [],
+                    fetchCount: action.meta.arg.filter.count,
+                    offset: action.meta.arg.filter.offset,
+                    total: undefined,
+                    requestState: RequestState.Loading,
+                    requestId: action.meta.requestId
+                }
+            })
             .addCase(getOpenCommissions.fulfilled, (state, action) => {
+                if (state.forArtist.requestId !== action.meta.requestId
+                ) {
+                    action.payload.openCommissions.forEach(oc => {
+                        state.byId[oc.id] = oc
+                    })
+                    return
+                }
+                let ids: string[] = []
                 action.payload.openCommissions.forEach(oc => {
-                    const index = state.allIds.indexOf(oc.id)
-                    if (index !== -1) {
-                        state.allIds.splice(index, 1)
-                    }
-                    state.allIds.push(oc.id)
                     state.byId[oc.id] = oc
+                    ids.push(oc.id)
                 })
+                state.forArtist = {
+                    artistId: action.meta.arg.filter.artistId,
+                    ids: ids,
+                    fetchCount: action.payload.fetchCount,
+                    offset: action.payload.offset,
+                    total: action.payload.total,
+                    requestState: RequestState.Succeed,
+                    requestId: action.meta.requestId
+                }
+            })
+            .addCase(getOpenCommissions.rejected, (state, action) => {
+                if (state.forArtist.requestId !== action.meta.requestId
+                ) {
+                    return
+                }
+                state.forArtist.requestState = RequestState.Failed
             })
             .addCase(addOpenCommission.fulfilled, (state, action) => {
 
