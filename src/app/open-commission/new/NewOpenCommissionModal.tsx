@@ -29,6 +29,9 @@ import {TYPES} from "../../../types";
 import {OpenCommissionUseCase} from "../../../domain/open-commission/open-commission.usecase";
 import AppDropzone from "../../component/AppDropzone";
 import AppRemovableImage from "../../component/AppRemovableImage";
+import {addOpenCommission} from "../usecase/openCommissionSlice";
+import {OpenCommissionCreator} from "../../../domain/open-commission/model/open-commission-creator";
+import imageCompression from "browser-image-compression";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -84,7 +87,6 @@ export default function NewOpenCommissionModal(props: Props) {
     const classes = useStyles();
 
     const [regImages, setRegImages] = useState<File[]>([]);
-    const [downscaledRegImages, setDownscaledRegImages] = useState<File[]>([]);
     const openCommUseCase = useInjection<OpenCommissionUseCase>(TYPES.OpenCommissionUseCase)
     const dispatch = useAppDispatch()
     const userId = useAppSelector((state) => state.auth?.authUser?.userId)
@@ -98,30 +100,54 @@ export default function NewOpenCommissionModal(props: Props) {
             if (addFiles.length <= 0) {
                 return
             }
+            addFiles.forEach(file => {
+
+            })
+
             setRegImages([...regImages, ...addFiles])
         }, [regImages]);
 
     const onClickDeleteImage = useCallback(
         (index) => {
             setRegImages(prevState => prevState.filter((_, i: number) => i !== index))
-            setDownscaledRegImages(prevState => prevState.filter((_, i: number) => i !== index))
         }
         , [])
-
-    const onCroppedImg = useCallback(
-        (file: File | null) => {
-            if (!file) {
-                return
-            }
-            setDownscaledRegImages([...downscaledRegImages, file])
-        }, [downscaledRegImages])
 
     const onSubmit = useCallback(
         (data: Inputs) => {
             console.log(JSON.stringify(data))
 
+            getUploadImages(regImages).then(files => {
+                console.log(`getUploadImages`)
+                if (files.length <= 0) {
+                    return
+                }
+                let creator: OpenCommissionCreator = {
+                    allowAnonymous: data.allowAnonymous,
+                    allowBePrivate: data.allowBePrivate,
+                    dayNeed: {
+                        from: data.dayNeedFrom,
+                        to: data.dayNeedTo
+                    },
+                    depositRule: data.depositRule,
+                    desc: data.desc,
+                    isR18: data.isR18,
+                    price: {
+                        amount: data.priceAmount,
+                        currency: data.priceCurrency
+                    },
+                    sampleImages: files,
+                    timesAllowedCompletionToChange: data.timesAllowedCompletionToChange,
+                    timesAllowedDraftToChange: data.timesAllowedDraftToChange,
+                    title: data.title
+                };
 
-        }, [])
+                dispatch(addOpenCommission({creator}))
+            }).catch(err => {
+                console.log(`parse file error`)
+            })
+
+        }, [dispatch, regImages])
 
     return (
         <Dialog
@@ -357,10 +383,11 @@ export default function NewOpenCommissionModal(props: Props) {
                                     {
                                         regImages.map((image, index) => {
                                             return <AppRemovableImage
+                                                key={index}
                                                 className={classes.regImg}
                                                 file={image}
                                                 onClickDelete={() => onClickDeleteImage(index)}
-                                                onCroppedImg={onCroppedImg}/>
+                                            />
                                         })
                                     }
                                 </Box>
@@ -437,10 +464,37 @@ export default function NewOpenCommissionModal(props: Props) {
                 <Button onClick={props.onClose} variant="contained" fullWidth>
                     取消
                 </Button>
-                <Button type="submit" variant="contained" color="primary" fullWidth>
+                <Button type="submit" variant="contained" color="primary" onClick={handleSubmit(onSubmit)} fullWidth>
                     確定
                 </Button>
             </DialogActions>
         </Dialog>
     )
+}
+
+const getUploadImages = async (files: File[]) => {
+    let results: File[] = []
+    for (const file of files) {
+        console.log(`processing file size: ${file.size / 1024 / 1024}MB`);
+        if (file.size <= 10 * 1024 * 1024) {
+            console.log(`file size <= 10MB use origin file`);
+            results.push(file);
+            continue
+        }
+        console.log(`file size > 10MB compressing`);
+        const options = {
+            maxSizeMB: 10,
+            maxWidthOrHeight: 1920,
+            useWebWorker: true
+        };
+        try {
+            const compressedFile = await imageCompression(file, options);
+            console.log('compressedFile instanceof Blob', compressedFile instanceof Blob); // true
+            console.log(`compressedFile size ${compressedFile.size / 1024 / 1024} MB`); // smaller than maxSizeMB
+            results.push(compressedFile)
+        } catch (error) {
+            console.log(error);
+        }
+    }
+    return results
 }

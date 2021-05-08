@@ -1,6 +1,5 @@
-import React, {useCallback, useEffect, useRef, useState} from "react";
-import ReactCrop from "react-image-crop";
-import {Box, createStyles, IconButton, makeStyles, StandardProps, Theme, withStyles} from "@material-ui/core";
+import React, {ReactNode, useEffect, useState} from "react";
+import {Box, createStyles, IconButton, makeStyles, StandardProps, Theme} from "@material-ui/core";
 import CancelIcon from "@material-ui/icons/Cancel";
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -18,18 +17,17 @@ const useStyles = makeStyles((theme: Theme) =>
     })
 );
 
-export interface AppImageCropProps extends StandardProps<any, any>{
+export interface AppImageCropProps extends StandardProps<any, any> {
     file: File,
     onClickDelete: () => void
-    onCroppedImg: (file: File | null) => void
+    key: number
 }
 
-export default function AppRemovableImage({className, file, onClickDelete, onCroppedImg}: AppImageCropProps) {
-    const props = { backgroundColor: 'black', color: 'white', width: '10px' };
+export default function AppRemovableImage({className, file, onClickDelete, number}: AppImageCropProps) {
+    const props = {backgroundColor: 'black', color: 'white', width: '10px'};
     const classes = useStyles(props);
 
     const [fileSrc, setFileSrc] = useState<string | undefined>(undefined)
-    const imgRef = useRef<any>(null);
 
     useEffect(() => {
         const reader = new FileReader();
@@ -38,31 +36,6 @@ export default function AppRemovableImage({className, file, onClickDelete, onCro
         };
         reader.readAsDataURL(file);
     }, [file])
-
-    const onComplete = useCallback((crop: ReactCrop.Crop, percentCrop: ReactCrop.PercentCrop) => {
-        console.log(`${crop.x}, ${crop.y}, ${crop.width}, ${crop.height}, ${imgRef.current}`)
-        if (!imgRef.current || crop.x === undefined || crop.y === undefined || crop.width === undefined || crop.height === undefined) {
-            return
-        }
-        const canvas = document.createElement('canvas');
-        const scaleX = imgRef.current.naturalWidth / imgRef.current.width;
-        const scaleY = imgRef.current.naturalHeight / imgRef.current.height;
-        canvas.width = crop.width as number;
-        canvas.height = crop.height as number;
-        const ctx = canvas.getContext('2d');
-
-        return new Promise<File | null>((resolve, reject) => {
-            canvas.toBlob(blob => {
-                if (!blob) {
-                    return resolve(null)
-                }
-                const nameWithOutExt = file.name.split('.').slice(0, -1).join('.')
-                resolve(new File([blob!], nameWithOutExt + '.jpg'))
-            }, 'image/jpeg', 1);
-        }).then((file: File | null) => {
-            onCroppedImg(file)
-        });
-    }, [file.name, onCroppedImg]);
 
     return (
         <Box className={className}>

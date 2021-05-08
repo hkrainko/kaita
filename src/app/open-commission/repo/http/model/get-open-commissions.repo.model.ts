@@ -3,10 +3,10 @@ import {Mapper} from "../../../../../domain/mapper";
 import GetOpenCommissionsResult from "../../../../../domain/open-commission/model/get-open-commissions-result";
 
 export interface GetOpenCommissionsRepoModel {
-
+    artistId: string
     openCommissions: OpenCommission[]
     offset: number
-    count: number
+    fetchCount: number
     total: number
 }
 
