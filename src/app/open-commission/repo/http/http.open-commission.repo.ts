@@ -7,6 +7,7 @@ import {OpenCommissionFilter} from "../../../../domain/open-commission/model/ope
 import axios from "axios";
 import {OpenCommissionCreator} from "../../../../domain/open-commission/model/open-commission-creator";
 import {OpenCommissionUpdater} from "../../../../domain/open-commission/model/open-commission-updater";
+import GetOpenCommissionsResult from "../../../../domain/open-commission/model/get-open-commissions-result";
 
 @injectable()
 export class HttpOpenCommissionRepo implements OpenCommissionRepo {
@@ -20,7 +21,7 @@ export class HttpOpenCommissionRepo implements OpenCommissionRepo {
         throw Error
     }
 
-    getOpenCommissions(filter: OpenCommissionFilter): Promise<OpenCommission[]> {
+    getOpenCommissions(filter: OpenCommissionFilter): Promise<GetOpenCommissionsResult> {
 
         return axios
             .get<GetOpenCommissionsRepoModel>(``)
@@ -29,7 +30,7 @@ export class HttpOpenCommissionRepo implements OpenCommissionRepo {
             })
     }
 
-    getOpenCommissionsForArtist(artistId: string): Promise<OpenCommission[]> {
+    getOpenCommissionsForArtist(artistId: string): Promise<GetOpenCommissionsResult> {
         return axios
             .get<GetOpenCommissionsRepoModel>(`${this.apiPath}/artists/${artistId}/open-commissions`)
             .then(resp => {
@@ -37,7 +38,7 @@ export class HttpOpenCommissionRepo implements OpenCommissionRepo {
             })
     }
 
-    getOpenCommissionsDetailsForArtist(token: string, artistId: string): Promise<OpenCommission[]> {
+    getOpenCommissionsDetailsForArtist(token: string, artistId: string): Promise<GetOpenCommissionsResult> {
         const headers = {
             Authorization: 'Bearer ' + token,
         };

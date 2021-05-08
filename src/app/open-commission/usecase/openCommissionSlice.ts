@@ -6,6 +6,7 @@ import AppDependency from "../../di";
 import {OpenCommissionErrorUnknown} from "../../../domain/open-commission/model/open-commission-error";
 import {OpenCommissionUpdater} from "../../../domain/open-commission/model/open-commission-updater";
 import {OpenCommissionFilter} from "../../../domain/open-commission/model/open-commission-filter";
+import GetOpenCommissionsResult from "../../../domain/open-commission/model/get-open-commissions-result";
 
 export interface OpenCommissionState {
     allIds: string[]
@@ -17,7 +18,7 @@ const initialState: OpenCommissionState = {
     byId: {}
 };
 
-export const getOpenCommissions = createAsyncThunk<OpenCommission[],
+export const getOpenCommissions = createAsyncThunk<GetOpenCommissionsResult,
     { filter: OpenCommissionFilter },
     { state: RootState, extra: AppDependency }>(
     'openCommission/getOpenCommissions',
@@ -80,10 +81,14 @@ export const openCommissionSlice = createSlice({
     extraReducers: (builder => {
         builder
             .addCase(getOpenCommissions.fulfilled, (state, action) => {
-                const index = state.allIds.indexOf(action.payload.)
-                if (index !== -1) {
-                    state.allIds.splice(index, 1)
-                }
+                action.payload.openCommissions.forEach(oc => {
+                    const index = state.allIds.indexOf(oc.id)
+                    if (index !== -1) {
+                        state.allIds.splice(index, 1)
+                    }
+                    state.allIds.push(oc.id)
+                    state.byId[oc.id] = oc
+                })
             })
             .addCase(addOpenCommission.fulfilled, (state, action) => {
 
