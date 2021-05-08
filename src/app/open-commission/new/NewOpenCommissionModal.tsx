@@ -391,7 +391,7 @@ export default function NewOpenCommissionModal(props: Props) {
                                         })
                                     }
                                 </Box>
-                                <AppDropzone onDrop={filesCallback}/>
+                                {regImages.length < 3 && <AppDropzone onDrop={filesCallback}/>}
                             </FormControl>
                         </Grid>
                         <Grid item xs={12}>
