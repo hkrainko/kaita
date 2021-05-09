@@ -6,6 +6,7 @@ import {
     CardContent,
     CardHeader,
     CardMedia,
+    Chip,
     Collapse,
     createStyles,
     IconButton,
@@ -19,6 +20,8 @@ import {
     Typography
 } from "@material-ui/core";
 import {
+    Check,
+    CheckCircleOutline,
     DateRangeOutlined,
     ExpandMoreOutlined,
     GavelOutlined,
@@ -36,8 +39,9 @@ const useStyles = makeStyles((theme: Theme) =>
             marginBottom: 0,
             fontSize: '16px',
         },
-        list: {
-            padding: 0
+        list: {},
+        chip: {
+            marginRight: theme.spacing(1)
         },
         listItem: {
             padding: 0,
@@ -97,26 +101,52 @@ export default function OpenCommissionCard({openCommission, ...props}: Props) {
                     title="Contemplative Reptile"
                 />
                 <CardContent>
+                    <Box display="flex">
+                        {openCommission.isR18 && <Chip
+                            icon={<Check/>}
+                            label="R18"
+                            size="small"
+                            color="secondary"
+                            className={classes.chip}
+                        />}
+                        {openCommission.allowAnonymous && <Chip
+                            icon={<Check/>}
+                            label="匿名"
+                            size="small"
+                            color="default"
+                            className={classes.chip}
+                        />}
+                        {openCommission.allowBePrivate && <Chip
+                            icon={<Check/>}
+                            label="不公開"
+                            size="small"
+                            color="default"
+                            className={classes.chip}
+                        />}
+                    </Box>
                     <List className={classes.list}>
                         <ListItem className={classes.listItem}>
                             <ListItemIcon className={classes.listItemIcon}>
                                 <DateRangeOutlined/>
                             </ListItemIcon>
-                            <ListItemText primaryTypographyProps={{className: classes.ListItemTextPrimary}} primary="需時" secondary={`${openCommission.dayNeed?.from} ~ ${openCommission.dayNeed?.to} 日`}/>
-                        </ListItem>
-                        <ListItem className={classes.listItem}>
-                            <ListItemIcon className={classes.listItemIcon}>
-                                <RateReviewOutlined/>
-                            </ListItemIcon>
-                            <ListItemText primary="草稿可修改次數" secondary={`${openCommission.timesAllowedDraftToChange} 次`}/>
-                        </ListItem>
-                        <ListItem className={classes.listItem}>
-                            <ListItemIcon className={classes.listItemIcon}>
-                                <MmsOutlined/>
-                            </ListItemIcon>
-                            <ListItemText primary="完成品可修改次數" secondary={`${openCommission.timesAllowedCompletionToChange} 次`}/>
+                            <ListItemText primaryTypographyProps={{className: classes.ListItemTextPrimary}} primary="需時"
+                                          secondary={`${openCommission.dayNeed?.from} ~ ${openCommission.dayNeed?.to} 日`}/>
                         </ListItem>
                         <Collapse in={expanded} timeout="auto" unmountOnExit>
+                            <ListItem className={classes.listItem}>
+                                <ListItemIcon className={classes.listItemIcon}>
+                                    <RateReviewOutlined/>
+                                </ListItemIcon>
+                                <ListItemText primary="草稿可修改次數"
+                                              secondary={`${openCommission.timesAllowedDraftToChange} 次`}/>
+                            </ListItem>
+                            <ListItem className={classes.listItem}>
+                                <ListItemIcon className={classes.listItemIcon}>
+                                    <MmsOutlined/>
+                                </ListItemIcon>
+                                <ListItemText primary="完成品可修改次數"
+                                              secondary={`${openCommission.timesAllowedCompletionToChange} 次`}/>
+                            </ListItem>
                             <ListItem className={classes.listItem}>
                                 <ListItemIcon className={classes.listItemIcon}>
                                     <GavelOutlined/>
@@ -138,12 +168,12 @@ export default function OpenCommissionCard({openCommission, ...props}: Props) {
                     <Typography variant={"caption"}>@{openCommission.artistId}</Typography>
                 </Box>
                 <IconButton
-                    className={`${expanded ? classes.expandOpen: classes.expand}`}
+                    className={`${expanded ? classes.expandOpen : classes.expand}`}
                     onClick={() => setExpanded(!expanded)}
                     aria-expanded={expanded}
                     aria-label="show more"
                 >
-                    <ExpandMoreOutlined />
+                    <ExpandMoreOutlined/>
                 </IconButton>
             </CardActions>
         </Card>
