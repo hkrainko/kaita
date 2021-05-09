@@ -2,12 +2,13 @@ import {Box, Button, createStyles, Grid, IconButton, makeStyles, StandardProps, 
 import OpenCommissionCard from "./OpenCommissionCard";
 import {Add, MoreHoriz} from "@material-ui/icons";
 import NewOpenCommissionModal from "./new/NewOpenCommissionModal";
-import React, {useEffect, useState} from "react";
+import React, {useCallback, useEffect, useState} from "react";
 import {useAppDispatch, useAppSelector} from "../hooks";
 import {useParams} from "react-router-dom";
 import {getOpenCommissions} from "./usecase/openCommissionSlice";
 import {OpenCommission} from "../../domain/open-commission/model/open-commission";
 import EditOpenCommissionModal from "./edit/EditOpenCommissionModal";
+import AppDialog from "../component/AppDialog";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -27,6 +28,7 @@ export default function OpenCommissions(props: Props) {
     let {id} = useParams<{ id: string }>()
     const [showNewComm, setShowNewComm] = useState(false)
     const [editingComm, setEditingComm] = useState<OpenCommission | null>(null)
+    const [deletingComm, setDeletingComm] = useState<OpenCommission | null>(null)
     const getOpenCommissionsResult = useAppSelector((state) => {
         if (state.openCommission.forArtist.artistId === id) {
             const openCommissions = state.openCommission.forArtist.ids.map(id => {
@@ -54,13 +56,25 @@ export default function OpenCommissions(props: Props) {
         }))
     }, [dispatch, id])
 
+    const onEdit = useCallback((openCommission: OpenCommission) => {
+        setEditingComm(openCommission)
+    }, [])
+
+    const onDelete = useCallback((openCommission: OpenCommission) => {
+        setDeletingComm(openCommission)
+    }, [])
+
+    const onConfirmDeleteOpenComm = useCallback(() => {
+        const id = deletingComm?.id
+    }, [deletingComm?.id])
+
     return (
         <Box>
             <Grid container spacing={2}>
                 {
                     getOpenCommissionsResult && getOpenCommissionsResult.openCommissions.map((oc: OpenCommission) => (
                         <Grid item xs={6} md={4} key={oc.id}>
-                            <OpenCommissionCard openCommission={oc}/>
+                            <OpenCommissionCard openCommission={oc} onEdit={onEdit} onDelete={onDelete}/>
                         </Grid>
                     ))
                 }
@@ -79,6 +93,12 @@ export default function OpenCommissions(props: Props) {
             </Box>
             <NewOpenCommissionModal open={showNewComm} onClose={() => setShowNewComm(false)}/>
             <EditOpenCommissionModal open={editingComm} onClose={() => setEditingComm(null)}/>
+            <AppDialog
+                open={deletingComm != null}
+                onClose={() => setDeletingComm(null)}
+                onConfirm={onConfirmDeleteOpenComm}
+                title="確定刪除開放委托?"
+                content="一但刪除不會被復完"/>
         </Box>
     )
 

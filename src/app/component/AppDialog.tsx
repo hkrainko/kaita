@@ -32,7 +32,7 @@ export default function AppDialog({open, onClose, onConfirm, title, content, ...
                 </DialogContentText>
             </DialogContent>
             <DialogActions>
-                <Button onClick={onClose} color="primary" fullWidth>
+                <Button onClick={onClose} color="default" fullWidth>
                     取消
                 </Button>
                 <Button onClick={onConfirm} color="primary" fullWidth>

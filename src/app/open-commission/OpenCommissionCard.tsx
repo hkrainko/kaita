@@ -75,9 +75,11 @@ const useStyles = makeStyles((theme: Theme) =>
 
 interface Props extends StandardProps<any, any> {
     openCommission: OpenCommission
+    onEdit?: (openCommission: OpenCommission) => void
+    onDelete?: (openCommission: OpenCommission) => void
 }
 
-export default function OpenCommissionCard({openCommission, ...props}: Props) {
+export default function OpenCommissionCard({openCommission, onEdit, onDelete, ...props}: Props) {
 
     const classes = useStyles(props.className)
     const [expanded, setExpanded] = useState(false)
@@ -171,10 +173,10 @@ export default function OpenCommissionCard({openCommission, ...props}: Props) {
                 <Box display={"flex"} flexGrow={1} px={1}>
                     <Typography variant={"caption"}>@{openCommission.artistId}</Typography>
                 </Box>
-                <IconButton>
+                <IconButton onClick={() => onEdit && onEdit(openCommission)}>
                     <Edit/>
                 </IconButton>
-                <IconButton>
+                <IconButton onClick={() => onDelete && onDelete(openCommission)}>
                     <Delete/>
                 </IconButton>
                 <IconButton
