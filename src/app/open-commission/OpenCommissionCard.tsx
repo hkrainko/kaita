@@ -1,8 +1,8 @@
 import {
-    Avatar,
     Box,
     Card,
-    CardActionArea, CardActions,
+    CardActionArea,
+    CardActions,
     CardContent,
     CardHeader,
     CardMedia,
@@ -15,7 +15,8 @@ import {
     ListItemText,
     makeStyles,
     StandardProps,
-    Theme, Typography
+    Theme,
+    Typography
 } from "@material-ui/core";
 import {
     DateRangeOutlined,
@@ -34,6 +35,9 @@ const useStyles = makeStyles((theme: Theme) =>
             marginTop: 0,
             marginBottom: 0,
             fontSize: '16px',
+        },
+        list: {
+            padding: 0
         },
         listItem: {
             padding: 0,
@@ -88,12 +92,12 @@ export default function OpenCommissionCard({openCommission, ...props}: Props) {
                 <CardMedia
                     component="img"
                     alt="Contemplative Reptile"
-                    height="140"
+                    height="180"
                     image={`http://192.168.64.12:31398/${openCommission.sampleImagePaths[0]}`}
                     title="Contemplative Reptile"
                 />
                 <CardContent>
-                    <List>
+                    <List className={classes.list}>
                         <ListItem className={classes.listItem}>
                             <ListItemIcon className={classes.listItemIcon}>
                                 <DateRangeOutlined/>
