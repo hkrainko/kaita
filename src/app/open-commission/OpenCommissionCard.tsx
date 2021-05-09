@@ -21,16 +21,17 @@ import {
 } from "@material-ui/core";
 import {
     Check,
-    CheckCircleOutline,
-    DateRangeOutlined, Delete, Edit,
+    Delete,
+    Edit,
     ExpandMoreOutlined,
-    GavelOutlined, HourglassEmptyOutlined,
+    GavelOutlined,
     MmsOutlined,
-    RateReviewOutlined, Schedule, ScheduleOutlined,
+    RateReviewOutlined,
+    ScheduleOutlined,
     SubjectOutlined
 } from "@material-ui/icons";
 import {OpenCommission} from "../../domain/open-commission/model/open-commission";
-import {useState} from "react";
+import React, {useState} from "react";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({

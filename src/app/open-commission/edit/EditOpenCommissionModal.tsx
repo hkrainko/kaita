@@ -1,38 +1,25 @@
 import {
-    Box,
-    Button,
-    Checkbox,
-    createStyles,
-    Dialog,
-    DialogActions,
+    Box, Button, Checkbox,
+    createStyles, Dialog, DialogActions,
     DialogContent,
     DialogContentText,
-    DialogTitle,
-    FormControl,
-    FormControlLabel,
-    FormHelperText,
-    FormLabel,
-    Grid,
-    InputLabel,
-    makeStyles,
-    MenuItem,
-    Select,
-    TextField,
+    DialogTitle, FormControl, FormControlLabel, FormHelperText, FormLabel, Grid, InputLabel,
+    makeStyles, MenuItem, Select,
+    StandardProps, TextField,
     Theme
 } from "@material-ui/core";
-import {useAppDispatch, useAppSelector} from "../../hooks";
 import React, {useCallback, useState} from "react";
+import {useInjection} from "../../../iocReact";
+import {OpenCommissionUseCase} from "../../../domain/open-commission/open-commission.usecase";
+import {TYPES} from "../../../types";
+import {useAppDispatch} from "../../hooks";
 import {Controller, useForm} from "react-hook-form";
 import {Currency} from "../../../domain/price/price";
-import {useInjection} from "../../../iocReact";
-import {TYPES} from "../../../types";
-import {OpenCommissionUseCase} from "../../../domain/open-commission/open-commission.usecase";
-import AppDropzone from "../../component/AppDropzone";
-import AppRemovableImage from "../../component/AppRemovableImage";
-import {addOpenCommission} from "../usecase/openCommissionSlice";
 import {OpenCommissionCreator} from "../../../domain/open-commission/model/open-commission-creator";
-import imageCompression from "browser-image-compression";
+import {addOpenCommission} from "../usecase/openCommissionSlice";
 import getUploadImages from "../../utils/getUploadImages";
+import AppRemovableImage from "../../component/AppRemovableImage";
+import AppDropzone from "../../component/AppDropzone";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -50,15 +37,7 @@ const useStyles = makeStyles((theme: Theme) =>
         regImg: {
             maxWidth: '200px',
             flex: '1 1 100px'
-        },
-        paper: {
-            position: 'absolute',
-            width: 400,
-            backgroundColor: theme.palette.background.paper,
-            border: '2px solid #000',
-            boxShadow: theme.shadows[5],
-            padding: theme.spacing(2, 4, 3),
-        },
+        }
     }),
 );
 
@@ -78,19 +57,15 @@ type Inputs = {
     allowAnonymous: boolean
 }
 
-interface Props {
-    intro?: string
-    open: boolean
-    onClose: () => void
+interface Props extends StandardProps<any, any>{
+
 }
 
-export default function NewOpenCommissionModal(props: Props) {
+export default function EditOpenCommissionModal({...props}: Props) {
     const classes = useStyles();
-
     const [regImages, setRegImages] = useState<File[]>([]);
     const openCommUseCase = useInjection<OpenCommissionUseCase>(TYPES.OpenCommissionUseCase)
     const dispatch = useAppDispatch()
-    const userId = useAppSelector((state) => state.auth?.authUser?.userId)
     const {handleSubmit, control, formState: {errors}} = useForm<Inputs>();
 
     const filesCallback = useCallback(

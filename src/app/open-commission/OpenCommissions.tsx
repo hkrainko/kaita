@@ -7,6 +7,7 @@ import {useAppDispatch, useAppSelector} from "../hooks";
 import {useParams} from "react-router-dom";
 import {getOpenCommissions} from "./usecase/openCommissionSlice";
 import {OpenCommission} from "../../domain/open-commission/model/open-commission";
+import EditOpenCommissionModal from "./edit/EditOpenCommissionModal";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -25,6 +26,7 @@ export default function OpenCommissions(props: Props) {
 
     let {id} = useParams<{ id: string }>()
     const [showNewComm, setShowNewComm] = useState(false)
+    const [editingComm, setEditingComm] = useState<OpenCommission | null>(null)
     const getOpenCommissionsResult = useAppSelector((state) => {
         if (state.openCommission.forArtist.artistId === id) {
             const openCommissions = state.openCommission.forArtist.ids.map(id => {
@@ -76,6 +78,7 @@ export default function OpenCommissions(props: Props) {
                         startIcon={<Add/>}>新增</Button>
             </Box>
             <NewOpenCommissionModal open={showNewComm} onClose={() => setShowNewComm(false)}/>
+            <EditOpenCommissionModal open={editingComm} onClose={() => setEditingComm(null)}/>
         </Box>
     )
 
