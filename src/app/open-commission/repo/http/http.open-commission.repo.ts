@@ -23,16 +23,16 @@ export class HttpOpenCommissionRepo implements OpenCommissionRepo {
 
     getOpenCommissions(filter: OpenCommissionFilter): Promise<GetOpenCommissionsResult> {
 
-        return axios
-            .get<GetOpenCommissionsRepoModel>(``)
-            .then(resp => {
-                return this.getOpenCommissionsRepoModelMapper.mapFrom(resp.data)
-            })
-    }
+        const params = {
+            count: filter.count,
+            offset: filter.offset
+        }
 
-    getOpenCommissionsForArtist(artistId: string): Promise<GetOpenCommissionsResult> {
         return axios
-            .get<GetOpenCommissionsRepoModel>(`${this.apiPath}/artists/${artistId}/open-commissions`)
+            .get<GetOpenCommissionsRepoModel>(
+                `${this.apiPath}/artists/${filter.artistId}/open-commissions`,
+                {params},
+            )
             .then(resp => {
                 return this.getOpenCommissionsRepoModelMapper.mapFrom(resp.data)
             })

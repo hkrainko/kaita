@@ -9,8 +9,6 @@ export interface OpenCommissionRepo {
 
     getOpenCommissions(filter: OpenCommissionFilter): Promise<GetOpenCommissionsResult>;
 
-    getOpenCommissionsForArtist(artistId: string): Promise<GetOpenCommissionsResult>;
-
     getOpenCommissionsDetailsForArtist(token: string, artistId: string): Promise<GetOpenCommissionsResult>;
 
     addOpenCommission(token: string, artistId: string, openCommCreator: OpenCommissionCreator): Promise<string>;

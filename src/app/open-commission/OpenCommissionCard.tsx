@@ -14,6 +14,7 @@ import {
     Typography
 } from "@material-ui/core";
 import {AttachMoneyOutlined} from "@material-ui/icons";
+import {OpenCommission} from "../../domain/open-commission/model/open-commission";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -26,10 +27,10 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 interface Props extends StandardProps<any, any> {
-
+    openCommission: OpenCommission
 }
 
-export default function OpenCommissionCard(props: Props) {
+export default function OpenCommissionCard({openCommission, ...props}: Props) {
 
     const classes = useStyles(props.className)
 
@@ -39,11 +40,11 @@ export default function OpenCommissionCard(props: Props) {
                 <CardHeader
                     title={
                         <Box display={"flex"} justifyContent={"space-between"}>
-                            <p className={classes.title}>Q版頭像</p>
+                            <p className={classes.title}>{openCommission.title}</p>
                             <Box display={"flex"}>
                                 <AttachMoneyOutlined/>
                                 <p className={classes.title}>
-                                    5,000 HKD
+                                    {`${openCommission.price?.amount} ${openCommission.price?.currency}`}
                                 </p>
                             </Box>
                         </Box>
@@ -58,11 +59,10 @@ export default function OpenCommissionCard(props: Props) {
                 />
                 <CardContent>
                     <Typography gutterBottom variant="h5" component="h2">
-                        Lizard
+                        {openCommission.desc}
                     </Typography>
                     <Typography variant="body2" color="textSecondary" component="p">
-                        Lizards are a widespread group of squamate reptiles, with over 6,000 species, ranging
-                        across all continents except Antarctica
+                        {openCommission.dayNeed?.from}~{openCommission.dayNeed?.to} 天
                     </Typography>
                 </CardContent>
             </CardActionArea>
