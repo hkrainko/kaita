@@ -22,11 +22,11 @@ import {
 import {
     Check,
     CheckCircleOutline,
-    DateRangeOutlined,
+    DateRangeOutlined, Delete, Edit,
     ExpandMoreOutlined,
-    GavelOutlined,
+    GavelOutlined, HourglassEmptyOutlined,
     MmsOutlined,
-    RateReviewOutlined,
+    RateReviewOutlined, Schedule, ScheduleOutlined,
     SubjectOutlined
 } from "@material-ui/icons";
 import {OpenCommission} from "../../domain/open-commission/model/open-commission";
@@ -38,6 +38,9 @@ const useStyles = makeStyles((theme: Theme) =>
             marginTop: 0,
             marginBottom: 0,
             fontSize: '16px',
+        },
+        cardContent: {
+            paddingBottom: 0
         },
         list: {},
         chip: {
@@ -100,7 +103,7 @@ export default function OpenCommissionCard({openCommission, ...props}: Props) {
                     image={`http://192.168.64.12:31398/${openCommission.sampleImagePaths[0]}`}
                     title="Contemplative Reptile"
                 />
-                <CardContent>
+                <CardContent className={classes.cardContent}>
                     <Box display="flex">
                         {openCommission.isR18 && <Chip
                             icon={<Check/>}
@@ -127,7 +130,7 @@ export default function OpenCommissionCard({openCommission, ...props}: Props) {
                     <List className={classes.list}>
                         <ListItem className={classes.listItem}>
                             <ListItemIcon className={classes.listItemIcon}>
-                                <DateRangeOutlined/>
+                                <ScheduleOutlined/>
                             </ListItemIcon>
                             <ListItemText primaryTypographyProps={{className: classes.ListItemTextPrimary}} primary="需時"
                                           secondary={`${openCommission.dayNeed?.from} ~ ${openCommission.dayNeed?.to} 日`}/>
@@ -167,6 +170,12 @@ export default function OpenCommissionCard({openCommission, ...props}: Props) {
                 <Box display={"flex"} flexGrow={1} px={1}>
                     <Typography variant={"caption"}>@{openCommission.artistId}</Typography>
                 </Box>
+                <IconButton>
+                    <Edit/>
+                </IconButton>
+                <IconButton>
+                    <Delete/>
+                </IconButton>
                 <IconButton
                     className={`${expanded ? classes.expandOpen : classes.expand}`}
                     onClick={() => setExpanded(!expanded)}
