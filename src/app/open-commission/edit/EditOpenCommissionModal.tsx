@@ -89,7 +89,6 @@ export default function EditOpenCommissionModal({openCommission, ...props}: Prop
             return {path, remove: false}
         })
     )
-
     const [sampleImages, setSampleImages] = useState<File[]>([]);
     const openCommUseCase = useInjection<OpenCommissionUseCase>(TYPES.OpenCommissionUseCase)
     const dispatch = useAppDispatch()
@@ -110,6 +109,11 @@ export default function EditOpenCommissionModal({openCommission, ...props}: Prop
         }
     });
 
+    const totalImages = useCallback(() => {
+        const totalKeepRemoteSampleImage = editedRemoteSampleImages.filter(img => !img.remove).length
+        return totalKeepRemoteSampleImage + sampleImages.length
+    }, [editedRemoteSampleImages, sampleImages.length])
+
     const filesCallback = useCallback(
         (files: File[]) => {
             const addFiles = files.filter((file, index) => {
@@ -127,6 +131,9 @@ export default function EditOpenCommissionModal({openCommission, ...props}: Prop
 
     const onClickDeleteRemoteImage = useCallback(
         (index: number) => {
+            if (totalImages() >= 3 && editedRemoteSampleImages[index].remove) {
+                return
+            }
             let images = [...editedRemoteSampleImages]
             images[index].remove = !images[index].remove
             setEditedRemoteSampleImages(images)
@@ -432,7 +439,7 @@ export default function EditOpenCommissionModal({openCommission, ...props}: Prop
                                         })
                                     }
                                 </Box>
-                                {sampleImages.length < 3 && <AppDropzone onDrop={filesCallback}/>}
+                                {totalImages() < 3 && <AppDropzone onDrop={filesCallback}/>}
                             </FormControl>
                         </Grid>
                         <Grid item xs={12}>
