@@ -5,7 +5,7 @@ import NewOpenCommissionModal from "./new/NewOpenCommissionModal";
 import React, {useCallback, useEffect, useState} from "react";
 import {useAppDispatch, useAppSelector} from "../hooks";
 import {useParams} from "react-router-dom";
-import {getOpenCommissions} from "./usecase/openCommissionSlice";
+import {deleteOpenCommission, getOpenCommissions} from "./usecase/openCommissionSlice";
 import {OpenCommission} from "../../domain/open-commission/model/open-commission";
 import EditOpenCommissionModal from "./edit/EditOpenCommissionModal";
 import AppDialog from "../component/AppDialog";
@@ -65,8 +65,11 @@ export default function OpenCommissions(props: Props) {
     }, [])
 
     const onConfirmDeleteOpenComm = useCallback(() => {
-        const id = deletingComm?.id
-    }, [deletingComm?.id])
+        if (!deletingComm) {
+            return
+        }
+        dispatch(deleteOpenCommission({openCommId: deletingComm.id}))
+    }, [deletingComm, dispatch])
 
     return (
         <Box>
