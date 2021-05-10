@@ -138,7 +138,7 @@ export default function EditOpenCommissionModal({openCommission, ...props}: Prop
             images[index].remove = !images[index].remove
             setEditedRemoteSampleImages(images)
         }
-        , [editedRemoteSampleImages])
+        , [editedRemoteSampleImages, totalImages])
 
     const onClickDeleteImage = useCallback(
         (index) => {
