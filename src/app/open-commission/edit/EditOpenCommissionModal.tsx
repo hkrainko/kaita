@@ -28,12 +28,13 @@ import {TYPES} from "../../../types";
 import {useAppDispatch} from "../../hooks";
 import {Controller, useForm} from "react-hook-form";
 import {Currency} from "../../../domain/price/price";
-import {OpenCommissionCreator} from "../../../domain/open-commission/model/open-commission-creator";
-import {addOpenCommission} from "../usecase/openCommissionSlice";
+import {updateOpenCommission} from "../usecase/openCommissionSlice";
 import getUploadImages from "../../utils/getUploadImages";
 import AppRemovableImage from "../../component/AppRemovableImage";
 import AppDropzone from "../../component/AppDropzone";
 import {OpenCommission} from "../../../domain/open-commission/model/open-commission";
+import AppRemoteImage from "../../component/AppRemoteImage";
+import {OpenCommissionUpdater} from "../../../domain/open-commission/model/open-commission-updater";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -71,13 +72,24 @@ type Inputs = {
     allowAnonymous: boolean
 }
 
-interface Props extends StandardProps<any, any>{
+interface Props extends StandardProps<any, any> {
     openCommission: OpenCommission
+}
+
+interface SampleImagePath {
+    path: string
+    remove: boolean
 }
 
 export default function EditOpenCommissionModal({openCommission, ...props}: Props) {
     const classes = useStyles();
-    const [remoteSampleImagePaths, setRemoteSampleImagePaths] = useState<string[]>(openCommission.sampleImagePaths);
+    const [editedRemoteSampleImages, setEditedRemoteSampleImages]
+        = useState<SampleImagePath[]>(
+        openCommission.sampleImagePaths.map<SampleImagePath>(path => {
+            return {path, remove: false}
+        })
+    )
+
     const [sampleImages, setSampleImages] = useState<File[]>([]);
     const openCommUseCase = useInjection<OpenCommissionUseCase>(TYPES.OpenCommissionUseCase)
     const dispatch = useAppDispatch()
@@ -113,6 +125,14 @@ export default function EditOpenCommissionModal({openCommission, ...props}: Prop
             setSampleImages([...sampleImages, ...addFiles])
         }, [sampleImages]);
 
+    const onClickDeleteRemoteImage = useCallback(
+        (index: number) => {
+            let images = [...editedRemoteSampleImages]
+            images[index].remove = !images[index].remove
+            setEditedRemoteSampleImages(images)
+        }
+        , [editedRemoteSampleImages])
+
     const onClickDeleteImage = useCallback(
         (index) => {
             setSampleImages(prevState => prevState.filter((_, i: number) => i !== index))
@@ -128,27 +148,29 @@ export default function EditOpenCommissionModal({openCommission, ...props}: Prop
                 if (files.length <= 0) {
                     return
                 }
-                let creator: OpenCommissionCreator = {
-                    allowAnonymous: data.allowAnonymous,
-                    allowBePrivate: data.allowBePrivate,
-                    dayNeed: {
-                        from: data.dayNeedFrom,
-                        to: data.dayNeedTo
-                    },
-                    depositRule: data.depositRule,
-                    desc: data.desc,
-                    isR18: data.isR18,
-                    price: {
-                        amount: data.priceAmount,
-                        currency: data.priceCurrency
-                    },
-                    sampleImages: files,
-                    timesAllowedCompletionToChange: data.timesAllowedCompletionToChange,
-                    timesAllowedDraftToChange: data.timesAllowedDraftToChange,
-                    title: data.title
-                };
+                let updater: OpenCommissionUpdater = {
+                    openCommId: openCommission.id,
+                    addSampleImages: sampleImages,
+                    allowAnonymous: data.allowAnonymous !== openCommission.allowAnonymous ? data.allowAnonymous : undefined,
+                    allowBePrivate: data.allowBePrivate !== openCommission.allowBePrivate ? data.allowBePrivate : undefined,
+                    dayNeed: (data.dayNeedFrom !== openCommission.dayNeed?.from
+                        || data.dayNeedTo !== openCommission.dayNeed?.to)
+                        ? {from: data.dayNeedFrom, to: data.dayNeedTo} : undefined,
+                    depositRule: data.depositRule !== openCommission.depositRule ? data.depositRule : undefined,
+                    desc: data.desc !== openCommission.desc ? data.desc : undefined,
+                    isR18: data.isR18 !== openCommission.isR18 ? data.isR18 : undefined,
+                    price: (data.priceAmount !== openCommission.price?.amount
+                        || data.priceCurrency !== openCommission.price?.currency)
+                        ? {amount: data.priceAmount, currency: data.priceCurrency} : undefined,
+                    editedSampleImagePaths: editedRemoteSampleImages.map(img => img.path),
+                    timesAllowedCompletionToChange: data.timesAllowedCompletionToChange !== openCommission.timesAllowedCompletionToChange
+                        ? data.timesAllowedCompletionToChange : undefined,
+                    timesAllowedDraftToChange: data.timesAllowedDraftToChange !== openCommission.timesAllowedDraftToChange
+                        ? data.timesAllowedDraftToChange : undefined,
+                    title: data.title !== openCommission.title ? data.title : undefined
+                }
 
-                dispatch(addOpenCommission({creator}))
+                dispatch(updateOpenCommission({updater}))
             }).catch(err => {
                 console.log(`parse file error`)
             })
@@ -387,11 +409,24 @@ export default function EditOpenCommissionModal({openCommission, ...props}: Prop
                                 <FormLabel component="legend">參考圖片</FormLabel>
                                 <Box display="inline-flex" alignItems="flex-end">
                                     {
+                                        editedRemoteSampleImages.map((image, index) => {
+                                            return <AppRemoteImage
+                                                key={index}
+                                                className={classes.regImg}
+                                                toBeRemoved={image.remove}
+                                                src={`http://192.168.64.12:31398/${image.path}`}
+                                                onClickDelete={() => onClickDeleteRemoteImage(index)}
+                                            />
+                                        })
+                                    }
+                                </Box>
+                                <Box display="inline-flex" alignItems="flex-end">
+                                    {
                                         sampleImages.map((image, index) => {
                                             return <AppRemovableImage
                                                 key={index}
                                                 className={classes.regImg}
-                                                file={image}
+                                                src={image}
                                                 onClickDelete={() => onClickDeleteImage(index)}
                                             />
                                         })

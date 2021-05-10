@@ -386,7 +386,7 @@ export default function NewOpenCommissionModal(props: Props) {
                                             return <AppRemovableImage
                                                 key={index}
                                                 className={classes.regImg}
-                                                file={image}
+                                                src={image}
                                                 onClickDelete={() => onClickDeleteImage(index)}
                                             />
                                         })

@@ -1,6 +1,7 @@
 import React, {ReactNode, useEffect, useState} from "react";
 import {Box, createStyles, IconButton, makeStyles, StandardProps, Theme} from "@material-ui/core";
 import CancelIcon from "@material-ui/icons/Cancel";
+import {CloudOff, CloudQueue} from "@material-ui/icons";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -17,13 +18,14 @@ const useStyles = makeStyles((theme: Theme) =>
     })
 );
 
-export interface AppImageCropProps extends StandardProps<any, any> {
-    src: File | string,
+export interface Props extends StandardProps<any, any> {
+    src: File | string
+    toBeRemoved: boolean
     onClickDelete: () => void
     key: number
 }
 
-export default function AppRemovableImage({className, src, onClickDelete, number}: AppImageCropProps) {
+export default function AppRemoteImage({className, src, toBeRemoved, onClickDelete, number}: Props) {
     const props = {backgroundColor: 'black', color: 'white', width: '10px'};
     const classes = useStyles(props);
 
@@ -46,7 +48,7 @@ export default function AppRemovableImage({className, src, onClickDelete, number
             <div className={classes.div}>
                 <img src={fileSrc} alt="" width="100%"/>
                 <IconButton aria-label="delete" className={classes.iconButton} onClick={onClickDelete}>
-                    <CancelIcon/>
+                    {toBeRemoved ? <CloudOff/> : <CloudQueue/>}
                 </IconButton>
             </div>
         </Box>

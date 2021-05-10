@@ -10,8 +10,8 @@ export interface OpenCommissionUpdater {
   dayNeed?: DayNeed; // from, to
   timesAllowedDraftToChange?: number;
   timesAllowedCompletionToChange?: number;
-  removeSampleImage?: number[];
-  addSampleImage?: File[];
+  editedSampleImagePaths?: string[];
+  addSampleImages?: File[];
   isR18?: boolean;
   allowBePrivate?: boolean;
   allowAnonymous?: boolean;
