@@ -8,6 +8,13 @@ const useStyles = makeStyles((theme: Theme) =>
         div: {
             position: 'relative'
         },
+        img: {
+            width: '100%'
+        },
+        dimmedImg: {
+            filter: 'brightness(50%)',
+            width: '100%'
+        },
         iconButton: {
             margin: theme.spacing(1),
             position: 'absolute',
@@ -46,7 +53,7 @@ export default function AppRemoteImage({className, src, toBeRemoved, onClickDele
     return (
         <Box className={className}>
             <div className={classes.div}>
-                <img src={fileSrc} alt="" width="100%"/>
+                <img src={fileSrc} alt="" className={toBeRemoved ? classes.dimmedImg : classes.img}/>
                 <IconButton aria-label="delete" className={classes.iconButton} onClick={onClickDelete}>
                     {toBeRemoved ? <CloudOff/> : <CloudQueue/>}
                 </IconButton>
