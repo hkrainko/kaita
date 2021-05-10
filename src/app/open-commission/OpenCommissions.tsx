@@ -92,7 +92,10 @@ export default function OpenCommissions(props: Props) {
                         startIcon={<Add/>}>新增</Button>
             </Box>
             <NewOpenCommissionModal open={showNewComm} onClose={() => setShowNewComm(false)}/>
-            <EditOpenCommissionModal open={editingComm} onClose={() => setEditingComm(null)}/>
+            {
+                editingComm
+                && <EditOpenCommissionModal openCommission={editingComm} open={true} onClose={() => setEditingComm(null)}/>
+            }
             <AppDialog
                 open={deletingComm != null}
                 onClose={() => setDeletingComm(null)}

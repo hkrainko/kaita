@@ -1,11 +1,24 @@
 import {
-    Box, Button, Checkbox,
-    createStyles, Dialog, DialogActions,
+    Box,
+    Button,
+    Checkbox,
+    createStyles,
+    Dialog,
+    DialogActions,
     DialogContent,
     DialogContentText,
-    DialogTitle, FormControl, FormControlLabel, FormHelperText, FormLabel, Grid, InputLabel,
-    makeStyles, MenuItem, Select,
-    StandardProps, TextField,
+    DialogTitle,
+    FormControl,
+    FormControlLabel,
+    FormHelperText,
+    FormLabel,
+    Grid,
+    InputLabel,
+    makeStyles,
+    MenuItem,
+    Select,
+    StandardProps,
+    TextField,
     Theme
 } from "@material-ui/core";
 import React, {useCallback, useState} from "react";
@@ -20,6 +33,7 @@ import {addOpenCommission} from "../usecase/openCommissionSlice";
 import getUploadImages from "../../utils/getUploadImages";
 import AppRemovableImage from "../../component/AppRemovableImage";
 import AppDropzone from "../../component/AppDropzone";
+import {OpenCommission} from "../../../domain/open-commission/model/open-commission";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -58,20 +72,36 @@ type Inputs = {
 }
 
 interface Props extends StandardProps<any, any>{
-
+    openCommission: OpenCommission
 }
 
-export default function EditOpenCommissionModal({...props}: Props) {
+export default function EditOpenCommissionModal({openCommission, ...props}: Props) {
     const classes = useStyles();
-    const [regImages, setRegImages] = useState<File[]>([]);
+    const [remoteSampleImagePaths, setRemoteSampleImagePaths] = useState<string[]>(openCommission.sampleImagePaths);
+    const [sampleImages, setSampleImages] = useState<File[]>([]);
     const openCommUseCase = useInjection<OpenCommissionUseCase>(TYPES.OpenCommissionUseCase)
     const dispatch = useAppDispatch()
-    const {handleSubmit, control, formState: {errors}} = useForm<Inputs>();
+    const {handleSubmit, control, formState: {errors}} = useForm<Inputs>({
+        defaultValues: {
+            title: openCommission.title,
+            desc: openCommission.desc,
+            depositRule: openCommission.depositRule,
+            priceAmount: openCommission.price?.amount,
+            priceCurrency: openCommission.price?.currency,
+            dayNeedFrom: openCommission.dayNeed?.from,
+            dayNeedTo: openCommission.dayNeed?.to,
+            timesAllowedDraftToChange: openCommission.timesAllowedDraftToChange,
+            timesAllowedCompletionToChange: openCommission.timesAllowedCompletionToChange,
+            isR18: openCommission.isR18,
+            allowBePrivate: openCommission.allowBePrivate,
+            allowAnonymous: openCommission.allowAnonymous,
+        }
+    });
 
     const filesCallback = useCallback(
         (files: File[]) => {
             const addFiles = files.filter((file, index) => {
-                return index + regImages.length < 3
+                return index + sampleImages.length < 3
             })
             if (addFiles.length <= 0) {
                 return
@@ -80,12 +110,12 @@ export default function EditOpenCommissionModal({...props}: Props) {
 
             })
 
-            setRegImages([...regImages, ...addFiles])
-        }, [regImages]);
+            setSampleImages([...sampleImages, ...addFiles])
+        }, [sampleImages]);
 
     const onClickDeleteImage = useCallback(
         (index) => {
-            setRegImages(prevState => prevState.filter((_, i: number) => i !== index))
+            setSampleImages(prevState => prevState.filter((_, i: number) => i !== index))
         }
         , [])
 
@@ -93,7 +123,7 @@ export default function EditOpenCommissionModal({...props}: Props) {
         (data: Inputs) => {
             console.log(JSON.stringify(data))
 
-            getUploadImages(regImages).then(files => {
+            getUploadImages(sampleImages).then(files => {
                 console.log(`getUploadImages`)
                 if (files.length <= 0) {
                     return
@@ -123,7 +153,7 @@ export default function EditOpenCommissionModal({...props}: Props) {
                 console.log(`parse file error`)
             })
 
-        }, [dispatch, regImages])
+        }, [dispatch, sampleImages])
 
     return (
         <Dialog
@@ -134,11 +164,11 @@ export default function EditOpenCommissionModal({...props}: Props) {
             aria-labelledby="draggable-dialog-title"
         >
             <DialogTitle style={{cursor: 'move'}} id="draggable-dialog-title">
-                新增開放委托
+                編輯開放委托
             </DialogTitle>
             <DialogContent>
                 <DialogContentText>
-                    在繪師個人專頁上新增
+                    {openCommission.id}
                 </DialogContentText>
                 <form className={classes.form} onSubmit={handleSubmit(onSubmit)}>
                     <Grid container spacing={2}>
@@ -357,7 +387,7 @@ export default function EditOpenCommissionModal({...props}: Props) {
                                 <FormLabel component="legend">參考圖片</FormLabel>
                                 <Box display="inline-flex" alignItems="flex-end">
                                     {
-                                        regImages.map((image, index) => {
+                                        sampleImages.map((image, index) => {
                                             return <AppRemovableImage
                                                 key={index}
                                                 className={classes.regImg}
@@ -367,7 +397,7 @@ export default function EditOpenCommissionModal({...props}: Props) {
                                         })
                                     }
                                 </Box>
-                                {regImages.length < 3 && <AppDropzone onDrop={filesCallback}/>}
+                                {sampleImages.length < 3 && <AppDropzone onDrop={filesCallback}/>}
                             </FormControl>
                         </Grid>
                         <Grid item xs={12}>
