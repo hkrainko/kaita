@@ -31,8 +31,8 @@ import AppDropzone from "../../component/AppDropzone";
 import AppRemovableImage from "../../component/AppRemovableImage";
 import {addOpenCommission} from "../usecase/openCommissionSlice";
 import {OpenCommissionCreator} from "../../../domain/open-commission/model/open-commission-creator";
-import imageCompression from "browser-image-compression";
 import getUploadImages from "../../utils/getUploadImages";
+import {DragDropContext, Draggable, Droppable, DropResult} from "react-beautiful-dnd";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -50,6 +50,9 @@ const useStyles = makeStyles((theme: Theme) =>
         regImg: {
             maxWidth: '200px',
             flex: '1 1 100px'
+        },
+        droppableBox: {
+            display: 'flex'
         },
         paper: {
             position: 'absolute',
@@ -113,6 +116,22 @@ export default function NewOpenCommissionModal(props: Props) {
             setRegImages(prevState => prevState.filter((_, i: number) => i !== index))
         }
         , [])
+
+    const onDragEnd = useCallback((result: DropResult) => {
+        const {destination, source, draggableId} = result
+        if (!destination) {
+            // Drop outside the zone
+            return
+        }
+        if (destination.droppableId === source.droppableId && destination.index === source.index) {
+            // Drop to same poistion
+            return
+        }
+        const rImgs = [...regImages]
+        const removedImg = rImgs.splice(source.index, 1)
+        rImgs.splice(destination.index, 0, removedImg[0])
+        setRegImages(rImgs)
+    }, [regImages])
 
     const onSubmit = useCallback(
         (data: Inputs) => {
@@ -380,18 +399,34 @@ export default function NewOpenCommissionModal(props: Props) {
                         <Grid item xs={12}>
                             <FormControl>
                                 <FormLabel component="legend">參考圖片</FormLabel>
-                                <Box display="inline-flex" alignItems="flex-end">
-                                    {
-                                        regImages.map((image, index) => {
-                                            return <AppRemovableImage
-                                                key={index}
-                                                className={classes.regImg}
-                                                src={image}
-                                                onClickDelete={() => onClickDeleteImage(index)}
-                                            />
-                                        })
-                                    }
-                                </Box>
+                                <DragDropContext onDragEnd={onDragEnd}>
+                                    <Droppable droppableId="droppable" direction="horizontal">
+                                        {(provided, snapshot) => (
+                                            <div ref={provided.innerRef} {...provided.droppableProps}
+                                                 className={classes.droppableBox}>
+                                                {regImages.map((image, index) => (
+                                                    <Draggable key={index.toString()} draggableId={index.toString()}
+                                                               index={index}>
+                                                        {(provided, snapshot) => (
+                                                            <div
+                                                                ref={provided.innerRef}
+                                                                {...provided.draggableProps}
+                                                                {...provided.dragHandleProps}
+                                                            >
+                                                                <AppRemovableImage
+                                                                    key={index}
+                                                                    className={classes.regImg}
+                                                                    src={image}
+                                                                    onClickDelete={() => onClickDeleteImage(index)}
+                                                                />
+                                                            </div>
+                                                        )}
+                                                    </Draggable>
+                                                ))}
+                                            </div>
+                                        )}
+                                    </Droppable>
+                                </DragDropContext>
                                 {regImages.length < 3 && <AppDropzone onDrop={filesCallback}/>}
                             </FormControl>
                         </Grid>
