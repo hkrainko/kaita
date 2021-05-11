@@ -52,7 +52,8 @@ const useStyles = makeStyles((theme: Theme) =>
             flex: '1 1 100px'
         },
         droppableBox: {
-            display: 'flex'
+            display: 'flex',
+            alignItems: 'flex-end'
         },
         paper: {
             position: 'absolute',

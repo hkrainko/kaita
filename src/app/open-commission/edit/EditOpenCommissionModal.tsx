@@ -35,6 +35,7 @@ import AppDropzone from "../../component/AppDropzone";
 import {OpenCommission} from "../../../domain/open-commission/model/open-commission";
 import AppRemoteImage from "../../component/AppRemoteImage";
 import {OpenCommissionUpdater} from "../../../domain/open-commission/model/open-commission-updater";
+import {DragDropContext, DropResult} from "react-beautiful-dnd";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -52,7 +53,11 @@ const useStyles = makeStyles((theme: Theme) =>
         regImg: {
             maxWidth: '200px',
             flex: '1 1 100px'
-        }
+        },
+        droppableBox: {
+            display: 'flex',
+            alignItems: 'flex-end'
+        },
     }),
 );
 
@@ -145,6 +150,29 @@ export default function EditOpenCommissionModal({openCommission, ...props}: Prop
             setSampleImages(prevState => prevState.filter((_, i: number) => i !== index))
         }
         , [])
+
+    const onDragEnd = useCallback((result: DropResult) => {
+        const {destination, source, draggableId} = result
+        if (!destination) {
+            // Drop outside the zone
+            return
+        }
+        if (destination.droppableId === source.droppableId && destination.index === source.index) {
+            // Drop to same poistion
+            return
+        }
+        if (draggableId === "remote") {
+            const imgs = [...editedRemoteSampleImages]
+            const removedImg = imgs.splice(source.index, 1)
+            imgs.splice(destination.index, 0, removedImg[0])
+            setEditedRemoteSampleImages(imgs)
+        } else if (draggableId === "new") {
+            const imgs = [...sampleImages]
+            const removedImg = imgs.splice(source.index, 1)
+            imgs.splice(destination.index, 0, removedImg[0])
+            setSampleImages(imgs)
+        }
+    }, [editedRemoteSampleImages, sampleImages])
 
     const onSubmit = useCallback(
         (data: Inputs) => {
@@ -414,6 +442,10 @@ export default function EditOpenCommissionModal({openCommission, ...props}: Prop
                         <Grid item xs={12}>
                             <FormControl>
                                 <FormLabel component="legend">參考圖片</FormLabel>
+                                <DragDropContext onDragEnd={onDragEnd}>
+
+                                </DragDropContext>
+
                                 <Box display="inline-flex" alignItems="flex-end">
                                     {
                                         editedRemoteSampleImages.map((image, index) => {
