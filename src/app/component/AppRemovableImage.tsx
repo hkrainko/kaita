@@ -24,8 +24,7 @@ export interface AppImageCropProps extends StandardProps<any, any> {
 }
 
 export default function AppRemovableImage({className, src, onClickDelete, number}: AppImageCropProps) {
-    const props = {backgroundColor: 'black', color: 'white', width: '10px'};
-    const classes = useStyles(props);
+    const classes = useStyles();
 
     const [fileSrc, setFileSrc] = useState<string | undefined>(undefined)
 

@@ -33,8 +33,7 @@ export interface Props extends StandardProps<any, any> {
 }
 
 export default function AppRemoteImage({className, src, toBeRemoved, onClickDelete, number}: Props) {
-    const props = {backgroundColor: 'black', color: 'white', width: '10px'};
-    const classes = useStyles(props);
+    const classes = useStyles();
 
     const [fileSrc, setFileSrc] = useState<string | undefined>(undefined)
 
