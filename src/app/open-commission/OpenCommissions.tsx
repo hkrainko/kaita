@@ -9,6 +9,7 @@ import {deleteOpenCommission, getOpenCommissions} from "./usecase/openCommission
 import {OpenCommission} from "../../domain/open-commission/model/open-commission";
 import EditOpenCommissionModal from "./edit/EditOpenCommissionModal";
 import AppDialog from "../component/AppDialog";
+import NewCommissionModal from "../commission/new/NewCommissionModal";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -26,7 +27,8 @@ export default function OpenCommissions(props: Props) {
     const classes = useStyles(props.className)
 
     let {id} = useParams<{ id: string }>()
-    const [showNewComm, setShowNewComm] = useState(false)
+    const [showNewOpenComm, setShowNewOpenComm] = useState(false)
+    const [newComm, setNewComm] = useState<OpenCommission | null>(null)
     const [editingComm, setEditingComm] = useState<OpenCommission | null>(null)
     const [deletingComm, setDeletingComm] = useState<OpenCommission | null>(null)
     const getOpenCommissionsResult = useAppSelector((state) => {
@@ -56,6 +58,10 @@ export default function OpenCommissions(props: Props) {
         }))
     }, [dispatch, id])
 
+    const onNewComm = useCallback((openCommission: OpenCommission) => {
+        setNewComm(openCommission)
+    }, [])
+
     const onEdit = useCallback((openCommission: OpenCommission) => {
         setEditingComm(openCommission)
     }, [])
@@ -77,27 +83,30 @@ export default function OpenCommissions(props: Props) {
                 {
                     getOpenCommissionsResult && getOpenCommissionsResult.openCommissions.map((oc: OpenCommission) => (
                         <Grid item xs={6} md={4} key={oc.id}>
-                            <OpenCommissionCard openCommission={oc} onEdit={onEdit} onDelete={onDelete}/>
+                            <OpenCommissionCard openCommission={oc} onMainAction={onNewComm} onEdit={onEdit} onDelete={onDelete}/>
                         </Grid>
                     ))
                 }
             </Grid>
             <Box display="flex" justifyContent={"space-around"}>
-                <div/>
                 <IconButton color="default" aria-label="load more">
                     <MoreHoriz/>
                 </IconButton>
                 <Button variant="contained"
                         color="default"
                         size="small"
-                        onClick={() => setShowNewComm(true)}
+                        onClick={() => setShowNewOpenComm(true)}
                         className={classes.addButton}
                         startIcon={<Add/>}>新增</Button>
             </Box>
-            <NewOpenCommissionModal open={showNewComm} onClose={() => setShowNewComm(false)}/>
+            <NewOpenCommissionModal open={showNewOpenComm} onClose={() => setShowNewOpenComm(false)}/>
             {
                 editingComm
                 && <EditOpenCommissionModal openCommission={editingComm} open={true} onClose={() => setEditingComm(null)}/>
+            }
+            {
+                newComm
+                && <NewCommissionModal openComm={newComm} open={true} onClose={() => setNewComm(null)}/>
             }
             <AppDialog
                 open={deletingComm != null}

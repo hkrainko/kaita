@@ -32,6 +32,7 @@ import {
 } from "@material-ui/icons";
 import {OpenCommission} from "../../domain/open-commission/model/open-commission";
 import React, {useState} from "react";
+import openCommissionSlice from "./usecase/openCommissionSlice";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -75,18 +76,19 @@ const useStyles = makeStyles((theme: Theme) =>
 
 interface Props extends StandardProps<any, any> {
     openCommission: OpenCommission
+    onMainAction: (openCommission: OpenCommission) => void
     onEdit?: (openCommission: OpenCommission) => void
     onDelete?: (openCommission: OpenCommission) => void
 }
 
-export default function OpenCommissionCard({openCommission, onEdit, onDelete, ...props}: Props) {
+export default function OpenCommissionCard({openCommission, onMainAction, onEdit, onDelete, ...props}: Props) {
 
     const classes = useStyles(props.className)
     const [expanded, setExpanded] = useState(false)
 
     return (
         <Card>
-            <CardActionArea>
+            <CardActionArea onClick={() => onMainAction(openCommission)}>
                 <CardHeader
                     title={
                         <Box display={"flex"} justifyContent={"space-between"}>

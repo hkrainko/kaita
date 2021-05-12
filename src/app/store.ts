@@ -5,6 +5,7 @@ import artistReducer from './artist/usecase/artistSlice'
 import loadingReducer from './loading/usecase/loadingSlice'
 import errorReducer from './error/usecase/errorSlice'
 import openCommissionReducer from './open-commission/usecase/openCommissionSlice'
+import commissionReducer from './commission/usecase/commissionSlice'
 import {FLUSH, PAUSE, PERSIST, persistReducer, PURGE, REGISTER, REHYDRATE} from 'redux-persist'
 import storage from 'redux-persist/lib/storage'
 
@@ -13,6 +14,7 @@ const reducers = combineReducers(
         auth: authReducer,
         artist: artistReducer,
         openCommission: openCommissionReducer,
+        commission: commissionReducer,
         loading: loadingReducer,
         error: errorReducer
     })
