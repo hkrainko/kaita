@@ -1,6 +1,7 @@
 import {
+    Box,
     Button,
-    Checkbox,
+    Checkbox, Chip,
     createStyles,
     Dialog,
     DialogActions,
@@ -12,7 +13,7 @@ import {
     FormHelperText,
     FormLabel,
     Grid,
-    InputLabel,
+    InputLabel, ListItem, ListItemIcon, ListItemText,
     makeStyles,
     MenuItem,
     Select,
@@ -33,6 +34,12 @@ import {CommissionUseCase} from "../../../domain/commission/commission.usecase";
 import {TYPES} from "../../../types";
 import {OpenCommission} from "../../../domain/open-commission/model/open-commission";
 import {Currency} from "../../../domain/price/price";
+import {
+    AccountBalanceOutlined,
+    AccountBalanceWalletOutlined,
+    LocalAtmOutlined,
+    ScheduleOutlined
+} from "@material-ui/icons";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -40,12 +47,30 @@ const useStyles = makeStyles((theme: Theme) =>
             flexGrow: 1,
         },
         form: {},
+        listItem: {
+            padding: 0,
+        },
+        listItemIcon: {
+            minWidth: '40px'
+        },
+        ListItemTextPrimary: {
+            fontSize: '14px'
+        },
+        textField: {
+            marginTop: '10px'
+        },
         textArea: {
             height: '100%',
             minWidth: '99.0%',
             maxWidth: '99.0%',
             fontSize: theme.typography.body1.fontSize,
             font: theme.typography.fontFamily,
+        },
+        sampleImgDiv: {
+            maxWidth: '200px',
+        },
+        sampleImg: {
+            width: '100%',
         },
         regImg: {
             maxWidth: '200px',
@@ -164,14 +189,35 @@ export default function NewCommissionModal({openComm, open, onClose, ...Props}: 
                     <label>繪師</label>
                     <Typography>{openComm.artistId}</Typography>
                 </DialogContentText>
+                <DialogContentText>
+                    <label>範例</label>
+                    <Box display="flex" width="100%">
+                        {openComm.sampleImagePaths.map((path, index) => (
+                            <div className={classes.sampleImg}>
+                                <img key={index}
+                                     src={`http://192.168.64.12:31398/${path}`}
+                                     alt="範例" className={classes.sampleImg}/>
+                            </div>
+                        ))}
+                    </Box>
+                </DialogContentText>
 
                 <form className={classes.form} onSubmit={handleSubmit(onSubmit)}>
                     <Grid container spacing={2}>
                         <Grid item xs={12}>
+                            <ListItem className={classes.listItem}>
+                                <ListItemIcon className={classes.listItemIcon}>
+                                    <ScheduleOutlined/>
+                                </ListItemIcon>
+                                <ListItemText primaryTypographyProps={{className: classes.ListItemTextPrimary}} primary="需時"
+                                              secondary={`${openComm.dayNeed?.from} ~ ${openComm.dayNeed?.to} 日`}/>
+                            </ListItem>
+                        </Grid>
+                        <Grid item xs={12}>
                             <Controller
                                 name="dayNeed"
                                 control={control}
-                                defaultValue={""}
+                                defaultValue={openComm.dayNeed?.from}
                                 rules={{required: true, validate: commUseCase.isDayNeedValid}}
                                 render={({field: {onChange, value}, fieldState: {error}}) =>
                                     <TextField
@@ -189,11 +235,20 @@ export default function NewCommissionModal({openComm, open, onClose, ...Props}: 
                                 }
                             />
                         </Grid>
+                        <Grid item xs={12}>
+                            <ListItem className={classes.listItem}>
+                                <ListItemIcon className={classes.listItemIcon}>
+                                    <LocalAtmOutlined/>
+                                </ListItemIcon>
+                                <ListItemText primaryTypographyProps={{className: classes.ListItemTextPrimary}} primary="最低金額"
+                                              secondary={`${openComm.price?.amount} ${openComm.price?.currency}`}/>
+                            </ListItem>
+                        </Grid>
                         <Grid item xs={6}>
                             <Controller
                                 name="budget"
                                 control={control}
-                                defaultValue={""}
+                                defaultValue={openComm.price?.amount}
                                 rules={{required: true, validate: commUseCase.isBudgetValid}}
                                 render={({field: {onChange, value}, fieldState: {error}}) =>
                                     <TextField
@@ -215,7 +270,7 @@ export default function NewCommissionModal({openComm, open, onClose, ...Props}: 
                             <Controller
                                 name="currency"
                                 control={control}
-                                defaultValue={""}
+                                defaultValue={openComm.price?.currency}
                                 rules={{required: true, validate: commUseCase.isCurrencyValid}}
                                 render={({field: {onChange, value}, fieldState: {error}}) =>
                                     <FormControl
@@ -241,7 +296,22 @@ export default function NewCommissionModal({openComm, open, onClose, ...Props}: 
                             />
                             <FormHelperText>會換算。</FormHelperText>
                         </Grid>
-                        <Grid item xs={6}>
+                        <Grid item xs={12}>
+                            <ListItem className={classes.listItem}>
+                                <ListItemIcon className={classes.listItemIcon}>
+                                    <AccountBalanceWalletOutlined/>
+                                </ListItemIcon>
+                                <ListItemText primaryTypographyProps={{className: classes.ListItemTextPrimary}} primary="收款方式"
+                                              secondary={
+                                                  <React.Fragment>
+                                                      <Chip size="small" label="Paypal" variant="outlined" />
+                                                      <Chip size="small" label="Paypal" variant="outlined" />
+                                                      <Chip size="small" label="Paypal" variant="outlined" />
+                                                  </React.Fragment>
+                                              }/>
+                            </ListItem>
+                        </Grid>
+                        <Grid item xs={12}>
                             <Controller
                                 name="paymentMethod"
                                 control={control}
@@ -258,7 +328,7 @@ export default function NewCommissionModal({openComm, open, onClose, ...Props}: 
                                             labelId="price-method-label"
                                             value={value}
                                             onChange={onChange}
-                                            label="貨幣"
+                                            label="付款方式"
                                         >
                                             <MenuItem value="">
                                                 <em>請選擇...</em>
