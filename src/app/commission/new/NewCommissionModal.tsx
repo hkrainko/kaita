@@ -7,20 +7,20 @@ import {
     DialogActions,
     DialogContent,
     DialogContentText,
-    DialogTitle,
+    DialogTitle, Divider,
     FormControl,
     FormControlLabel,
     FormHelperText,
     FormLabel,
     Grid,
-    InputLabel, ListItem, ListItemIcon, ListItemText,
+    InputLabel, List, ListItem, ListItemIcon, ListItemText,
     makeStyles,
     MenuItem,
     Select,
     StandardProps,
     TextField,
     Theme,
-    Typography
+    Typography, useMediaQuery, useTheme
 } from "@material-ui/core";
 import React, {useCallback, useState} from "react";
 import {Controller, useForm} from "react-hook-form";
@@ -36,9 +36,9 @@ import {OpenCommission} from "../../../domain/open-commission/model/open-commiss
 import {Currency} from "../../../domain/price/price";
 import {
     AccountBalanceOutlined,
-    AccountBalanceWalletOutlined,
-    LocalAtmOutlined,
-    ScheduleOutlined
+    AccountBalanceWalletOutlined, GavelOutlined,
+    LocalAtmOutlined, MmsOutlined, RateReviewOutlined,
+    ScheduleOutlined, SubjectOutlined
 } from "@material-ui/icons";
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -91,7 +91,9 @@ type Inputs = {
     sizeWidth: number,
     sizeHeight: number,
     sizeUnit: string,
-    exportFormat: number,
+    otherSizeUnit: string,
+    exportFormat: string,
+    otherExportFormat: string,
     resolution: number,
     desc: string,
     isR18: boolean,
@@ -108,10 +110,14 @@ interface Props extends StandardProps<any, any> {
 export default function NewCommissionModal({openComm, open, onClose, ...Props}: Props) {
     const classes = useStyles();
 
+    const theme = useTheme();
+    const isBreakpointXs = useMediaQuery(theme.breakpoints.only('xs'));
     const [regImages, setRegImages] = useState<File[]>([]);
     const commUseCase = useInjection<CommissionUseCase>(TYPES.CommissionUseCase)
     const dispatch = useAppDispatch()
-    const {handleSubmit, control, formState: {errors}} = useForm<Inputs>();
+    const {handleSubmit, control, watch, formState: {errors}} = useForm<Inputs>();
+    const watchSizeUnit = watch("sizeUnit")
+    const watchExportFormat = watch("exportFormat")
 
     const filesCallback = useCallback(
         (files: File[]) => {
@@ -164,7 +170,7 @@ export default function NewCommissionModal({openComm, open, onClose, ...Props}: 
                 console.log(`parse file error`)
             })
 
-        }, [dispatch, regImages])
+        }, [regImages])
 
     return (
         <Dialog
@@ -173,6 +179,7 @@ export default function NewCommissionModal({openComm, open, onClose, ...Props}: 
             open={open}
             onClose={onClose}
             aria-labelledby="draggable-dialog-title"
+            fullScreen={isBreakpointXs}
         >
             <DialogTitle style={{cursor: 'move'}} id="draggable-dialog-title">
                 提出委托
@@ -201,17 +208,66 @@ export default function NewCommissionModal({openComm, open, onClose, ...Props}: 
                         ))}
                     </Box>
                 </DialogContentText>
-
+                <List>
+                    <ListItem className={classes.listItem}>
+                        <ListItemIcon className={classes.listItemIcon}>
+                            <RateReviewOutlined/>
+                        </ListItemIcon>
+                        <ListItemText primary="草稿可修改次數"
+                                      secondary={`${openComm.timesAllowedDraftToChange} 次`}/>
+                    </ListItem>
+                    <ListItem className={classes.listItem}>
+                        <ListItemIcon className={classes.listItemIcon}>
+                            <MmsOutlined/>
+                        </ListItemIcon>
+                        <ListItemText primary="完成品可修改次數"
+                                      secondary={`${openComm.timesAllowedCompletionToChange} 次`}/>
+                    </ListItem>
+                    <ListItem className={classes.listItem}>
+                        <ListItemIcon className={classes.listItemIcon}>
+                            <GavelOutlined/>
+                        </ListItemIcon>
+                        <ListItemText primary="訂金規則" secondary={openComm.depositRule}/>
+                    </ListItem>
+                    <ListItem className={classes.listItem}>
+                        <ListItemIcon className={classes.listItemIcon}>
+                            <SubjectOutlined/>
+                        </ListItemIcon>
+                        <ListItemText primary="內容" secondary={openComm.desc}/>
+                    </ListItem>
+                    <ListItem className={classes.listItem}>
+                        <ListItemIcon className={classes.listItemIcon}>
+                            <ScheduleOutlined/>
+                        </ListItemIcon>
+                        <ListItemText primaryTypographyProps={{className: classes.ListItemTextPrimary}} primary="需時"
+                                      secondary={`${openComm.dayNeed?.from} ~ ${openComm.dayNeed?.to} 日`}/>
+                    </ListItem>
+                    <ListItem className={classes.listItem}>
+                        <ListItemIcon className={classes.listItemIcon}>
+                            <LocalAtmOutlined/>
+                        </ListItemIcon>
+                        <ListItemText primaryTypographyProps={{className: classes.ListItemTextPrimary}} primary="最低金額"
+                                      secondary={`${openComm.price?.amount} ${openComm.price?.currency}`}/>
+                    </ListItem>
+                    <ListItem className={classes.listItem}>
+                        <ListItemIcon className={classes.listItemIcon}>
+                            <AccountBalanceWalletOutlined/>
+                        </ListItemIcon>
+                        <ListItemText primaryTypographyProps={{className: classes.ListItemTextPrimary}} primary="收款方式"
+                                      secondary={
+                                          <React.Fragment>
+                                              <Chip size="small" label="Paypal" variant="outlined" />
+                                              <Chip size="small" label="Paypal" variant="outlined" />
+                                              <Chip size="small" label="Paypal" variant="outlined" />
+                                          </React.Fragment>
+                                      }/>
+                    </ListItem>
+                </List>
                 <form className={classes.form} onSubmit={handleSubmit(onSubmit)}>
                     <Grid container spacing={2}>
                         <Grid item xs={12}>
-                            <ListItem className={classes.listItem}>
-                                <ListItemIcon className={classes.listItemIcon}>
-                                    <ScheduleOutlined/>
-                                </ListItemIcon>
-                                <ListItemText primaryTypographyProps={{className: classes.ListItemTextPrimary}} primary="需時"
-                                              secondary={`${openComm.dayNeed?.from} ~ ${openComm.dayNeed?.to} 日`}/>
-                            </ListItem>
+                            <DialogContentText>需求</DialogContentText>
+                            <Divider/>
                         </Grid>
                         <Grid item xs={12}>
                             <Controller
@@ -234,15 +290,6 @@ export default function NewCommissionModal({openComm, open, onClose, ...Props}: 
                                     />
                                 }
                             />
-                        </Grid>
-                        <Grid item xs={12}>
-                            <ListItem className={classes.listItem}>
-                                <ListItemIcon className={classes.listItemIcon}>
-                                    <LocalAtmOutlined/>
-                                </ListItemIcon>
-                                <ListItemText primaryTypographyProps={{className: classes.ListItemTextPrimary}} primary="最低金額"
-                                              secondary={`${openComm.price?.amount} ${openComm.price?.currency}`}/>
-                            </ListItem>
                         </Grid>
                         <Grid item xs={6}>
                             <Controller
@@ -297,21 +344,6 @@ export default function NewCommissionModal({openComm, open, onClose, ...Props}: 
                             <FormHelperText>會換算。</FormHelperText>
                         </Grid>
                         <Grid item xs={12}>
-                            <ListItem className={classes.listItem}>
-                                <ListItemIcon className={classes.listItemIcon}>
-                                    <AccountBalanceWalletOutlined/>
-                                </ListItemIcon>
-                                <ListItemText primaryTypographyProps={{className: classes.ListItemTextPrimary}} primary="收款方式"
-                                              secondary={
-                                                  <React.Fragment>
-                                                      <Chip size="small" label="Paypal" variant="outlined" />
-                                                      <Chip size="small" label="Paypal" variant="outlined" />
-                                                      <Chip size="small" label="Paypal" variant="outlined" />
-                                                  </React.Fragment>
-                                              }/>
-                            </ListItem>
-                        </Grid>
-                        <Grid item xs={12}>
                             <Controller
                                 name="paymentMethod"
                                 control={control}
@@ -340,6 +372,68 @@ export default function NewCommissionModal({openComm, open, onClose, ...Props}: 
                                 }
                             />
                         </Grid>
+                        <Grid item xs={12}>
+                            <Controller
+                                name="desc"
+                                control={control}
+                                defaultValue={""}
+                                rules={{required: true, validate: commUseCase.isDescValid}}
+                                render={({field: {onChange, value}, fieldState: {error}}) =>
+                                    <TextField
+                                        type="text"
+                                        value={value}
+                                        onChange={onChange}
+                                        error={!!error}
+                                        variant="outlined"
+                                        fullWidth
+                                        label="詳細內容"
+                                        size="small"
+                                        rows={4}
+                                        rowsMax={12}
+                                        multiline={true}
+                                        helperText="150字以內。"
+                                    />
+                                }
+                            />
+                        </Grid>
+                        <Grid item xs={12}>
+                            <FormControl>
+                                <FormLabel component="legend">參考圖片</FormLabel>
+                                <DragDropContext onDragEnd={onDragEnd}>
+                                    <Droppable droppableId="droppable" direction="horizontal">
+                                        {(provided, snapshot) => (
+                                            <div ref={provided.innerRef} {...provided.droppableProps}
+                                                 className={classes.droppableBox}>
+                                                {regImages.map((image, index) => (
+                                                    <Draggable key={index.toString()} draggableId={index.toString()}
+                                                               index={index}>
+                                                        {(provided, snapshot) => (
+                                                            <div
+                                                                ref={provided.innerRef}
+                                                                {...provided.draggableProps}
+                                                                {...provided.dragHandleProps}
+                                                            >
+                                                                <AppRemovableImage
+                                                                    key={index}
+                                                                    className={classes.regImg}
+                                                                    src={image}
+                                                                    onClickDelete={() => onClickDeleteImage(index)}
+                                                                />
+                                                            </div>
+                                                        )}
+                                                    </Draggable>
+                                                ))}
+                                            </div>
+                                        )}
+                                    </Droppable>
+                                </DragDropContext>
+                                {regImages.length < 3 && <AppDropzone onDrop={filesCallback}/>}
+                            </FormControl>
+                        </Grid>
+                        <Grid item xs={12}>
+                            <DialogContentText>額外需求</DialogContentText>
+                            <Divider/>
+                        </Grid>
                         <Grid item xs={4}>
                             <Controller
                                 name="sizeWidth"
@@ -356,7 +450,6 @@ export default function NewCommissionModal({openComm, open, onClose, ...Props}: 
                                         fullWidth
                                         size="small"
                                         label="尺吋(闊)"
-                                        helperText="留空即由繪師決定"
                                     />
                                 }
                             />
@@ -407,12 +500,58 @@ export default function NewCommissionModal({openComm, open, onClose, ...Props}: 
                                             <MenuItem value={"cm"}>cm</MenuItem>
                                             <MenuItem value={"inch"}>inch</MenuItem>
                                             <MenuItem value={"px"}>px</MenuItem>
+                                            <MenuItem value={"other"}>其它</MenuItem>
                                         </Select>
                                     </FormControl>
                                 }
                             />
                         </Grid>
+                        {watchSizeUnit === "other" &&
                         <Grid item xs={12}>
+                            <Controller
+                                name="otherSizeUnit"
+                                control={control}
+                                defaultValue={""}
+                                rules={{required: true, validate: commUseCase.isSizeUnitValid}}
+                                render={({field: {onChange, value}, fieldState: {error}}) =>
+                                    <TextField
+                                        type="text"
+                                        value={value}
+                                        onChange={onChange}
+                                        error={!!error}
+                                        variant="outlined"
+                                        fullWidth
+                                        size="small"
+                                        label="其它單位"
+                                    />
+                                }
+                            />
+                        </Grid>
+                        }
+                        <Grid item xs={12}>
+                            <Controller
+                                name="resolution"
+                                control={control}
+                                defaultValue={""}
+                                rules={{
+                                    validate: commUseCase.isResolutionValid
+                                }}
+                                render={({field: {onChange, value}, fieldState: {error}}) =>
+                                    <TextField
+                                        type="number"
+                                        aria-valuemin={0}
+                                        value={value}
+                                        onChange={onChange}
+                                        error={!!error}
+                                        variant="outlined"
+                                        fullWidth
+                                        label="解析度(ppi)"
+                                        size="small"
+                                    />
+                                }
+                            />
+                        </Grid>
+                        <Grid item xs={watchExportFormat === "other" ? 6 : 12}>
                             <Controller
                                 name="exportFormat"
                                 control={control}
@@ -446,85 +585,32 @@ export default function NewCommissionModal({openComm, open, onClose, ...Props}: 
                                 }
                             />
                         </Grid>
-                        <Grid item xs={12}>
-                            <Controller
-                                name="resolution"
-                                control={control}
-                                defaultValue={""}
-                                rules={{
-                                    validate: commUseCase.isResolutionValid
-                                }}
-                                render={({field: {onChange, value}, fieldState: {error}}) =>
-                                    <TextField
-                                        type="number"
-                                        aria-valuemin={0}
-                                        value={value}
-                                        onChange={onChange}
-                                        error={!!error}
-                                        variant="outlined"
-                                        required
-                                        fullWidth
-                                        label="解析度(ppi)"
-                                        size="small"
-                                        helperText="留空即由繪師決定。"
-                                    />
-                                }
-                            />
-                        </Grid>
-                        <Grid item xs={12}>
-                            <Controller
-                                name="desc"
-                                control={control}
-                                defaultValue={""}
-                                rules={{required: true, validate: commUseCase.isDescValid}}
-                                render={({field: {onChange, value}, fieldState: {error}}) =>
-                                    <TextField
-                                        value={value}
-                                        onChange={onChange}
-                                        error={!!error}
-                                        variant="outlined"
-                                        fullWidth
-                                        label="詳細內容"
-                                        size="small"
-                                        helperText="150字以內。"
-                                    />
-                                }
-                            />
-                        </Grid>
-                        <Grid item xs={12}>
-                            <FormControl>
-                                <FormLabel component="legend">參考圖片</FormLabel>
-                                <DragDropContext onDragEnd={onDragEnd}>
-                                    <Droppable droppableId="droppable" direction="horizontal">
-                                        {(provided, snapshot) => (
-                                            <div ref={provided.innerRef} {...provided.droppableProps}
-                                                 className={classes.droppableBox}>
-                                                {regImages.map((image, index) => (
-                                                    <Draggable key={index.toString()} draggableId={index.toString()}
-                                                               index={index}>
-                                                        {(provided, snapshot) => (
-                                                            <div
-                                                                ref={provided.innerRef}
-                                                                {...provided.draggableProps}
-                                                                {...provided.dragHandleProps}
-                                                            >
-                                                                <AppRemovableImage
-                                                                    key={index}
-                                                                    className={classes.regImg}
-                                                                    src={image}
-                                                                    onClickDelete={() => onClickDeleteImage(index)}
-                                                                />
-                                                            </div>
-                                                        )}
-                                                    </Draggable>
-                                                ))}
-                                            </div>
-                                        )}
-                                    </Droppable>
-                                </DragDropContext>
-                                {regImages.length < 3 && <AppDropzone onDrop={filesCallback}/>}
-                            </FormControl>
-                        </Grid>
+                        {
+                            watchExportFormat === "other" &&
+                            <Grid item xs={6}>
+                                <Controller
+                                    name="otherExportFormat"
+                                    control={control}
+                                    defaultValue={""}
+                                    rules={{
+                                        required: true,
+                                        validate: commUseCase.isExportFormatValid
+                                    }}
+                                    render={({field: {onChange, value}, fieldState: {error}}) =>
+                                        <TextField
+                                            type="text"
+                                            value={value}
+                                            onChange={onChange}
+                                            error={!!error}
+                                            variant="outlined"
+                                            fullWidth
+                                            label="其它輸出格式(請輸入)"
+                                            size="small"
+                                        />
+                                    }
+                                />
+                            </Grid>
+                        }
                         <Grid item xs={12}>
                             <Controller
                                 name="isR18"
