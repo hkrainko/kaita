@@ -3,7 +3,9 @@ const TYPES = {
     AuthRepo: Symbol.for("AuthRepo"),
     RegisterUseCase: Symbol.for("RegisterUseCase"),
     OpenCommissionUseCase: Symbol.for("OpenCommissionUseCase"),
-    CommissionUseCase: Symbol.for("CommissionUseCase")
+    OpenCommissionRepo: Symbol.for("OpenCommissionRepo"),
+    CommissionUseCase: Symbol.for("CommissionUseCase"),
+    CommissionRepo: Symbol.for("CommissionRepo")
 };
 
 export { TYPES };

@@ -40,6 +40,7 @@ import {
     LocalAtmOutlined, MmsOutlined, RateReviewOutlined,
     ScheduleOutlined, SubjectOutlined
 } from "@material-ui/icons";
+import {CommissionCreator} from "../../../domain/commission/model/commission-creator";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -162,9 +163,29 @@ export default function NewCommissionModal({openComm, open, onClose, ...Props}: 
 
             getUploadImages(regImages).then(files => {
                 console.log(`getUploadImages`)
-                if (files.length <= 0) {
-                    return
+                let creator: CommissionCreator = {
+                    anonymous: data.anonymous,
+                    artistId: openComm.artistId,
+                    bePrivate: data.bePrivate,
+                    dayNeed: data.dayNeed,
+                    desc: data.desc,
+                    exportFormat: data.exportFormat,
+                    isR18: data.isR18,
+                    openCommissionId: openComm.id,
+                    paymentMethod: data.paymentMethod,
+                    price: {
+                        amount: data.budget,
+                        currency: data.currency
+                    },
+                    refImages: regImages,
+                    resolution: data.resolution,
+                    size: {
+                        height: data.sizeHeight,
+                        unit: data.sizeUnit === 'other' ? data.otherSizeUnit : data.sizeUnit,
+                        width: data.sizeWidth
+                    }
                 }
+
 
             }).catch(err => {
                 console.log(`parse file error`)
@@ -256,9 +277,9 @@ export default function NewCommissionModal({openComm, open, onClose, ...Props}: 
                         <ListItemText primaryTypographyProps={{className: classes.ListItemTextPrimary}} primary="收款方式"
                                       secondary={
                                           <React.Fragment>
-                                              <Chip size="small" label="Paypal" variant="outlined" />
-                                              <Chip size="small" label="Paypal" variant="outlined" />
-                                              <Chip size="small" label="Paypal" variant="outlined" />
+                                              <Chip size="small" label="Paypal" variant="outlined"/>
+                                              <Chip size="small" label="Paypal" variant="outlined"/>
+                                              <Chip size="small" label="Paypal" variant="outlined"/>
                                           </React.Fragment>
                                       }/>
                     </ListItem>

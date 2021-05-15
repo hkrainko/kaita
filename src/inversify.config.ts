@@ -10,12 +10,18 @@ import {OpenCommissionUseCase} from "./domain/open-commission/open-commission.us
 import DefaultOpenCommissionUseCase from "./app/open-commission/usecase/defaultOpenCommissionUseCase";
 import {CommissionUseCase} from "./domain/commission/commission.usecase";
 import DefaultCommissionUseCase from "./app/commission/usecase/defaultCommissionUseCase";
+import {CommissionRepo} from "./domain/commission/commission.repo";
+import {HttpCommissionRepo} from "./app/commission/repo/http-commission/http.commission.repo";
+import {OpenCommissionRepo} from "./domain/open-commission/open-commission.repo";
+import {HttpOpenCommissionRepo} from "./app/open-commission/repo/http/http.open-commission.repo";
 
-const container = new Container();
-container.bind<AuthRepo>(TYPES.AuthRepo).to(HttpAuthRepo);
-container.bind<AuthUseCase>(TYPES.AuthUseCase).to(DefaultAuthUseCase);
-container.bind<RegisterUseCase>(TYPES.RegisterUseCase).to(DefaultRegisterUseCase);
-container.bind<OpenCommissionUseCase>(TYPES.OpenCommissionUseCase).to(DefaultOpenCommissionUseCase);
-container.bind<CommissionUseCase>(TYPES.CommissionUseCase).to(DefaultCommissionUseCase);
+const container = new Container()
+container.bind<AuthRepo>(TYPES.AuthRepo).to(HttpAuthRepo)
+container.bind<AuthUseCase>(TYPES.AuthUseCase).to(DefaultAuthUseCase)
+container.bind<RegisterUseCase>(TYPES.RegisterUseCase).to(DefaultRegisterUseCase)
+container.bind<OpenCommissionUseCase>(TYPES.OpenCommissionUseCase).to(DefaultOpenCommissionUseCase)
+container.bind<OpenCommissionRepo>(TYPES.OpenCommissionRepo).to(HttpOpenCommissionRepo)
+container.bind<CommissionUseCase>(TYPES.CommissionUseCase).to(DefaultCommissionUseCase)
+container.bind<CommissionRepo>(TYPES.CommissionRepo).to(HttpCommissionRepo)
 
 export {container};

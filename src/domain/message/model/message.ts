@@ -1,7 +1,7 @@
 export interface Message {
   id: string;
   commissionId: string;
-  createTime: Date;
+  createTime: string;
   state: MessageState;
   messageType: MessageType;
 }

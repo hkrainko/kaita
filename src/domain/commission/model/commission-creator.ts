@@ -4,7 +4,6 @@ import {Size} from '../../artwork/size';
 export interface CommissionCreator {
   openCommissionId: string;
   artistId: string;
-  requesterId: string;
   price: Price;
   dayNeed: number;
   size?: Size;

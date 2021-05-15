@@ -37,9 +37,9 @@ export interface Commission {
   rating?: number;
   comment?: string;
 
-  createTime: Date;
-  CompletedTime?: Date;
-  lastUpdateDate: Date;
+  createTime: string;
+  CompletedTime?: string;
+  lastUpdateDate: string;
   state: CommissionState;
 }
 

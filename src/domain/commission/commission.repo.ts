@@ -1,5 +1,4 @@
 import {Commission} from './model/commission';
-import {Observable, Subject} from 'rxjs';
 import {CommissionCreator} from './model/commission-creator';
 import {CommissionFilter} from './model/commission-filter';
 import {CommissionSorter} from './model/commission-sorter';
@@ -10,16 +9,23 @@ import {Message} from '../message/model/message';
 import {CommissionUpdater} from './model/commission-updater';
 
 
-export abstract class CommissionRepo {
-  abstract stmCommission$: Subject<Commission>;
-  abstract stmMessage$: Subject<Message>;
-  abstract submitCommission(token: string, commCreator: CommissionCreator): Observable<string>;
-  abstract getCommission(apiToken: string, commissionId: string): Observable<Commission>;
-  abstract getCommissions(apiToken: string, filter: CommissionFilter, sorter: CommissionSorter): Observable<CommissionsBatch>;
-  abstract getRequestList(artistId: string, count: number, offset: number): Observable<Commission[]>;
-  abstract updateCommission(apiToken: string, commId: string, updater: CommissionUpdater): Observable<string>;
-  abstract getMessages(apiToken: string, commId: string, offset: number, count: number): Observable<MessagesBatch>;
-  abstract sendMessage(apiToken: string, msgCreator: MessageCreator): Observable<Message>;
-  abstract startStm(apiToken: string): void;
-  abstract stopStm(): void;
+export interface CommissionRepo {
+
+    submitCommission(apiToken: string, requesterId: string, commCreator: CommissionCreator): Promise<string>;
+
+    getCommission(apiToken: string, commissionId: string): Promise<Commission>;
+
+    getCommissions(apiToken: string, filter: CommissionFilter, sorter: CommissionSorter): Promise<CommissionsBatch>;
+
+    getRequestList(artistId: string, count: number, offset: number): Promise<Commission[]>;
+
+    updateCommission(apiToken: string, commId: string, updater: CommissionUpdater): Promise<string>;
+
+    getMessages(apiToken: string, commId: string, offset: number, count: number): Promise<MessagesBatch>;
+
+    sendMessage(apiToken: string, msgCreator: MessageCreator): Promise<Message>;
+
+    startStm(apiToken: string): void;
+
+    stopStm(): void;
 }
