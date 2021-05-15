@@ -21,10 +21,6 @@ export const getArtist = createAsyncThunk<Artist,
     { state: RootState, extra: AppDependency }>(
     'artist/getArtist',
     async ({artistId}, thunkAPI) => {
-        const apiToken = thunkAPI.getState().auth.authUser?.apiToken
-        if (!apiToken) {
-            throw ArtistErrorUnknown
-        }
         const ad = thunkAPI.extra as AppDependency
         return await ad.artistRepo.getArtist(artistId)
     }

@@ -40,10 +40,6 @@ export const getOpenCommissions = createAsyncThunk<GetOpenCommissionsResult,
     { state: RootState, extra: AppDependency }>(
     'openCommission/getOpenCommissions',
     async ({filter}, thunkAPI) => {
-        const authUser = thunkAPI.getState().auth.authUser
-        if (!authUser) {
-            throw OpenCommissionErrorUnknown
-        }
         const ad = thunkAPI.extra as AppDependency
         return await ad.openCommRepo.getOpenCommissions(filter)
     }

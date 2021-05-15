@@ -41,6 +41,7 @@ import {
     ScheduleOutlined, SubjectOutlined
 } from "@material-ui/icons";
 import {CommissionCreator} from "../../../domain/commission/model/commission-creator";
+import {submitCommission} from "../usecase/commissionSlice";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -185,8 +186,7 @@ export default function NewCommissionModal({openComm, open, onClose, ...Props}: 
                         width: data.sizeWidth
                     }
                 }
-
-
+                dispatch(submitCommission({creator}))
             }).catch(err => {
                 console.log(`parse file error`)
             })

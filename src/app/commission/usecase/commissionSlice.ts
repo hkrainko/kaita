@@ -8,13 +8,47 @@ import {CommissionFilter} from "../../../domain/commission/model/commission-filt
 import {OpenCommissionErrorUnknown} from "../../../domain/open-commission/model/open-commission-error";
 import {CommissionSorter} from "../../../domain/commission/model/commission-sorter";
 import {CommissionsBatch} from "../../../domain/commission/model/commissions-batch";
+import {RequestState} from "../../../domain/common/request-state";
 
 export interface CommissionState {
     byId: { [id: string]: Commission }
+    received: {
+        ids: string[]
+        fetchCount?: number
+        offset?: number
+        total?: number
+        requestState: RequestState
+        requestId?: string
+    },
+    submitted: {
+        ids: string[]
+        fetchCount?: number
+        offset?: number
+        total?: number
+        requestState: RequestState
+        requestId?: string
+    }
+
 }
 
 const initialState: CommissionState = {
-    byId: {}
+    byId: {},
+    received: {
+        fetchCount: undefined,
+        ids: [],
+        offset: undefined,
+        requestId: undefined,
+        requestState: RequestState.Idle,
+        total: undefined
+    },
+    submitted: {
+        fetchCount: undefined,
+        ids: [],
+        offset: undefined,
+        requestId: undefined,
+        requestState: RequestState.Idle,
+        total: undefined
+    }
 }
 
 export const submitCommission = createAsyncThunk<string,
@@ -32,7 +66,7 @@ export const submitCommission = createAsyncThunk<string,
 )
 
 export const getCommissions = createAsyncThunk<CommissionsBatch,
-    {filter: CommissionFilter, sorter: CommissionSorter},
+    {type: 'submitted' | 'received', filter: CommissionFilter, sorter: CommissionSorter},
     {state: RootState, extra: AppDependency}>(
         'commission/getCommissions',
     async ({filter, sorter}, thunkAPI) => {
@@ -52,12 +86,46 @@ export const commissionSlice = createSlice({
     extraReducers: (builder => {
         builder
             .addCase(getCommissions.pending, (state, action) => {
-
+                const pendingData = {
+                    fetchCount: action.meta.arg.filter.count,
+                    ids: [],
+                    offset: action.meta.arg.filter.offset,
+                    requestId: action.meta.requestId,
+                    requestState: RequestState.Idle,
+                    total: undefined
+                }
+                if (action.meta.arg.type === 'submitted') {
+                    state.submitted = pendingData
+                } else {
+                    state.received = pendingData
+                }
             })
             .addCase(getCommissions.fulfilled, (state, action) => {
+                if ((action.meta.arg.type === 'submitted' && state.submitted.requestId !== action.meta.requestId)
+                    || (action.meta.arg.type === 'received' && state.received.requestId !== action.meta.requestId)) {
+                    action.payload.commissions.forEach(comm => {
+                        state.byId[comm.id] = comm
+                    })
+                    return
+                }
+                let ids: string[] = []
                 action.payload.commissions.forEach(comm => {
                     state.byId[comm.id] = comm
+                    ids.push(comm.id)
                 })
+                const newData = {
+                    fetchCount: action.payload.count,
+                    ids: ids,
+                    offset: action.payload.offSet,
+                    requestId: action.meta.requestId,
+                    requestState: RequestState.Succeed,
+                    total: action.payload.count
+                }
+                if (action.meta.arg.type === 'submitted') {
+                    state.submitted = newData
+                } else {
+                    state.received = newData
+                }
             })
     })
 })
