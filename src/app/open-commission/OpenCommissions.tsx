@@ -31,7 +31,7 @@ export default function OpenCommissions(props: Props) {
     const [newComm, setNewComm] = useState<OpenCommission | null>(null)
     const [editingComm, setEditingComm] = useState<OpenCommission | null>(null)
     const [deletingComm, setDeletingComm] = useState<OpenCommission | null>(null)
-    const getOpenCommissionsResult = useAppSelector((state) => {
+    const getOpenCommissionsResult = useAppSelector(state => {
         if (state.openCommission.forArtist.artistId === id) {
             const openCommissions = state.openCommission.forArtist.ids.map(id => {
                 return state.openCommission.byId[id]

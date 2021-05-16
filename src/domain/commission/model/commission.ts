@@ -39,7 +39,7 @@ export interface Commission {
 
   createTime: string;
   CompletedTime?: string;
-  lastUpdateDate: string;
+  lastUpdateTime: string;
   state: CommissionState;
 }
 

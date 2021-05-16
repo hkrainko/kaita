@@ -81,7 +81,10 @@ export default function Header() {
     const auth = useAppSelector((state) => state.auth)
 
     const onClickCommission = () => {
-
+        if (!auth.authUser) {
+            return
+        }
+        history.push(`/commissions?t=received`)
     }
 
     const onClickArtist = () => {
