@@ -16,10 +16,13 @@ import {
     Typography
 } from "@material-ui/core";
 import {useAppDispatch, useAppSelector} from "../hooks";
-import {ChangeEvent, useEffect, useState} from "react";
+import {ChangeEvent, useCallback, useEffect, useState} from "react";
 import {getCommissions} from "./usecase/commissionSlice";
-import {useLocation} from "react-router-dom";
+import {Link, useLocation} from "react-router-dom";
 import {Commission} from "../../domain/commission/model/commission";
+import {useInjection} from "../../iocReact";
+import {TYPES} from "../../types";
+import {CommissionUseCase} from "../../domain/commission/commission.usecase";
 
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -30,7 +33,7 @@ const useStyles = makeStyles((theme: Theme) =>
             height: 440,
         },
         paper: {
-            height: '100%'
+            height: '80vh',
         },
         container: {
             height: '100%'
@@ -63,25 +66,6 @@ const columns: Column[] = [
     {type: ColumnType.lastUpdateDate, label: '最後更新', minWidth: 170, align: 'right'},
 ];
 
-const getCellByColumnType = (type: ColumnType, commission: Commission): string => {
-    switch (type) {
-        case ColumnType.id:
-            return commission.id
-        case ColumnType.requester:
-            return `${commission.requesterName}@${commission.requesterId}`
-        case ColumnType.message:
-            return commission.messages ? commission.messages[commission.messages.length - 1].messageType : ''
-        case ColumnType.price:
-            return `${commission.price.amount} ${commission.price.currency}`
-        case ColumnType.dayNeed:
-            return commission.dayNeed.toString()
-        case ColumnType.lastUpdateDate:
-            return commission.lastUpdateTime
-        default:
-            return ''
-    }
-}
-
 interface Props extends StandardProps<any, any> {
 
 }
@@ -95,6 +79,7 @@ export default function Commissions(props: Props) {
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(10);
     const dispatch = useAppDispatch()
+    const commUseCase = useInjection<CommissionUseCase>(TYPES.CommissionUseCase)
     const getCommissionsResult = useAppSelector(state => {
         if (type === 'submitted') {
             const commissions = state.commission.submitted.ids.map(id => {
@@ -140,6 +125,24 @@ export default function Commissions(props: Props) {
         }))
     }, [dispatch, page, rowsPerPage, type])
 
+    const getCellByColumnType = useCallback((type: ColumnType, commission: Commission): string => {
+        switch (type) {
+            case ColumnType.id:
+                return commission.id
+            case ColumnType.requester:
+                return `${commission.requesterName}@${commission.requesterId}`
+            case ColumnType.message:
+                return commUseCase.getLastMessage(commission)
+            case ColumnType.price:
+                return `${commission.price.amount} ${commission.price.currency}`
+            case ColumnType.dayNeed:
+                return commission.dayNeed.toString()
+            case ColumnType.lastUpdateDate:
+                return commission.lastUpdateTime
+            default:
+                return ''
+        }
+    }, [commUseCase])
 
     return (
         <Container className={classes.root}>
@@ -169,11 +172,21 @@ export default function Commissions(props: Props) {
                                     return (
                                         <TableRow hover role="checkbox" tabIndex={-1} key={comm.id}>
                                             {columns.map((column) => {
-                                                return (
-                                                    <TableCell key={column.type} align={column.align}>
-                                                        {getCellByColumnType(column.type, comm)}
-                                                    </TableCell>
-                                                );
+                                                if (column.type === ColumnType.id) {
+                                                    return (
+                                                        <Link to={`commissions/${comm.id}`}>
+                                                            <TableCell key={column.type} align={column.align}>
+                                                                {getCellByColumnType(column.type, comm)}
+                                                            </TableCell>
+                                                        </Link>
+                                                    );
+                                                } else {
+                                                    return (
+                                                        <TableCell key={column.type} align={column.align}>
+                                                            {getCellByColumnType(column.type, comm)}
+                                                        </TableCell>
+                                                    );
+                                                }
                                             })}
                                         </TableRow>
                                     )

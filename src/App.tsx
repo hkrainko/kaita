@@ -13,6 +13,7 @@ import RegisterView from "./app/register/RegisterView";
 import RegisterForm from "./app/register/register-form/RegisterForm";
 import applyHttpInterceptors from "./app/error/httpInterceptors";
 import Commissions from "./app/commission/Commissions";
+import Commission from "./app/commission/Commission";
 
 
 function App() {
@@ -40,7 +41,8 @@ function App() {
                     <Route exact path="/register" component={RegisterView}/>
                     <Route path="/register/form" component={RegisterForm}/>
                     <Route path="/artists/:id" component={Artist}/>
-                    <Route path="/commissions" component={Commissions}/>
+                    <Route exact path="/commissions" component={Commissions}/>
+                    <Route path="/commissions/:id" component={Commission}/>
                     <Route exact path="/" component={Home}/>
                     <Route path="*" component={Home}/>
                 </Switch>

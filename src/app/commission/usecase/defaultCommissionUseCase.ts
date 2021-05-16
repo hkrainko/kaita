@@ -1,6 +1,7 @@
 import {injectable} from "inversify";
 import {CommissionUseCase} from "../../../domain/commission/commission.usecase";
 import {Commission, CommissionState} from "../../../domain/commission/model/commission";
+import {ImageMessage, MessageType, SystemMessage, TextMessage} from "../../../domain/message/model/message";
 
 
 @injectable()
@@ -59,6 +60,26 @@ export default class DefaultCommissionUseCase implements CommissionUseCase {
 
     isSizeWidthValid(value: number): boolean {
         return true;
+    }
+
+    getLastMessage(commission: Commission): string {
+        if (!commission.messages) {
+            return "(沒有訊息)";
+        }
+        if (commission.messages.length < 1) {
+            return "(沒有訊息)";
+        }
+        const lastMessage = commission.messages[commission.messages.length - 1];
+        switch (lastMessage.messageType) {
+            case MessageType.Text:
+                return (lastMessage as TextMessage).text;
+            case MessageType.Image:
+                return '圖片 ' + (lastMessage as ImageMessage).text;
+            case MessageType.System:
+                return (lastMessage as SystemMessage).text;
+            default:
+                return "(沒有訊息)";
+        }
     }
 
 }

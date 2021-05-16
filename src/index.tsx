@@ -10,15 +10,25 @@ import {InversifyProvider} from "./iocReact";
 import {container} from "./inversify.config";
 import {PersistGate} from "redux-persist/integration/react";
 import {persistStore} from "redux-persist";
+import {createMuiTheme, MuiThemeProvider} from "@material-ui/core";
+import {zhCN} from "@material-ui/core/locale";
 
 let persistor = persistStore(store);
+
+const theme = createMuiTheme({
+    palette: {
+        primary: { main: '#1976d2' },
+    },
+});
 
 ReactDOM.render(
   <React.StrictMode>
       <InversifyProvider container={container}>
           <Provider store={store}>
               <PersistGate loading={null} persistor={persistor}>
-                  <App />
+                  <MuiThemeProvider theme={theme}>
+                      <App />
+                  </MuiThemeProvider>
               </PersistGate>
           </Provider>
       </InversifyProvider>
