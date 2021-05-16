@@ -124,7 +124,7 @@ export const commissionSlice = createSlice({
                     offset: action.payload.offSet,
                     requestId: action.meta.requestId,
                     requestState: RequestState.Succeed,
-                    total: action.payload.count
+                    total: action.payload.total
                 }
                 if (action.meta.arg.type === 'submitted') {
                     state.submitted = newData

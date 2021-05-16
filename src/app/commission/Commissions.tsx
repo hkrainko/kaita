@@ -185,7 +185,7 @@ export default function Commissions(props: Props) {
                 <TablePagination
                     rowsPerPageOptions={[10, 25, 100]}
                     component="div"
-                    count={getCommissionsResult?.commissions.length ?? 0}
+                    count={getCommissionsResult?.total ?? 0}
                     rowsPerPage={rowsPerPage}
                     page={page}
                     onChangePage={handleChangePage}
