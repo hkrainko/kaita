@@ -1,7 +1,17 @@
-import {Breadcrumbs, Container, createStyles, List, makeStyles, Paper, StandardProps, Theme} from "@material-ui/core";
+import {
+    Breadcrumbs,
+    Container,
+    createStyles,
+    ListItem,
+    makeStyles,
+    Paper,
+    StandardProps,
+    Theme
+} from "@material-ui/core";
 import {Link, useLocation, useParams} from "react-router-dom";
 import {useAppDispatch, useAppSelector} from "../hooks";
 import CommissionMessage from "./message/CommissionMessage";
+import {FixedSizeList, ListChildComponentProps} from "react-window";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -19,6 +29,17 @@ const useStyles = makeStyles((theme: Theme) =>
         },
     }),
 );
+
+function renderRow(props: ListChildComponentProps) {
+    const { index, style } = props;
+
+    return (
+        <ListItem button style={style} key={index}>
+            <CommissionMessage direction={'receive'}/>
+        </ListItem>
+    );
+}
+
 
 interface Props extends StandardProps<any, any> {
 
@@ -41,10 +62,9 @@ export default function Commission({...props}: Props) {
                 <Link to={`/commissions/${id}`}>{id}</Link>
             </Breadcrumbs>
             <Paper className={classes.paper}>
-                <Fixed
-                <List>
-                    <CommissionMessage direction={'receive'}/>
-                </List>
+                <FixedSizeList itemSize={10} height={400} itemCount={200} width={300}>
+                    {renderRow}
+                </FixedSizeList>
             </Paper>
         </Container>
     )
