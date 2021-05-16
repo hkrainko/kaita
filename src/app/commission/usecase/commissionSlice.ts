@@ -69,10 +69,15 @@ export const getCommissions = createAsyncThunk<CommissionsBatch,
     {type: 'submitted' | 'received', filter: CommissionFilter, sorter: CommissionSorter},
     {state: RootState, extra: AppDependency}>(
         'commission/getCommissions',
-    async ({filter, sorter}, thunkAPI) => {
+    async ({type, filter, sorter}, thunkAPI) => {
         const authUser = thunkAPI.getState().auth.authUser
         if (!authUser) {
             throw OpenCommissionErrorUnknown
+        }
+        if (type === 'submitted') {
+            filter.requesterId = authUser.userId
+        } else {
+            filter.artistId = authUser.userId
         }
         const ad = thunkAPI.extra as AppDependency
         return await ad.commRepo.getCommissions(authUser.apiToken, filter, sorter)

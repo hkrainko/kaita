@@ -8,7 +8,7 @@ export interface HttpGetCommissionsModel {
   commissions: Commission[];
   offSet: number;
   count: number;
-  // total: number; //TODO: get it later
+  total: number;
 }
 
 export class HttpGetCommissionsModelMapper extends Mapper<HttpGetCommissionsModel, CommissionsBatch> {
@@ -18,7 +18,7 @@ export class HttpGetCommissionsModelMapper extends Mapper<HttpGetCommissionsMode
       commissions: param.commissions,
       offSet: param.offSet,
       count: param.count,
-      // total: param.total
+      total: param.total
     };
   }
 
@@ -28,7 +28,7 @@ export class HttpGetCommissionsModelMapper extends Mapper<HttpGetCommissionsMode
       commissions: param.commissions,
       offSet: param.offSet,
       count: param.count,
-      // total: param.total
+      total: param.total
     };
   }
 

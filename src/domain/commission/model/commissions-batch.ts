@@ -5,5 +5,5 @@ export interface CommissionsBatch {
   commissions: Commission[];
   count: number;
   offSet: number;
-  // total: number;
+  total: number;
 }
