@@ -11,7 +11,6 @@ import {container} from "./inversify.config";
 import {PersistGate} from "redux-persist/integration/react";
 import {persistStore} from "redux-persist";
 import {createMuiTheme, MuiThemeProvider} from "@material-ui/core";
-import {zhCN} from "@material-ui/core/locale";
 
 let persistor = persistStore(store);
 
