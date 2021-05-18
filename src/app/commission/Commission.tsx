@@ -1,12 +1,14 @@
 import {
     AppBar,
-    Badge,
+    Box,
     Breadcrumbs,
     Container,
     createStyles,
     IconButton,
+    InputAdornment,
     ListItem,
     makeStyles,
+    OutlinedInput,
     Paper,
     StandardProps,
     Theme,
@@ -15,13 +17,13 @@ import {
 } from "@material-ui/core";
 import {Link, useLocation, useParams} from "react-router-dom";
 import {useAppDispatch, useAppSelector} from "../hooks";
-import CommissionMessage from "./message/CommissionMessage";
-import {FixedSizeList, ListChildComponentProps} from "react-window";
+import {ListChildComponentProps, VariableSizeList} from "react-window";
 import AutoSizer from "react-virtualized-auto-sizer";
-import {AccountCircle, AssignmentOutlined, PlaylistAddCheckOutlined} from "@material-ui/icons";
-import {useState} from "react";
+import {AccountCircle, AssignmentOutlined, AttachFile, LinearScaleOutlined, Send} from "@material-ui/icons";
+import {useCallback, useState} from "react";
+import {Message, MessageState, MessageType} from "../../domain/message/model/message";
+import CommissionMessage from "./message/CommissionMessage";
 
-const drawerWidth = 240;
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -36,9 +38,23 @@ const useStyles = makeStyles((theme: Theme) =>
                 marginTop: theme.spacing(5),
             }
         },
+        toolBar: {
+            position: 'relative',
+            boxShadow: 'none',
+        },
         paper: {
             height: '100%',
-            backgroundColor: 'grey',
+            // backgroundColor: 'grey',
+            display: 'flex',
+            flexDirection: 'column',
+        },
+        input: {
+            marginRight: theme.spacing(3),
+            marginLeft: theme.spacing(3),
+            marginTop: theme.spacing(1),
+            marginBottom: theme.spacing(1),
+            height: theme.spacing(6),
+            borderRadius: '30px',
         },
         container: {
             height: '100%'
@@ -55,9 +71,20 @@ function renderRow(props: ListChildComponentProps) {
 
     return (
         <ListItem button style={style} key={index}>
-            <CommissionMessage direction={'receive'}/>
+            <CommissionMessage message={{
+                commissionId: "12312311231",
+                createTime: Date.now().toString(),
+                id: "122",
+                text: "1232313",
+                messageType: MessageType.Text,
+                state: MessageState.Sent
+            } as Message} direction={'receive'}/>
         </ListItem>
     );
+}
+
+function getItemSize(message: Message): number {
+    return 20
 }
 
 
@@ -75,6 +102,15 @@ export default function Commission({...props}: Props) {
     const commission = useAppSelector(state => {
         return state.commission.byId[id]
     })
+    const [text, setText] = useState("")
+
+    const onClickSend = useCallback(() => {
+        console.log(`text:${text}`)
+        setText("")
+    }, [text])
+
+    const onClickAttachment = useCallback(() => {
+    }, [])
 
     return (
         <Container className={classes.root} disableGutters>
@@ -82,46 +118,73 @@ export default function Commission({...props}: Props) {
                 <Link to={`/commissions?t=received`}>委託</Link>
                 <Link to={`/commissions/${id}`}>{id}</Link>
             </Breadcrumbs>
-            <AppBar position="relative" color="default">
-                <Toolbar>
-                    <IconButton
-                        edge="end"
-                        aria-label="account of current user"
-                        // aria-controls={menuId}
-                        aria-haspopup="true"
-                        onClick={() => {
-                        }}
-                        color="inherit"
-                    >
-                        <AccountCircle/>
-                    </IconButton>
-                    <Typography variant="h6">
-                        Photos
-                    </Typography>
-                    <div className={classes.grow}/>
-                    <IconButton aria-label="show 4 new mails" color="inherit">
-                        <AssignmentOutlined/>
-                    </IconButton>
-                    <IconButton
-                        aria-label="show 17 new notifications"
-                        color="inherit"
-                        hidden={openDrawer}
-                        onClick={() => setOpenDrawer(true)}>
-                        <Badge badgeContent={17} color="secondary">
-                            <PlaylistAddCheckOutlined/>
-                        </Badge>
-                    </IconButton>
-                </Toolbar>
-            </AppBar>
             <Paper className={classes.paper}>
-                <AutoSizer>
-                    {({height, width}) => {
-                        console.log(`AAA: height:${height} width:${width}`)
-                        return <FixedSizeList itemSize={10} height={height} itemCount={200} width={width}>
-                            {renderRow}
-                        </FixedSizeList>
-                    }}
-                </AutoSizer>
+                <AppBar color="default" className={classes.toolBar}>
+                    <Toolbar>
+                        <IconButton
+                            edge="end"
+                            aria-label="account of current user"
+                            // aria-controls={menuId}
+                            aria-haspopup="true"
+                            onClick={() => {
+                            }}
+                            color="inherit"
+                        >
+                            <AccountCircle/>
+                        </IconButton>
+                        <Typography variant="h6">
+                            Photos
+                        </Typography>
+                        <div className={classes.grow}/>
+                        <IconButton aria-label="show 4 new mails" color="inherit">
+                            <AssignmentOutlined/>
+                        </IconButton>
+                        <IconButton
+                            aria-label="show 17 new notifications"
+                            color="inherit"
+                            hidden={openDrawer}
+                            onClick={() => setOpenDrawer(true)}>
+                            <LinearScaleOutlined/>
+                        </IconButton>
+                    </Toolbar>
+                </AppBar>
+                <Box height="100%">
+                    <AutoSizer>
+                        {({height, width}) => {
+                            console.log(`AAA: height:${height} width:${width}`)
+                            return <VariableSizeList itemSize={(index) => 50} height={height} itemCount={200} width={width}>
+                                {renderRow}
+                            </VariableSizeList>
+                        }}
+                    </AutoSizer>
+                </Box>
+                <OutlinedInput
+                    startAdornment={
+                        <InputAdornment position="start">
+                            <IconButton
+                                aria-label="toggle password visibility"
+                                onClick={onClickAttachment}
+                                // onMouseDown={handleMouseDownPassword}
+                            >
+                                <AttachFile/>
+                            </IconButton>
+                        </InputAdornment>
+                    }
+                    endAdornment={
+                        <InputAdornment position="end">
+                            <IconButton
+                                aria-label="toggle password visibility"
+                                onClick={onClickSend}
+                                // onMouseDown={handleMouseDownPassword}
+                            >
+                                <Send/>
+                            </IconButton>
+                        </InputAdornment>
+                    }
+                    value={text}
+                    onChange={(e) => setText(e.target.value)}
+                    className={classes.input}
+                />
             </Paper>
         </Container>
 

@@ -14,6 +14,7 @@ import RegisterForm from "./app/register/register-form/RegisterForm";
 import applyHttpInterceptors from "./app/error/httpInterceptors";
 import Commissions from "./app/commission/Commissions";
 import Commission from "./app/commission/Commission";
+import Footer from "./app/footer/Footer";
 
 
 function App() {
@@ -46,6 +47,7 @@ function App() {
                     <Route exact path="/" component={Home}/>
                     <Route path="*" component={Home}/>
                 </Switch>
+                <Footer/>
             </BrowserRouter>
             <Snackbar
                 open={errorSelector.message != null}
