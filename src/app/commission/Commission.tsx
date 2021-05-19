@@ -26,7 +26,7 @@ import CommissionMessage from "./message/CommissionMessage";
 import {useInjection} from "../../iocReact";
 import {CommissionUseCase} from "../../domain/commission/commission.usecase";
 import {TYPES} from "../../types";
-import {connectChatService, disconnectChatService} from "./usecase/commissionSlice";
+import {connectCommissionService, disconnectCommissionService} from "./usecase/commissionSlice";
 
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -118,9 +118,9 @@ export default function Commission({...props}: Props) {
     }, [])
 
     useEffect(() => {
-        dispatch(connectChatService())
+        dispatch(connectCommissionService())
         return () => {
-            dispatch(disconnectChatService())
+            dispatch(disconnectCommissionService())
         }
     }, [dispatch])
 

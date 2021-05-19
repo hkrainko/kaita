@@ -19,5 +19,4 @@ export class UnknownError implements AppError {
 }
 
 export interface AppError extends Error {
-
 }

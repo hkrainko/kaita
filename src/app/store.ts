@@ -5,7 +5,7 @@ import artistReducer from './artist/usecase/artistSlice'
 import loadingReducer from './loading/usecase/loadingSlice'
 import errorReducer from './error/usecase/errorSlice'
 import openCommissionReducer from './open-commission/usecase/openCommissionSlice'
-import commissionReducer from './commission/usecase/commissionSlice'
+import commissionReducer, {wsMiddleWare} from './commission/usecase/commissionSlice'
 import {FLUSH, PAUSE, PERSIST, persistReducer, PURGE, REGISTER, REHYDRATE} from 'redux-persist'
 import storage from 'redux-persist/lib/storage'
 
@@ -30,15 +30,20 @@ const persistedReducer = persistReducer(persistConfig, reducers)
 
 export const store = configureStore({
     reducer: persistedReducer,
-    middleware: getDefaultMiddleware(
-        {
-            thunk: {extraArgument: new AppDependency()},
-            serializableCheck: {
-                //config for redux-persist
-                ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+    middleware: (getDefaultMiddleware) => {
+
+        const ad = new AppDependency()
+
+        return getDefaultMiddleware(
+            {
+                thunk: {extraArgument: ad},
+                serializableCheck: {
+                    //config for redux-persist
+                    ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+                },
             },
-        },
-    ),
+        ).concat(wsMiddleWare({appDependency: ad}))
+    },
     devTools: true
 });
 

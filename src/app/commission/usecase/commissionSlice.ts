@@ -1,14 +1,14 @@
 import {Commission} from "../../../domain/commission/model/commission";
-import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
+import {Action, createAsyncThunk, createSlice, Middleware, MiddlewareAPI, PayloadAction} from "@reduxjs/toolkit";
 import AppDependency from "../../di";
 import {RootState} from "../../store";
 import {CommissionCreator} from "../../../domain/commission/model/commission-creator";
 import {AppError, UnAuthError, UnknownError} from "../../../domain/error/model/error";
 import {CommissionFilter} from "../../../domain/commission/model/commission-filter";
-import {OpenCommissionErrorUnknown} from "../../../domain/open-commission/model/open-commission-error";
 import {CommissionSorter} from "../../../domain/commission/model/commission-sorter";
 import {CommissionsBatch} from "../../../domain/commission/model/commissions-batch";
 import {RequestState} from "../../../domain/common/request-state";
+import {Message} from "../../../domain/message/model/message";
 
 export interface CommissionState {
     byId: { [id: string]: Commission }
@@ -28,7 +28,8 @@ export interface CommissionState {
         requestState: RequestState
         requestId?: string
     }
-    chatServiceConnection: 'idle' | 'connected' | 'reconnecting' | 'disconnected'
+    chatServiceConnection: 'idle' | 'connected' | 'connecting' | 'reconnecting' | 'disconnected'
+    messageByCommissionId: {[id: string]: Message[]}
 }
 
 const initialState: CommissionState = {
@@ -49,7 +50,8 @@ const initialState: CommissionState = {
         requestState: RequestState.Idle,
         total: undefined
     },
-    chatServiceConnection: 'idle'
+    chatServiceConnection: 'idle',
+    messageByCommissionId: {}
 }
 
 export const submitCommission = createAsyncThunk<string,
@@ -85,50 +87,69 @@ export const getCommissions = createAsyncThunk<CommissionsBatch,
     }
 )
 
-export const connectChatService = createAsyncThunk<string,
-    void,
-    { state: RootState, extra: AppDependency }>(
-    'commission/connectChatService',
-    async (_, thunkAPI) => {
-        const authUser = thunkAPI.getState().auth.authUser
-        if (!authUser) {
-            throw UnAuthError
-        }
-
-        const promise = new Promise<string>(
-            (resolve, reject) => {
-                const ad = thunkAPI.extra as AppDependency
-                ad.commRepo.startStm(authUser.apiToken, () => {
-                    console.log("slice ws connected")
-                    resolve('connected')
-                }, (err: AppError) => {
-                    console.log(`slice ws disconnected err:${err}`)
-                    reject(UnknownError)
-                }, () => {
-                    console.log("slice ws reconnecting")
-                }, (message) => {
-                    console.log(`slice ws received:${message}`)
-                })
-            }
-        )
-        return await promise
-    }
-)
-
-export const disconnectChatService = createAsyncThunk<void,
-    void,
-    { state: RootState, extra: AppDependency }>(
-    'commission/disconnectChatService',
-    async (_, thunkAPI) => {
-        const ad = thunkAPI.extra as AppDependency
-        ad.commRepo.stopStm()
-    }
-)
+// export const connectChatService = createAsyncThunk<string,
+//     void,
+//     { state: RootState, extra: AppDependency }>(
+//     'commission/connectChatService',
+//     async (_, thunkAPI) => {
+//         const authUser = thunkAPI.getState().auth.authUser
+//         if (!authUser) {
+//             throw UnAuthError
+//         }
+//
+//         const promise = new Promise<string>(
+//             (resolve, reject) => {
+//                 const ad = thunkAPI.extra as AppDependency
+//                 ad.commRepo.startStm(authUser.apiToken, () => {
+//                     console.log("slice ws connected")
+//                     resolve('connected')
+//                 }, (err: AppError) => {
+//                     console.log(`slice ws disconnected err:${err}`)
+//                     reject(UnknownError)
+//                 }, () => {
+//                     console.log("slice ws reconnecting")
+//                 }, (message) => {
+//                     console.log(`slice ws received:${message}`)
+//                 })
+//             }
+//         )
+//         return await promise
+//     }
+// )
+// //
+// export const disconnectChatService = createAsyncThunk<void,
+//     void,
+//     { state: RootState, extra: AppDependency }>(
+//     'commission/disconnectChatService',
+//     async (_, thunkAPI) => {
+//         const ad = thunkAPI.extra as AppDependency
+//         ad.commRepo.stopStm()
+//     }
+// )
 
 export const commissionSlice = createSlice({
     name: 'commission',
     initialState: initialState,
-    reducers: {},
+    reducers: {
+        connectCommissionService(state) {
+            state.chatServiceConnection = 'connecting'
+        },
+        disconnectCommissionService(state) {
+
+        },
+        commissionServiceConnected(state) {
+            state.chatServiceConnection = 'connected'
+        },
+        commissionServiceDisconnected(state, action: PayloadAction<string>) {
+            state.chatServiceConnection = 'disconnected'
+        },
+        commissionServiceReceived(state, action: PayloadAction<Message>) {
+
+        },
+        commissionServiceConnectionFailed(state, action: PayloadAction<string>) {
+            state.chatServiceConnection = 'disconnected'
+        }
+    },
     extraReducers: (builder => {
         builder
             .addCase(getCommissions.pending, (state, action) => {
@@ -175,5 +196,53 @@ export const commissionSlice = createSlice({
             })
     })
 })
+
+type Options = {
+    appDependency: AppDependency,
+}
+
+export const wsMiddleWare = (options: Options): Middleware => {
+
+    // Middleware function.
+    return (store: MiddlewareAPI) => (next) => (action: Action) => {
+        const { dispatch } = store;
+        switch (action.type) {
+            case connectCommissionService.type:
+                const authUser = store.getState().auth.authUser
+                if (!authUser) {
+                    dispatch(commissionServiceConnectionFailed(new UnAuthError().message))
+                    break
+                }
+                options.appDependency.commRepo.startStm(authUser.apiToken, () => {
+                    console.log("slice ws connected")
+                    dispatch(commissionServiceConnected())
+                }, (err: AppError) => {
+                    console.log(`slice ws disconnected err:${err}`)
+                    dispatch(commissionServiceDisconnected(err.message))
+                }, () => {
+                    console.log("slice ws reconnecting")
+                }, (message) => {
+                    console.log(`slice ws received:${message}`)
+                })
+                break
+            case disconnectCommissionService.type:
+                options.appDependency.commRepo.stopStm()
+                break
+            default:
+                break
+        }
+
+        return next(action);
+    };
+};
+
+export const {
+    connectCommissionService,
+    disconnectCommissionService,
+    commissionServiceConnected,
+    commissionServiceReceived,
+    commissionServiceDisconnected,
+    commissionServiceConnectionFailed,
+} = commissionSlice.actions
 
 export default commissionSlice.reducer
