@@ -172,10 +172,10 @@ export class HttpCommissionRepo implements CommissionRepo {
             })
     }
 
-    getMessages(apiToken: string, commId: string, offset: number, count: number): Promise<MessagesBatch> {
+    getMessages(apiToken: string, commId: string, count: number, lastMessageId?: string): Promise<MessagesBatch> {
         const url = `${this.apiPath}/commissions/${commId}/messages`;
         let params = {
-            offset,
+            lastMessageId,
             count
         }
         const headers = {
@@ -240,7 +240,7 @@ export class HttpCommissionRepo implements CommissionRepo {
         }
 
         this.ws.onmessage = (msgEvent) => {
-            console.log(`ws onmessage:${msgEvent}`)
+            console.log(`ws onmessage:${JSON.stringify(msgEvent.data)}`)
             onReceived(msgEvent.lastEventId)
         }
 

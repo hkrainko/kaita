@@ -22,7 +22,7 @@ export interface CommissionRepo {
 
     updateCommission(apiToken: string, commId: string, updater: CommissionUpdater): Promise<string>;
 
-    getMessages(apiToken: string, commId: string, offset: number, count: number): Promise<MessagesBatch>;
+    getMessages(apiToken: string, commId: string, count: number, lastMessageId?: string): Promise<MessagesBatch>;
 
     sendMessage(apiToken: string, msgCreator: MessageCreator): Promise<Message>;
 

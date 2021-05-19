@@ -26,7 +26,7 @@ import CommissionMessage from "./message/CommissionMessage";
 import {useInjection} from "../../iocReact";
 import {CommissionUseCase} from "../../domain/commission/commission.usecase";
 import {TYPES} from "../../types";
-import {connectCommissionService, disconnectCommissionService} from "./usecase/commissionSlice";
+import {connectCommissionService, disconnectCommissionService, sendMessage} from "./usecase/commissionSlice";
 
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -111,8 +111,13 @@ export default function Commission({...props}: Props) {
 
     const onClickSend = useCallback(() => {
         console.log(`text:${text}`)
+        dispatch(sendMessage({
+            msgCreator: {
+                commissionId: id,text
+            }
+        }))
         setText("")
-    }, [text])
+    }, [dispatch, id, text])
 
     const onClickAttachment = useCallback(() => {
     }, [])
@@ -163,7 +168,8 @@ export default function Commission({...props}: Props) {
                 <Box height="100%">
                     <AutoSizer>
                         {({height, width}) => {
-                            return <VariableSizeList itemSize={(index) => 50} height={height} itemCount={200} width={width}>
+                            return <VariableSizeList itemSize={(index) => 50} height={height} itemCount={200}
+                                                     width={width}>
                                 {renderRow}
                             </VariableSizeList>
                         }}
