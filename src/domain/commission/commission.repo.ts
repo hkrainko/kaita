@@ -7,6 +7,7 @@ import {MessageCreator} from '../message/model/message-creator';
 import {MessagesBatch} from './model/messages-batch';
 import {Message} from '../message/model/message';
 import {CommissionUpdater} from './model/commission-updater';
+import {AppError} from "../error/model/error";
 
 
 export interface CommissionRepo {
@@ -25,7 +26,13 @@ export interface CommissionRepo {
 
     sendMessage(apiToken: string, msgCreator: MessageCreator): Promise<Message>;
 
-    startStm(apiToken: string): void;
+    startStm(
+        apiToken: string,
+        onConnected: () => void,
+        onDisconnected: (err: AppError) => void,
+        onReconnecting: () => void,
+        onReceived: (message: string) => void,
+    ): void;
 
     stopStm(): void;
 }

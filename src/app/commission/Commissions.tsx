@@ -29,8 +29,8 @@ const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         root: {
             width: '100%',
+            height: '80hv',
             marginTop: theme.spacing(5),
-            height: 440,
         },
         paper: {
             height: '80vh',

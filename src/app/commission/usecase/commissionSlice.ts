@@ -3,7 +3,7 @@ import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
 import AppDependency from "../../di";
 import {RootState} from "../../store";
 import {CommissionCreator} from "../../../domain/commission/model/commission-creator";
-import {UnAuthError} from "../../../domain/error/model/error";
+import {AppError, UnAuthError, UnknownError} from "../../../domain/error/model/error";
 import {CommissionFilter} from "../../../domain/commission/model/commission-filter";
 import {OpenCommissionErrorUnknown} from "../../../domain/open-commission/model/open-commission-error";
 import {CommissionSorter} from "../../../domain/commission/model/commission-sorter";
@@ -28,7 +28,7 @@ export interface CommissionState {
         requestState: RequestState
         requestId?: string
     }
-
+    chatServiceConnection: 'idle' | 'connected' | 'reconnecting' | 'disconnected'
 }
 
 const initialState: CommissionState = {
@@ -48,7 +48,8 @@ const initialState: CommissionState = {
         requestId: undefined,
         requestState: RequestState.Idle,
         total: undefined
-    }
+    },
+    chatServiceConnection: 'idle'
 }
 
 export const submitCommission = createAsyncThunk<string,
@@ -66,13 +67,13 @@ export const submitCommission = createAsyncThunk<string,
 )
 
 export const getCommissions = createAsyncThunk<CommissionsBatch,
-    {type: 'submitted' | 'received', filter: CommissionFilter, sorter: CommissionSorter},
-    {state: RootState, extra: AppDependency}>(
-        'commission/getCommissions',
+    { type: 'submitted' | 'received', filter: CommissionFilter, sorter: CommissionSorter },
+    { state: RootState, extra: AppDependency }>(
+    'commission/getCommissions',
     async ({type, filter, sorter}, thunkAPI) => {
         const authUser = thunkAPI.getState().auth.authUser
         if (!authUser) {
-            throw OpenCommissionErrorUnknown
+            throw UnAuthError
         }
         if (type === 'submitted') {
             filter.requesterId = authUser.userId
@@ -81,6 +82,46 @@ export const getCommissions = createAsyncThunk<CommissionsBatch,
         }
         const ad = thunkAPI.extra as AppDependency
         return await ad.commRepo.getCommissions(authUser.apiToken, filter, sorter)
+    }
+)
+
+export const connectChatService = createAsyncThunk<string,
+    void,
+    { state: RootState, extra: AppDependency }>(
+    'commission/connectChatService',
+    async (_, thunkAPI) => {
+        const authUser = thunkAPI.getState().auth.authUser
+        if (!authUser) {
+            throw UnAuthError
+        }
+
+        const promise = new Promise<string>(
+            (resolve, reject) => {
+                const ad = thunkAPI.extra as AppDependency
+                ad.commRepo.startStm(authUser.apiToken, () => {
+                    console.log("slice ws connected")
+                    resolve('connected')
+                }, (err: AppError) => {
+                    console.log(`slice ws disconnected err:${err}`)
+                    reject(UnknownError)
+                }, () => {
+                    console.log("slice ws reconnecting")
+                }, (message) => {
+                    console.log(`slice ws received:${message}`)
+                })
+            }
+        )
+        return await promise
+    }
+)
+
+export const disconnectChatService = createAsyncThunk<void,
+    void,
+    { state: RootState, extra: AppDependency }>(
+    'commission/disconnectChatService',
+    async (_, thunkAPI) => {
+        const ad = thunkAPI.extra as AppDependency
+        ad.commRepo.stopStm()
     }
 )
 

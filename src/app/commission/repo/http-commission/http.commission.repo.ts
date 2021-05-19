@@ -1,22 +1,14 @@
 import {CommissionRepo} from '../../../../domain/commission/commission.repo';
-import {Observable, Subject, throwError} from 'rxjs';
 import {Commission} from '../../../../domain/commission/model/commission';
 import {CommissionCreator} from '../../../../domain/commission/model/commission-creator';
 import {HttpAddCommissionModel, HttpAddCommissionModelMapper} from './model/http.add-commission.model';
-import {catchError, map} from 'rxjs/operators';
-import {
-    OpenCommissionErrorUnAuth,
-    OpenCommissionErrorUnknown
-} from '../../../../domain/open-commission/model/open-commission-error';
 import {CommissionFilter} from '../../../../domain/commission/model/commission-filter';
 import {CommissionSorter} from '../../../../domain/commission/model/commission-sorter';
 import {HttpGetCommissionsModel, HttpGetCommissionsModelMapper} from './model/http.get-commissions.model';
 import {CommissionsBatch} from '../../../../domain/commission/model/commissions-batch';
 import {MessageCreator} from '../../../../domain/message/model/message-creator';
 import {HttpGetMessagesModel, HttpGetMessagesModelMapper} from './model/http.get-messages.model';
-import {NotFoundError, UnAuthError, UnknownError} from '../../../../domain/error/model/error';
 import {MessagesBatch} from '../../../../domain/commission/model/messages-batch';
-import {WebSocketSubject} from 'rxjs/webSocket';
 import {HttpGetCommissionModel, HttpGetCommissionModelMapper} from './model/http.get-commission.model';
 import {HttpCreateMessageModel, HttpCreateMessageModelMapper} from './model/http.create-message.model';
 import {CommissionUpdater} from '../../../../domain/commission/model/commission-updater';
@@ -25,18 +17,16 @@ import {injectable} from "inversify";
 import {ImageMessage, Message, MessageType, SystemMessage, TextMessage} from "../../../../domain/message/model/message";
 import axios from "axios";
 import {Currency} from "../../../../domain/price/price";
+import {AppError, UnknownError} from "../../../../domain/error/model/error";
 
 
 @injectable()
 export class HttpCommissionRepo implements CommissionRepo {
 
     private apiPath = 'http://192.168.64.12:31398/api';
-    private wsPath = 'http://192.168.64.12:31398/ws';
-    private ws?: WebSocketSubject<any>;
+    private wsPath = 'ws://192.168.64.12:31398/ws';
+    private ws?: WebSocket;
     private isWsConnected = false;
-
-    stmCommission$ = new Subject<Commission>();
-    stmMessage$ = new Subject<Message>();
 
     addCommissionModelMapper = new HttpAddCommissionModelMapper();
     getCommissionsModelMapper = new HttpGetCommissionsModelMapper();
@@ -227,64 +217,78 @@ export class HttpCommissionRepo implements CommissionRepo {
             })
     }
 
-    startStm(apiToken: string): void {
+    startStm(
+        apiToken: string,
+        onConnected: () => void,
+        onDisconnected: (err: AppError) => void,
+        onReconnecting: () => void,
+        onReceived: (message: string) => void,
+    ): void {
+
         console.log(`startStm`);
         if (this.isWsConnected) {
-            return;
+            onDisconnected(new UnknownError())
+            return
         }
 
-        this.ws = new WebSocketSubject({
-            url: this.wsPath + `?access_token=${apiToken}`,
-            openObserver: {
-                next: value => {
-                    console.log('ws connection ok');
-                    this.isWsConnected = true;
-                }
-            },
-            closeObserver: {
-                next: value => {
-                    console.log('ws disconnected');
-                    this.isWsConnected = false;
-                }
-            },
-        });
+        this.ws = new WebSocket(`${this.wsPath}?access_token=${apiToken}`)
 
-        this.ws.subscribe(
-            message => {
-                console.log(`in msg:${JSON.stringify(message)}`);
-                const msg: Message = (message as Message);
-                console.log(`messageType:${msg.messageType}`);
-                switch (msg.messageType) {
-                    case MessageType.Text:
-                        const textMsg: TextMessage = (message as TextMessage);
-                        this.stmMessage$.next(textMsg);
-                        break;
-                    case  MessageType.Image:
-                        const imgMsg: ImageMessage = (message as ImageMessage);
-                        this.stmMessage$.next(imgMsg);
-                        break;
-                    case MessageType.System:
-                        const sysMsg: SystemMessage = (message as SystemMessage);
-                        this.stmMessage$.next(sysMsg);
-                        break;
-                    default:
-                        break;
-                }
+        this.ws.onerror = (event) => {
+            console.log(`ws onerror err:${JSON.stringify(event)}`);
+            this.isWsConnected = false;
+            onDisconnected(new UnknownError())
+        }
 
-                // this.stmMessage$.next(null);
-                // this.stmCommission$.next(null);
-            },
-            err => {
-                console.log(`ws err:${err}`);
-            },
-            () => {
-                console.log('complete');
-            }
-        );
+        this.ws.onmessage = (msgEvent) => {
+            console.log(`ws onmessage:${msgEvent}`)
+            onReceived(msgEvent.lastEventId)
+        }
+
+        this.ws.onclose = () => {
+            console.log('ws disconnected');
+            this.isWsConnected = false;
+            onDisconnected(new UnknownError())
+        }
+
+        this.ws.onopen = () => {
+            console.log('ws onopen');
+            this.isWsConnected = true;
+            onConnected()
+        }
+
+        // this.ws.subscribe(
+        //     message => {
+        //         console.log(`in msg:${JSON.stringify(message)}`);
+        //         const msg: Message = (message as Message);
+        //         console.log(`messageType:${msg.messageType}`);
+        //         switch (msg.messageType) {
+        //             case MessageType.Text:
+        //                 const textMsg: TextMessage = (message as TextMessage);
+        //                 this.stmMessage$.next(textMsg);
+        //                 break;
+        //             case  MessageType.Image:
+        //                 const imgMsg: ImageMessage = (message as ImageMessage);
+        //                 this.stmMessage$.next(imgMsg);
+        //                 break;
+        //             case MessageType.System:
+        //                 const sysMsg: SystemMessage = (message as SystemMessage);
+        //                 this.stmMessage$.next(sysMsg);
+        //                 break;
+        //             default:
+        //                 break;
+        //         }
+        //     },
+        //     err => {
+        //         console.log(`ws err:${err}`);
+        //     },
+        //     () => {
+        //         console.log('complete');
+        //     }
+        // );
     }
 
     stopStm(): void {
-        this.ws?.unsubscribe();
+        this.ws?.close()
     }
 
     // Private

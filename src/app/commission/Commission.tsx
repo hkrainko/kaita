@@ -20,9 +20,13 @@ import {useAppDispatch, useAppSelector} from "../hooks";
 import {ListChildComponentProps, VariableSizeList} from "react-window";
 import AutoSizer from "react-virtualized-auto-sizer";
 import {AccountCircle, AssignmentOutlined, AttachFile, LinearScaleOutlined, Send} from "@material-ui/icons";
-import {useCallback, useState} from "react";
+import {useCallback, useEffect, useState} from "react";
 import {Message, MessageState, MessageType} from "../../domain/message/model/message";
 import CommissionMessage from "./message/CommissionMessage";
+import {useInjection} from "../../iocReact";
+import {CommissionUseCase} from "../../domain/commission/commission.usecase";
+import {TYPES} from "../../types";
+import {connectChatService, disconnectChatService} from "./usecase/commissionSlice";
 
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -99,6 +103,7 @@ export default function Commission({...props}: Props) {
     let {id} = useParams<{ id: string }>()
     const [openDrawer, setOpenDrawer] = useState(false);
     const dispatch = useAppDispatch()
+    const commUseCase = useInjection<CommissionUseCase>(TYPES.CommissionUseCase)
     const commission = useAppSelector(state => {
         return state.commission.byId[id]
     })
@@ -111,6 +116,13 @@ export default function Commission({...props}: Props) {
 
     const onClickAttachment = useCallback(() => {
     }, [])
+
+    useEffect(() => {
+        dispatch(connectChatService())
+        return () => {
+            dispatch(disconnectChatService())
+        }
+    }, [dispatch])
 
     return (
         <Container className={classes.root} disableGutters>
@@ -151,7 +163,6 @@ export default function Commission({...props}: Props) {
                 <Box height="100%">
                     <AutoSizer>
                         {({height, width}) => {
-                            console.log(`AAA: height:${height} width:${width}`)
                             return <VariableSizeList itemSize={(index) => 50} height={height} itemCount={200} width={width}>
                                 {renderRow}
                             </VariableSizeList>
