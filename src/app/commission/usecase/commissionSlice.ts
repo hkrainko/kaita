@@ -206,7 +206,7 @@ export const commissionSlice = createSlice({
             })
             .addCase(getMessages.fulfilled, (state, action) => {
                 let ids: string[] = []
-                action.payload.messages.forEach(msg => {
+                action.payload.messages?.forEach(msg => {
                     state.messageByIds[msg.id] = msg
                     ids.push(msg.id)
                 })
