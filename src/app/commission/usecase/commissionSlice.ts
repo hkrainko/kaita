@@ -115,8 +115,6 @@ export const getMessages = createAsyncThunk<MessagesBatch,
         if (!authUser) {
             throw UnAuthError
         }
-
-
         const ad = thunkAPI.extra as AppDependency
         return await ad.commRepo.getMessages(authUser.apiToken, commId, count, lastMessageId)
     }
@@ -207,12 +205,21 @@ export const commissionSlice = createSlice({
 
             })
             .addCase(getMessages.fulfilled, (state, action) => {
-                const allMsgId = state.messageIdsByCommissionId[action.payload.commissionId]
                 let ids: string[] = []
                 action.payload.messages.forEach(msg => {
                     state.messageByIds[msg.id] = msg
                     ids.push(msg.id)
                 })
+                if (!action.payload.lastMessageId) {
+                    // as new message
+                    state.messageIdsByCommissionId[action.payload.commissionId] = ids
+                } else {
+                    const localMsgIds = state.messageIdsByCommissionId[action.payload.commissionId]
+                    const index = localMsgIds.lastIndexOf(action.payload.lastMessageId)
+                    state.messageIdsByCommissionId[action.payload.commissionId] = index
+                        ? ids.concat(localMsgIds.slice(index + 1))
+                        : ids
+                }
             })
             .addCase(sendMessage.fulfilled, (state, action) => {
                 // TODO: do any things?

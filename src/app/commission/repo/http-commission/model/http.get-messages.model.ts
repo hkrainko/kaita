@@ -6,22 +6,25 @@ import {MessagesBatch} from '../../../../../domain/commission/model/messages-bat
 
 
 export interface HttpGetMessagesModel {
-  commissionId: string;
-  messages: Message[];
+    commissionId: string;
+    lastMessageId?: string;
+    messages: Message[];
 }
 
 export class HttpGetMessagesModelMapper extends Mapper<HttpGetMessagesModel, MessagesBatch> {
-  mapFrom(param: HttpGetMessagesModel): MessagesBatch {
-    return {
-      commissionId: param.commissionId,
-      messages: param.messages,
-    };
-  }
+    mapFrom(param: HttpGetMessagesModel): MessagesBatch {
+        return {
+            commissionId: param.commissionId,
+            lastMessageId: param.lastMessageId,
+            messages: param.messages,
+        };
+    }
 
-  mapTo(param: MessagesBatch): HttpGetMessagesModel {
-    return {
-      commissionId: param.commissionId,
-      messages: param.messages,
-    };
-  }
+    mapTo(param: MessagesBatch): HttpGetMessagesModel {
+        return {
+            commissionId: param.commissionId,
+            lastMessageId: param.lastMessageId,
+            messages: param.messages,
+        };
+    }
 }

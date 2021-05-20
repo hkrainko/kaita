@@ -174,12 +174,12 @@ export default function Commissions(props: Props) {
                                             {columns.map((column) => {
                                                 if (column.type === ColumnType.id) {
                                                     return (
-                                                        <Link to={`commissions/${comm.id}`}>
-                                                            <TableCell key={column.type} align={column.align}>
+                                                        <TableCell key={column.type} align={column.align}>
+                                                            <Link to={`commissions/${comm.id}`}>
                                                                 {getCellByColumnType(column.type, comm)}
-                                                            </TableCell>
-                                                        </Link>
-                                                    );
+                                                            </Link>
+                                                        </TableCell>
+                                                    )
                                                 } else {
                                                     return (
                                                         <TableCell key={column.type} align={column.align}>

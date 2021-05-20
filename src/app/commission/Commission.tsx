@@ -26,7 +26,12 @@ import CommissionMessage from "./message/CommissionMessage";
 import {useInjection} from "../../iocReact";
 import {CommissionUseCase} from "../../domain/commission/commission.usecase";
 import {TYPES} from "../../types";
-import {connectCommissionService, disconnectCommissionService, sendMessage} from "./usecase/commissionSlice";
+import {
+    connectCommissionService,
+    disconnectCommissionService,
+    getCommissions, getMessages,
+    sendMessage
+} from "./usecase/commissionSlice";
 
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -71,18 +76,11 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 function renderRow(props: ListChildComponentProps) {
-    const {index, style} = props;
-
+    const {index, style, data} = props;
+    const message = data[index]
     return (
         <ListItem button style={style} key={index}>
-            <CommissionMessage message={{
-                commissionId: "12312311231",
-                createTime: Date.now().toString(),
-                id: "122",
-                text: "1232313",
-                messageType: MessageType.Text,
-                state: MessageState.Sent
-            } as Message} direction={'receive'}/>
+            <CommissionMessage message={message} direction={'receive'}/>
         </ListItem>
     );
 }
@@ -107,6 +105,11 @@ export default function Commission({...props}: Props) {
     const commission = useAppSelector(state => {
         return state.commission.byId[id]
     })
+    const messages = useAppSelector(state => {
+        return state.commission.messageIdsByCommissionId[id]?.map( msgId => {
+            return state.commission.messageByIds[msgId]
+        });
+    })
     const [text, setText] = useState("")
 
     const onClickSend = useCallback(() => {
@@ -121,6 +124,10 @@ export default function Commission({...props}: Props) {
 
     const onClickAttachment = useCallback(() => {
     }, [])
+
+    useEffect(() => {
+        dispatch(getMessages({commId: id, count: 10, lastMessageId: undefined}))
+    }, [id, dispatch])
 
     useEffect(() => {
         dispatch(connectCommissionService())
@@ -166,14 +173,16 @@ export default function Commission({...props}: Props) {
                     </Toolbar>
                 </AppBar>
                 <Box height="100%">
-                    <AutoSizer>
-                        {({height, width}) => {
-                            return <VariableSizeList itemSize={(index) => 50} height={height} itemCount={200}
-                                                     width={width}>
-                                {renderRow}
-                            </VariableSizeList>
-                        }}
-                    </AutoSizer>
+                    {
+                        messages ? <AutoSizer>
+                            {({height, width}) => {
+                                return <VariableSizeList itemSize={(index) => 50} height={height} itemCount={messages?.length}
+                                                         width={width} itemData={messages}>
+                                    {renderRow}
+                                </VariableSizeList>
+                            }}
+                        </AutoSizer> : <Typography variant={"h5"}>沒有訊息</Typography>
+                    }
                 </Box>
                 <OutlinedInput
                     startAdornment={
