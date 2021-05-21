@@ -232,7 +232,9 @@ export const commissionSlice = createSlice({
                         state.messageIdsByCommissionId[action.payload.commissionId] = ids
                         if (state.byId[action.payload.commissionId]) {
                             state.byId[action.payload.commissionId].lastMessage =
-                                action.payload.messages[action.payload.messages.length - 1]
+                                action.payload.messages.length > 0
+                                    ? action.payload.messages[action.payload.messages.length - 1]
+                                    : undefined
                         }
                     } else {
                         state.messageIdsByCommissionId[action.payload.commissionId] = ids.concat(localMsgIds.slice(index + 1))

@@ -62,7 +62,7 @@ export default class DefaultCommissionUseCase implements CommissionUseCase {
         return true;
     }
 
-    getLastMessage(commission: Commission): string {
+    getLastMessageText(commission: Commission): string {
         if (!commission.lastMessage) {
             return "(沒有訊息)";
         }

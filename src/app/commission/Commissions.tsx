@@ -133,13 +133,17 @@ export default function Commissions(props: Props) {
             case ColumnType.requester:
                 return `${commission.requesterName}@${commission.requesterId}`
             case ColumnType.message:
-                return commUseCase.getLastMessage(commission)
+                return commUseCase.getLastMessageText(commission)
             case ColumnType.price:
                 return `${commission.price.amount} ${commission.price.currency}`
             case ColumnType.dayNeed:
                 return commission.dayNeed.toString()
             case ColumnType.lastUpdateDate:
-                return moment(commission.lastUpdateTime).format("YYYY-MM-YY HH:mm:ss")
+                if (commission.lastMessage) {
+                    return moment(commission.lastMessage.createTime).format("YYYY-MM-YY HH:mm:ss")
+                } else {
+                    return moment(commission.createTime).format("YYYY-MM-YY HH:mm:ss")
+                }
             default:
                 return ''
         }

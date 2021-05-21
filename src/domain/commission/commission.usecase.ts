@@ -42,6 +42,6 @@ export interface CommissionUseCase {
 
     isDescValid(value: string): boolean
 
-    getLastMessage(commission: Commission): string
+    getLastMessageText(commission: Commission): string
 
 }
