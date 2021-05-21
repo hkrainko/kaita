@@ -23,6 +23,7 @@ import {Commission} from "../../domain/commission/model/commission";
 import {useInjection} from "../../iocReact";
 import {TYPES} from "../../types";
 import {CommissionUseCase} from "../../domain/commission/commission.usecase";
+import moment from "moment";
 
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -138,7 +139,7 @@ export default function Commissions(props: Props) {
             case ColumnType.dayNeed:
                 return commission.dayNeed.toString()
             case ColumnType.lastUpdateDate:
-                return commission.lastUpdateTime
+                return moment(commission.lastUpdateTime).format("YYYY-MM-YY HH:mm:ss")
             default:
                 return ''
         }

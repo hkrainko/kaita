@@ -63,13 +63,10 @@ export default class DefaultCommissionUseCase implements CommissionUseCase {
     }
 
     getLastMessage(commission: Commission): string {
-        if (!commission.messages) {
+        if (!commission.lastMessage) {
             return "(沒有訊息)";
         }
-        if (commission.messages.length < 1) {
-            return "(沒有訊息)";
-        }
-        const lastMessage = commission.messages[commission.messages.length - 1];
+        const lastMessage = commission.lastMessage;
         switch (lastMessage.messageType) {
             case MessageType.Text:
                 return (lastMessage as TextMessage).text;

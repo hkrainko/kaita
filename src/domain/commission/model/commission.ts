@@ -1,6 +1,6 @@
 import {Price} from '../../price/price';
 import {Size} from '../../artwork/size';
-import {Message} from '../../message/model/message';
+import {Message} from "../../message/model/message";
 
 export interface Commission {
   id: string;
@@ -25,11 +25,11 @@ export interface Commission {
   refImagePaths: string[];
 
   timesAllowedDraftToChange: number;
-  TimesAllowedCompletionToChange: number;
+  timesAllowedCompletionToChange: number;
   draftChangingRequestTime: number;
   proofCopyRevisionRequestTime: number;
 
-  messages: Message[];
+  lastMessage?: Message;
 
   proofCopyImagePaths?: string[];
   displayImagePath?: string;
@@ -38,7 +38,7 @@ export interface Commission {
   comment?: string;
 
   createTime: string;
-  CompletedTime?: string;
+  completedTime?: string;
   lastUpdateTime: string;
   state: CommissionState;
 }

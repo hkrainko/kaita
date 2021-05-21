@@ -154,6 +154,9 @@ export const commissionSlice = createSlice({
             console.log(`AAA: action:${JSON.stringify(action.payload)}`)
             state.messageByIds[action.payload.id] = action.payload
             state.messageIdsByCommissionId[action.payload.commissionId] = state.messageIdsByCommissionId[action.payload.commissionId].concat(action.payload.id)
+            if (state.byId[action.payload.commissionId]) {
+                state.byId[action.payload.commissionId].lastMessage = action.payload
+            }
         },
         commissionServiceConnectionFailed(state, action: PayloadAction<string>) {
             state.chatServiceConnection = 'disconnected'
@@ -215,12 +218,23 @@ export const commissionSlice = createSlice({
                 if (!action.payload.lastMessageId) {
                     // as new message
                     state.messageIdsByCommissionId[action.payload.commissionId] = ids
+                    if (state.byId[action.payload.commissionId]) {
+                        state.byId[action.payload.commissionId].lastMessage =
+                            action.payload.messages[action.payload.messages.length - 1]
+                    }
                 } else {
                     const localMsgIds = state.messageIdsByCommissionId[action.payload.commissionId]
                     const index = localMsgIds.lastIndexOf(action.payload.lastMessageId)
-                    state.messageIdsByCommissionId[action.payload.commissionId] = index
-                        ? ids.concat(localMsgIds.slice(index + 1))
-                        : ids
+                    if (index === -1) {
+                        // not found message, as new one
+                        state.messageIdsByCommissionId[action.payload.commissionId] = ids
+                        if (state.byId[action.payload.commissionId]) {
+                            state.byId[action.payload.commissionId].lastMessage =
+                                action.payload.messages[action.payload.messages.length - 1]
+                        }
+                    } else {
+                        state.messageIdsByCommissionId[action.payload.commissionId] = ids.concat(localMsgIds.slice(index + 1))
+                    }
                 }
             })
             .addCase(sendMessage.fulfilled, (state, action) => {
