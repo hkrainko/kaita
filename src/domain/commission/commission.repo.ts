@@ -31,7 +31,7 @@ export interface CommissionRepo {
         onConnected: () => void,
         onDisconnected: (err: AppError) => void,
         onReconnecting: () => void,
-        onReceived: (message: string) => void,
+        onReceived: (message: Message) => void,
     ): void;
 
     stopStm(): void;

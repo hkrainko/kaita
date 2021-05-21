@@ -20,8 +20,8 @@ import {useAppDispatch, useAppSelector} from "../hooks";
 import {ListChildComponentProps, VariableSizeList} from "react-window";
 import AutoSizer from "react-virtualized-auto-sizer";
 import {AccountCircle, AssignmentOutlined, AttachFile, LinearScaleOutlined, Send} from "@material-ui/icons";
-import {useCallback, useEffect, useState} from "react";
-import {Message, MessageState, MessageType} from "../../domain/message/model/message";
+import {useCallback, useEffect, useState, KeyboardEvent} from "react";
+import {Message} from "../../domain/message/model/message";
 import CommissionMessage from "./message/CommissionMessage";
 import {useInjection} from "../../iocReact";
 import {CommissionUseCase} from "../../domain/commission/commission.usecase";
@@ -29,7 +29,7 @@ import {TYPES} from "../../types";
 import {
     connectCommissionService,
     disconnectCommissionService,
-    getCommissions, getMessages,
+    getMessages,
     sendMessage
 } from "./usecase/commissionSlice";
 
@@ -113,7 +113,18 @@ export default function Commission({...props}: Props) {
     const [text, setText] = useState("")
 
     const onClickSend = useCallback(() => {
-        console.log(`text:${text}`)
+        dispatch(sendMessage({
+            msgCreator: {
+                commissionId: id,text
+            }
+        }))
+        setText("")
+    }, [dispatch, id, text])
+
+    const onKeyDown = useCallback((event: KeyboardEvent) => {
+        if (event.key !== "Enter") {
+            return
+        }
         dispatch(sendMessage({
             msgCreator: {
                 commissionId: id,text
@@ -209,6 +220,7 @@ export default function Commission({...props}: Props) {
                     }
                     value={text}
                     onChange={(e) => setText(e.target.value)}
+                    onKeyDown={onKeyDown}
                     className={classes.input}
                 />
             </Paper>

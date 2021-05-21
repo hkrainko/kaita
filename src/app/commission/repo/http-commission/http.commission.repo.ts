@@ -222,7 +222,7 @@ export class HttpCommissionRepo implements CommissionRepo {
         onConnected: () => void,
         onDisconnected: (err: AppError) => void,
         onReconnecting: () => void,
-        onReceived: (message: string) => void,
+        onReceived: (message: Message) => void,
     ): void {
 
         console.log(`startStm`);
@@ -240,8 +240,26 @@ export class HttpCommissionRepo implements CommissionRepo {
         }
 
         this.ws.onmessage = (msgEvent) => {
-            console.log(`ws onmessage:${JSON.stringify(msgEvent.data)}`)
-            onReceived(msgEvent.lastEventId)
+            const message = JSON.parse(msgEvent.data)
+            console.log(`in msg:${JSON.stringify(message)}`);
+            const msg: Message = (message as Message);
+            console.log(`messageType:${msg.messageType}`);
+            switch (msg.messageType) {
+                case MessageType.Text:
+                    const textMsg: TextMessage = (message as TextMessage);
+                    onReceived(textMsg)
+                    break;
+                case  MessageType.Image:
+                    const imgMsg: ImageMessage = (message as ImageMessage);
+                    onReceived(imgMsg)
+                    break;
+                case MessageType.System:
+                    const sysMsg: SystemMessage = (message as SystemMessage);
+                    onReceived(sysMsg)
+                    break;
+                default:
+                    break;
+            }
         }
 
         this.ws.onclose = () => {

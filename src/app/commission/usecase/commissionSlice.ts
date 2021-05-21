@@ -151,7 +151,9 @@ export const commissionSlice = createSlice({
             state.chatServiceConnection = 'disconnected'
         },
         commissionServiceReceived(state, action: PayloadAction<Message>) {
-
+            console.log(`AAA: action:${JSON.stringify(action.payload)}`)
+            state.messageByIds[action.payload.id] = action.payload
+            state.messageIdsByCommissionId[action.payload.commissionId] = state.messageIdsByCommissionId[action.payload.commissionId].concat(action.payload.id)
         },
         commissionServiceConnectionFailed(state, action: PayloadAction<string>) {
             state.chatServiceConnection = 'disconnected'
@@ -244,15 +246,13 @@ export const wsMiddleWare = (options: Options): Middleware => {
                     break
                 }
                 options.appDependency.commRepo.startStm(authUser.apiToken, () => {
-                    console.log("slice ws connected")
                     dispatch(commissionServiceConnected())
                 }, (err: AppError) => {
-                    console.log(`slice ws disconnected err:${err}`)
                     dispatch(commissionServiceDisconnected(err.message))
                 }, () => {
-                    console.log("slice ws reconnecting")
+
                 }, (message) => {
-                    console.log(`slice ws received:${message}`)
+                    dispatch(commissionServiceReceived(message))
                 })
                 break
             case disconnectCommissionService.type:
