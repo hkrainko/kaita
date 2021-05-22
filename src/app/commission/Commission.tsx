@@ -35,6 +35,9 @@ import {
 import {User, UserState} from "../../domain/user/user";
 import {SimpleUser} from "../../domain/user/simple-user";
 import {Commission as DomainCommission} from "../../domain/commission/model/commission";
+import {OpenCommission} from "../../domain/open-commission/model/open-commission";
+import CommissionDetail from "./CommissionDetails";
+import React from "react";
 
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -93,6 +96,8 @@ export default function Commission({...props}: Props) {
     const location = useLocation()
     let {id} = useParams<{ id: string }>()
     const [openDrawer, setOpenDrawer] = useState(false);
+    const [showCommDetails, setShowCommDetails] = useState<boolean>(false)
+    const [showCommProgress, setShowCommProgress] = useState<boolean>(false)
     const dispatch = useAppDispatch()
     const commUseCase = useInjection<CommissionUseCase>(TYPES.CommissionUseCase)
     const authUser = useAppSelector((state) => state.auth.authUser)
@@ -178,90 +183,98 @@ export default function Commission({...props}: Props) {
     }, [dispatch])
 
     return (
-        <Container className={classes.root} disableGutters>
-            <Breadcrumbs aria-label="breadcrumb">
-                {
-                    (commission && (commission.artistId === authUser?.userId)) &&
-                    <Link to={`/commissions?t=received`}>接收委託</Link>
-                }
-                {
-                    (commission && (commission?.requesterId === authUser?.userId)) &&
-                    <Link to={`/commissions?t=submitted`}>發出委託</Link>
-                }
-                <Link to={`/commissions/${id}`}>{id}</Link>
-            </Breadcrumbs>
-            <Paper className={classes.paper}>
-                <AppBar color="default" className={classes.toolBar}>
-                    <Toolbar>
-                        <IconButton
-                            edge="end"
-                            aria-label="account of current user"
-                            // aria-controls={menuId}
-                            aria-haspopup="true"
-                            onClick={() => {
-                            }}
-                            color="inherit"
-                        >
-                            <AccountCircle/>
-                        </IconButton>
-                        <Typography variant="h6">
-                            Photos
-                        </Typography>
-                        <div className={classes.grow}/>
-                        <IconButton aria-label="show 4 new mails" color="inherit">
-                            <AssignmentOutlined/>
-                        </IconButton>
-                        <IconButton
-                            aria-label="show 17 new notifications"
-                            color="inherit"
-                            hidden={openDrawer}
-                            onClick={() => setOpenDrawer(true)}>
-                            <LinearScaleOutlined/>
-                        </IconButton>
-                    </Toolbar>
-                </AppBar>
-                <Box height="100%">
+        <React.Fragment>
+            <Container className={classes.root} disableGutters>
+                <Breadcrumbs aria-label="breadcrumb">
                     {
-                        messages ? <AutoSizer>
-                            {({height, width}) => {
-                                return <VariableSizeList itemSize={(index) => 100} height={height} itemCount={messages?.length}
-                                                         width={width} itemData={messages}>
-                                    {renderRow}
-                                </VariableSizeList>
-                            }}
-                        </AutoSizer> : <Typography variant={"h5"}>沒有訊息</Typography>
+                        (commission && (commission.artistId === authUser?.userId)) &&
+                        <Link to={`/commissions?t=received`}>接收委託</Link>
                     }
-                </Box>
-                <OutlinedInput
-                    startAdornment={
-                        <InputAdornment position="start">
+                    {
+                        (commission && (commission?.requesterId === authUser?.userId)) &&
+                        <Link to={`/commissions?t=submitted`}>發出委託</Link>
+                    }
+                    <Link to={`/commissions/${id}`}>{id}</Link>
+                </Breadcrumbs>
+                <Paper className={classes.paper}>
+                    <AppBar color="default" className={classes.toolBar}>
+                        <Toolbar>
                             <IconButton
-                                aria-label="toggle password visibility"
-                                onClick={onClickAttachment}
-                                // onMouseDown={handleMouseDownPassword}
+                                edge="end"
+                                aria-label="account of current user"
+                                // aria-controls={menuId}
+                                aria-haspopup="true"
+                                onClick={() => {
+                                }}
+                                color="inherit"
                             >
-                                <AttachFile/>
+                                <AccountCircle/>
                             </IconButton>
-                        </InputAdornment>
-                    }
-                    endAdornment={
-                        <InputAdornment position="end">
+                            <Typography variant="h6">
+                                Photos
+                            </Typography>
+                            <div className={classes.grow}/>
                             <IconButton
-                                aria-label="toggle password visibility"
-                                onClick={onClickSend}
-                                // onMouseDown={handleMouseDownPassword}
-                            >
-                                <Send/>
+                                aria-label="show commission details"
+                                onClick={() => setShowCommDetails(true)}
+                                color="inherit">
+                                <AssignmentOutlined/>
                             </IconButton>
-                        </InputAdornment>
-                    }
-                    value={text}
-                    onChange={(e) => setText(e.target.value)}
-                    onKeyDown={onKeyDown}
-                    className={classes.input}
-                />
-            </Paper>
-        </Container>
-
+                            <IconButton
+                                aria-label="show commission progress"
+                                color="inherit"
+                                hidden={openDrawer}
+                                onClick={() => setShowCommProgress(true)}>
+                                <LinearScaleOutlined/>
+                            </IconButton>
+                        </Toolbar>
+                    </AppBar>
+                    <Box height="100%">
+                        {
+                            messages ? <AutoSizer>
+                                {({height, width}) => {
+                                    return <VariableSizeList itemSize={(index) => 100} height={height} itemCount={messages?.length}
+                                                             width={width} itemData={messages}>
+                                        {renderRow}
+                                    </VariableSizeList>
+                                }}
+                            </AutoSizer> : <Typography variant={"h5"}>沒有訊息</Typography>
+                        }
+                    </Box>
+                    <OutlinedInput
+                        startAdornment={
+                            <InputAdornment position="start">
+                                <IconButton
+                                    aria-label="toggle password visibility"
+                                    onClick={onClickAttachment}
+                                    // onMouseDown={handleMouseDownPassword}
+                                >
+                                    <AttachFile/>
+                                </IconButton>
+                            </InputAdornment>
+                        }
+                        endAdornment={
+                            <InputAdornment position="end">
+                                <IconButton
+                                    aria-label="toggle password visibility"
+                                    onClick={onClickSend}
+                                    // onMouseDown={handleMouseDownPassword}
+                                >
+                                    <Send/>
+                                </IconButton>
+                            </InputAdornment>
+                        }
+                        value={text}
+                        onChange={(e) => setText(e.target.value)}
+                        onKeyDown={onKeyDown}
+                        className={classes.input}
+                    />
+                </Paper>
+            </Container>
+            {
+                (showCommDetails && commission) &&
+                    <CommissionDetail commission={commission} open={true} onClose={() => setShowCommDetails(false)}/>
+            }
+        </React.Fragment>
     )
 }
