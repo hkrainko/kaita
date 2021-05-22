@@ -1,0 +1,11 @@
+
+
+
+
+
+
+
+
+export interface ImageUseCase {
+
+}

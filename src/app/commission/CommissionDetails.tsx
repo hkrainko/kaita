@@ -11,6 +11,7 @@ import {
 import {useAppDispatch} from "../hooks";
 import {Commission} from "../../domain/commission/model/commission";
 import React from "react";
+import AuthImage from "../component/AuthImage";
 
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -67,8 +68,9 @@ export default function CommissionDetail({commission, open, onClose, ...props}: 
                     <Box display="flex" width="100%">
                         {commission.refImagePaths.map((path, index) => (
                             <div className={classes.sampleImg} key={index}>
-                                <img src={`http://192.168.64.12:31398/${path}`}
-                                     alt="範例" className={classes.sampleImg}/>
+                                <AuthImage
+                                    src={`http://192.168.64.12:31398/${path}`}
+                                    alt="範例" className={classes.sampleImg}/>
                             </div>
                         ))}
                     </Box>
