@@ -73,6 +73,20 @@ export const submitCommission = createAsyncThunk<string,
     }
 )
 
+export const getCommission = createAsyncThunk<Commission,
+    { commId: string },
+    { state: RootState, extra: AppDependency }>(
+    'commission/getCommission',
+    async ({commId}, thunkAPI) => {
+        const authUser = thunkAPI.getState().auth.authUser
+        if (!authUser) {
+            throw UnAuthError
+        }
+        const ad = thunkAPI.extra as AppDependency
+        return await ad.commRepo.getCommission(authUser.apiToken, commId)
+    }
+)
+
 export const getCommissions = createAsyncThunk<CommissionsBatch,
     { type: 'submitted' | 'received', filter: CommissionFilter, sorter: CommissionSorter },
     { state: RootState, extra: AppDependency }>(
@@ -164,6 +178,9 @@ export const commissionSlice = createSlice({
     },
     extraReducers: (builder => {
         builder
+            .addCase(getCommission.fulfilled, (state, action) => {
+                state.byId[action.payload.id] = action.payload
+            })
             .addCase(getCommissions.pending, (state, action) => {
                 const pendingData = {
                     fetchCount: action.meta.arg.filter.count,

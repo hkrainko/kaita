@@ -28,7 +28,7 @@ import {CommissionUseCase} from "../../domain/commission/commission.usecase";
 import {TYPES} from "../../types";
 import {
     connectCommissionService,
-    disconnectCommissionService,
+    disconnectCommissionService, getCommission, getCommissions,
     getMessages,
     sendMessage
 } from "./usecase/commissionSlice";
@@ -104,6 +104,10 @@ export default function Commission({...props}: Props) {
             return state.commission.messageByIds[msgId]
         });
     })
+    useEffect(() => {
+        dispatch(getCommission({commId: id}))
+    }, [dispatch, id])
+
     const [text, setText] = useState("")
 
     const onClickSend = useCallback(() => {
@@ -177,11 +181,11 @@ export default function Commission({...props}: Props) {
         <Container className={classes.root} disableGutters>
             <Breadcrumbs aria-label="breadcrumb">
                 {
-                    (commission?.artistId === authUser?.userId) &&
+                    (commission && (commission.artistId === authUser?.userId)) &&
                     <Link to={`/commissions?t=received`}>接收委託</Link>
                 }
                 {
-                    (commission?.requesterId === authUser?.userId) &&
+                    (commission && (commission?.requesterId === authUser?.userId)) &&
                     <Link to={`/commissions?t=submitted`}>發出委託</Link>
                 }
                 <Link to={`/commissions/${id}`}>{id}</Link>
