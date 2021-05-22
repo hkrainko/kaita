@@ -80,7 +80,14 @@ export default function Header() {
     const location = useLocation()
     const auth = useAppSelector((state) => state.auth)
 
-    const onClickCommission = () => {
+    const onClickSubmittedCommission = () => {
+        if (!auth.authUser) {
+            return
+        }
+        history.push(`/commissions?t=submitted`)
+    }
+
+    const onClickReceivedCommission = () => {
         if (!auth.authUser) {
             return
         }
@@ -136,7 +143,8 @@ export default function Header() {
                     {auth.authState === AuthState.Authed && auth.authUser
                         ? <HeaderDesktopMenu
                             authUser={auth.authUser}
-                            onClickCommission={onClickCommission}
+                            onClickSubmittedCommission={onClickSubmittedCommission}
+                            onClickReceivedCommission={onClickReceivedCommission}
                             onClickArtist={onClickArtist}
                             onClickUserProfile={onClickUserProfile}
                             onClickLogout={onClickLogout}

@@ -20,7 +20,7 @@ import {useAppDispatch, useAppSelector} from "../hooks";
 import {ListChildComponentProps, VariableSizeList} from "react-window";
 import AutoSizer from "react-virtualized-auto-sizer";
 import {AccountCircle, AssignmentOutlined, AttachFile, LinearScaleOutlined, Send} from "@material-ui/icons";
-import {useCallback, useEffect, useState, KeyboardEvent} from "react";
+import {KeyboardEvent, useCallback, useEffect, useState} from "react";
 import {Message} from "../../domain/message/model/message";
 import CommissionMessage from "./message/CommissionMessage";
 import {useInjection} from "../../iocReact";
@@ -32,6 +32,9 @@ import {
     getMessages,
     sendMessage
 } from "./usecase/commissionSlice";
+import {User, UserState} from "../../domain/user/user";
+import {SimpleUser} from "../../domain/user/simple-user";
+import {Commission as DomainCommission} from "../../domain/commission/model/commission";
 
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -75,16 +78,6 @@ const useStyles = makeStyles((theme: Theme) =>
     }),
 );
 
-function renderRow(props: ListChildComponentProps) {
-    const {index, style, data} = props;
-    const message = data[index]
-    return (
-        <ListItem button style={style} key={index}>
-            <CommissionMessage message={message} direction={'receive'}/>
-        </ListItem>
-    );
-}
-
 function getItemSize(message: Message): number {
     return 20
 }
@@ -102,7 +95,8 @@ export default function Commission({...props}: Props) {
     const [openDrawer, setOpenDrawer] = useState(false);
     const dispatch = useAppDispatch()
     const commUseCase = useInjection<CommissionUseCase>(TYPES.CommissionUseCase)
-    const commission = useAppSelector(state => {
+    const authUser = useAppSelector((state) => state.auth.authUser)
+    const commission = useAppSelector<DomainCommission | null>(state => {
         return state.commission.byId[id]
     })
     const messages = useAppSelector(state => {
@@ -136,6 +130,38 @@ export default function Commission({...props}: Props) {
     const onClickAttachment = useCallback(() => {
     }, [])
 
+    const renderRow = useCallback((props: ListChildComponentProps): JSX.Element => {
+        const {index, style, data} = props;
+        const message = data[index]
+
+        if (!authUser || !commission) {
+            return (<></>)
+        }
+        let user: SimpleUser | undefined
+        if (message.from === commission.artistId) {
+            user = {
+                userId: commission.artistId,
+                userName: commission.artistName,
+                profilePath: commission.artistProfilePath,
+            }
+        } else if (message.from === commission.requesterId) {
+            user = {
+                userId: commission.requesterId,
+                userName: commission.requesterName,
+                profilePath: commission.requesterProfilePath,
+            }
+        }
+
+        return (
+            <ListItem button style={style} key={index}>
+                <CommissionMessage
+                    user={user}
+                    message={message}
+                    direction={'receive'}/>
+            </ListItem>
+        );
+    }, [authUser, commission])
+
     useEffect(() => {
         dispatch(getMessages({commId: id, count: 10, lastMessageId: undefined}))
     }, [id, dispatch])
@@ -150,7 +176,14 @@ export default function Commission({...props}: Props) {
     return (
         <Container className={classes.root} disableGutters>
             <Breadcrumbs aria-label="breadcrumb">
-                <Link to={`/commissions?t=received`}>委託</Link>
+                {
+                    (commission?.artistId === authUser?.userId) &&
+                    <Link to={`/commissions?t=received`}>接收委託</Link>
+                }
+                {
+                    (commission?.requesterId === authUser?.userId) &&
+                    <Link to={`/commissions?t=submitted`}>發出委託</Link>
+                }
                 <Link to={`/commissions/${id}`}>{id}</Link>
             </Breadcrumbs>
             <Paper className={classes.paper}>
@@ -187,7 +220,7 @@ export default function Commission({...props}: Props) {
                     {
                         messages ? <AutoSizer>
                             {({height, width}) => {
-                                return <VariableSizeList itemSize={(index) => 50} height={height} itemCount={messages?.length}
+                                return <VariableSizeList itemSize={(index) => 100} height={height} itemCount={messages?.length}
                                                          width={width} itemData={messages}>
                                     {renderRow}
                                 </VariableSizeList>

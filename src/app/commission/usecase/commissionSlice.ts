@@ -3,7 +3,7 @@ import {Action, createAsyncThunk, createSlice, Middleware, MiddlewareAPI, Payloa
 import AppDependency from "../../di";
 import {RootState} from "../../store";
 import {CommissionCreator} from "../../../domain/commission/model/commission-creator";
-import {AppError, UnAuthError, UnknownError} from "../../../domain/error/model/error";
+import {AppError, UnAuthError} from "../../../domain/error/model/error";
 import {CommissionFilter} from "../../../domain/commission/model/commission-filter";
 import {CommissionSorter} from "../../../domain/commission/model/commission-sorter";
 import {CommissionsBatch} from "../../../domain/commission/model/commissions-batch";

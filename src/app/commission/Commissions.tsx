@@ -152,7 +152,7 @@ export default function Commissions(props: Props) {
     return (
         <Container className={classes.root}>
             <Box display="flex">
-                <Typography variant="h5">發出委托</Typography>
+                <Typography variant="h5">{type === 'submitted' ? "發出委托" : "接收委托"}</Typography>
             </Box>
             <Paper className={classes.paper}>
                 <TableContainer className={classes.container}>

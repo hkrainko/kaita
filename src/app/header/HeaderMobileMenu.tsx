@@ -1,16 +1,28 @@
 import React, {useState} from "react";
 import {IconButton, Menu, MenuItem} from "@material-ui/core";
-import {AccountCircleRounded, AssignmentRounded, ViewCompactRounded} from "@material-ui/icons";
+import {AccountCircleRounded, AssignmentRounded, RateReview, ViewCompactRounded} from "@material-ui/icons";
 import HeaderMenuProps from "./HeaderMenuProps";
 
-export default function HeaderMobileMenu({authUser, onClickCommission, onClickArtist, onClickUserProfile, onClickLogout}: HeaderMenuProps) {
+export default function HeaderMobileMenu({
+                                             authUser,
+                                             onClickSubmittedCommission,
+                                             onClickReceivedCommission,
+                                             onClickArtist,
+                                             onClickUserProfile,
+                                             onClickLogout
+                                         }: HeaderMenuProps) {
 
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
 
-    const handleCommission = (event: React.MouseEvent<HTMLElement>) => {
+    const handleSubmittedCommission = (event: React.MouseEvent<HTMLElement>) => {
         setAnchorEl(null);
-        onClickCommission()
+        onClickSubmittedCommission()
+    };
+
+    const handleReceivedCommission = (event: React.MouseEvent<HTMLElement>) => {
+        setAnchorEl(null);
+        onClickReceivedCommission()
     };
 
     const handleArtist = (event: React.MouseEvent<HTMLElement>) => {
@@ -42,21 +54,32 @@ export default function HeaderMobileMenu({authUser, onClickCommission, onClickAr
                 aria-label="account of current user"
                 aria-controls="menu-appbar"
                 aria-haspopup="true"
-                onClick={handleCommission}
+                onClick={handleSubmittedCommission}
                 color="inherit"
             >
-                <AssignmentRounded />
+                <RateReview/>
             </IconButton>
             {authUser.isArtist &&
-            <IconButton
-                aria-label="account of current user"
-                aria-controls="menu-appbar"
-                aria-haspopup="true"
-                onClick={handleArtist}
-                color="inherit"
-            >
-                <ViewCompactRounded />
-            </IconButton>
+            <React.Fragment>
+                <IconButton
+                    aria-label="account of current user"
+                    aria-controls="menu-appbar"
+                    aria-haspopup="true"
+                    onClick={handleReceivedCommission}
+                    color="inherit"
+                >
+                    <AssignmentRounded/>
+                </IconButton>
+                <IconButton
+                    aria-label="account of current user"
+                    aria-controls="menu-appbar"
+                    aria-haspopup="true"
+                    onClick={handleArtist}
+                    color="inherit"
+                >
+                    <ViewCompactRounded/>
+                </IconButton>
+            </React.Fragment>
             }
             <IconButton
                 aria-label="account of current user"
@@ -65,7 +88,7 @@ export default function HeaderMobileMenu({authUser, onClickCommission, onClickAr
                 onClick={handleMenu}
                 color="inherit"
             >
-                <AccountCircleRounded />
+                <AccountCircleRounded/>
             </IconButton>
             <Menu
                 id="menu-appbar"

@@ -18,7 +18,7 @@ export class HttpGetCommissionsModelMapper extends Mapper<HttpGetCommissionsMode
   mapFrom(param: HttpGetCommissionsModel): CommissionsBatch {
     return {
       requesterId: param.requesterId,
-      commissions: param.commissions.map(comm => this.httpCommissionModelMapper.mapFrom(comm)),
+      commissions: param.commissions?.map(comm => this.httpCommissionModelMapper.mapFrom(comm)),
       offSet: param.offSet,
       count: param.count,
       total: param.total
@@ -28,7 +28,7 @@ export class HttpGetCommissionsModelMapper extends Mapper<HttpGetCommissionsMode
   mapTo(param: CommissionsBatch): HttpGetCommissionsModel {
     return {
       requesterId: param.requesterId,
-      commissions: param.commissions.map(comm => this.httpCommissionModelMapper.mapTo(comm)),
+      commissions: param.commissions?.map(comm => this.httpCommissionModelMapper.mapTo(comm)),
       offSet: param.offSet,
       count: param.count,
       total: param.total

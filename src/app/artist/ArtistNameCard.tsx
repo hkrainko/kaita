@@ -1,4 +1,4 @@
-import {Button, Container, createStyles, makeStyles, StandardProps, Theme} from "@material-ui/core";
+import {Box, Button, Container, createStyles, makeStyles, StandardProps, Theme} from "@material-ui/core";
 import UserAvatar from "../component/UserAvatar";
 import {Artist} from "../../domain/artist/model/artist";
 import {Bookmark} from "@material-ui/icons";
@@ -36,7 +36,9 @@ export default function ArtistNameCard(props: Props) {
 
     return (
         <Container className={classes.root}>
-            <UserAvatar path={props.artist?.profilePath}/>
+            <Box display="flex" justifyContent="center">
+                <UserAvatar size={100} path={props.artist?.profilePath}/>
+            </Box>
             <p className={classes.displayName}>{props.artist?.userName}</p>
             <p className={classes.userId}>{`@${props.artist?.artistId}`}</p>
             <Button

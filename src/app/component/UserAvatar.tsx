@@ -1,22 +1,22 @@
-import {Avatar, createStyles, makeStyles, StandardProps, Theme} from "@material-ui/core";
+import {Avatar, createStyles, makeStyles, PropTypes, StandardProps, Theme} from "@material-ui/core";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
-        avatar: {
-            margin: 'auto',
-            height: 100,
-            width: 100
-        }
+        avatar: (props: {size: number}) => ({
+            width: props.size,
+            height: props.size
+        })
     }),
 );
 
 interface Props extends StandardProps<any, any> {
+    size: number
     path?: string
 }
 
 export default function UserAvatar(props: Props) {
 
-    const classes = useStyles(props.className)
+    const classes = useStyles({size: props.size})
 
     return (
         <Avatar
