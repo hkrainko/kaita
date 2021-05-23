@@ -36,6 +36,7 @@ import {
 import {SimpleUser} from "../../domain/user/simple-user";
 import {Commission as DomainCommission} from "../../domain/commission/model/commission";
 import CommissionDetail from "./CommissionDetails";
+import CommissionProgress from "./CommissionProgress";
 
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -280,6 +281,10 @@ export default function Commission({...props}: Props) {
             {
                 (showCommDetails && commission) &&
                     <CommissionDetail commission={commission} open={true} onClose={() => setShowCommDetails(false)}/>
+            }
+            {
+                (showCommProgress && commission) &&
+                <CommissionProgress commission={commission} open={true} onClose={() => setShowCommProgress(false)}/>
             }
         </React.Fragment>
     )

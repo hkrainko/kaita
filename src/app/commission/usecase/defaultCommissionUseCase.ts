@@ -1,6 +1,6 @@
 import {injectable} from "inversify";
 import {CommissionUseCase} from "../../../domain/commission/commission.usecase";
-import {Commission, CommissionDecision, CommissionState} from "../../../domain/commission/model/commission";
+import {Commission, CommissionState} from "../../../domain/commission/model/commission";
 import {ImageMessage, MessageType, SystemMessage, TextMessage} from "../../../domain/message/model/message";
 import {CommissionAction} from "../../../domain/commission/model/commission-action";
 import {
@@ -11,10 +11,6 @@ import {
     InvalidateDueToSystemArtistCommissionAction,
     InvalidateDueToSystemRequesterCommissionAction
 } from "./model/commission-action/invalidate-due-to-system-commission-action";
-import {
-    PendingArtistApprovalArtistCommissionAction,
-    PendingArtistApprovalRequesterCommissionAction
-} from "./model/commission-action/pending-artist-approval-commmisson-action";
 import {
     InProgressArtistCommissionAction,
     InProgressRequesterCommissionAction
@@ -43,8 +39,7 @@ import {
     CompletedArtistCommissionAction,
     CompletedRequesterCommissionAction
 } from "./model/commission-action/completed-commission-action";
-import {PendingRequesterAcceptanceRequesterCommissionAction} from "./model/commission-action/pending-requester-acceptance-commisson-action";
-import {CommissionUpdater} from "../../../domain/commission/model/commission-updater";
+import {PendingRequesterAcceptanceArtistCommissionAction} from "./model/commission-action/pending-requester-acceptance-commisson-action";
 
 
 @injectable()
@@ -107,6 +102,38 @@ export default class DefaultCommissionUseCase implements CommissionUseCase {
         }
     }
 
+    getCommissionSteps(): CommissionState[] {
+
+        // TODO: server record commission state history
+        return [
+            CommissionState.PendingValidation,
+            CommissionState.PendingArtistApproval,
+            CommissionState.InProgress,
+            CommissionState.PendingRequesterAcceptance,
+            CommissionState.PendingUploadProduct,
+            CommissionState.Completed
+        ]
+    }
+
+    getCommissionStepText(state: CommissionState): string | null {
+        switch (state) {
+            case CommissionState.PendingValidation:
+                return '等待系統審查委托。'
+            case CommissionState.PendingArtistApproval:
+                return '等待繪師接受委托'
+            case CommissionState.InProgress:
+                return '等待繪師完成委托'
+            case CommissionState.PendingRequesterAcceptance:
+                return '等待委托人查看完稿'
+            case CommissionState.PendingUploadProduct:
+                return '等待繪師上傳完成品'
+            case CommissionState.Completed:
+                return '委托完成'
+            default:
+                return null
+        }
+    }
+
     getCommissionAction(comm: Commission, userId: string): CommissionAction | null {
         if (userId === comm.artistId) {
             switch (comm.state) {
@@ -116,21 +143,21 @@ export default class DefaultCommissionUseCase implements CommissionUseCase {
                     return new InvalidateDueToSystemArtistCommissionAction();
                 case CommissionState.InvalidatedDueToUsers:
                     return new InvalidateDueToSystemArtistCommissionAction();
-                case CommissionState.PendingArtistApproval:
-                    return new PendingArtistApprovalArtistCommissionAction(
-                        (): Observable<string> => {
-                            const updater: CommissionUpdater = {decision: CommissionDecision.ArtistDecline};
-                            return this.updateCommission(comm.id, updater);
-                        },
-                        (): Observable<string> => {
-                            const updater: CommissionUpdater = {decision: CommissionDecision.ArtistAccept};
-                            return this.updateCommission(comm.id, updater);
-                        }
-                    );
+                // case CommissionState.PendingArtistApproval:
+                //     return new PendingArtistApprovalArtistCommissionAction(
+                //         (): Observable<string> => {
+                //             const updater: CommissionUpdater = {decision: CommissionDecision.ArtistDecline};
+                //             return this.updateCommission(comm.id, updater);
+                //         },
+                //         (): Observable<string> => {
+                //             const updater: CommissionUpdater = {decision: CommissionDecision.ArtistAccept};
+                //             return this.updateCommission(comm.id, updater);
+                //         }
+                //     );
                 case CommissionState.InProgress:
                     return new InProgressArtistCommissionAction();
                 case CommissionState.PendingRequesterAcceptance:
-                    return new PendingRequesterAcceptProductArtistCommissionAction();
+                    return new PendingRequesterAcceptanceArtistCommissionAction();
                 case CommissionState.DeclinedByArtist:
                     return new DeclinedByArtistArtistCommissionAction();
                 case CommissionState.CancelledByRequester:
@@ -155,25 +182,25 @@ export default class DefaultCommissionUseCase implements CommissionUseCase {
                 case CommissionState.InvalidatedDueToUsers:
                     return new InvalidateDueToSystemRequesterCommissionAction();
                 case CommissionState.PendingArtistApproval:
-                    return new PendingArtistApprovalRequesterCommissionAction(
-                        (): Observable<string> => {
-                            const updater: CommissionUpdater = {decision: CommissionDecision.RequesterCancel};
-                            return this.updateCommission(comm.id, updater);
-                        }
-                    );
+                    // return new PendingArtistApprovalRequesterCommissionAction(
+                    //     (): Observable<string> => {
+                    //         const updater: CommissionUpdater = {decision: CommissionDecision.RequesterCancel};
+                    //         return this.updateCommission(comm.id, updater);
+                    //     }
+                    // );
                 case CommissionState.InProgress:
                     return new InProgressRequesterCommissionAction();
-                case CommissionState.PendingRequesterAcceptance:
-                    return new PendingRequesterAcceptanceRequesterCommissionAction(
-                        (): Observable<string> => {
-                            const updater: CommissionUpdater = {decision: CommissionDecision.RequesterRequestRevision};
-                            return this.updateCommission(comm.id, updater);
-                        },
-                        (): Observable<string> => {
-                            const updater: CommissionUpdater = {decision: CommissionDecision.RequesterAcceptProofCopy};
-                            return this.updateCommission(comm.id, updater);
-                        }
-                    );
+                // case CommissionState.PendingRequesterAcceptance:
+                //     return new PendingRequesterAcceptanceRequesterCommissionAction(
+                //         (): Observable<string> => {
+                //             const updater: CommissionUpdater = {decision: CommissionDecision.RequesterRequestRevision};
+                //             return this.updateCommission(comm.id, updater);
+                //         },
+                //         (): Observable<string> => {
+                //             const updater: CommissionUpdater = {decision: CommissionDecision.RequesterAcceptProofCopy};
+                //             return this.updateCommission(comm.id, updater);
+                //         }
+                //     );
                 case CommissionState.DeclinedByArtist:
                     return new DeclinedByArtistRequesterCommissionAction();
                 case CommissionState.CancelledByRequester:

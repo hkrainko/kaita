@@ -85,6 +85,7 @@ export default function CommissionDetail({commission, open, onClose, ...props}: 
                     <ListItem>
                         <ListItemText primary="參考"
                                       secondary={
+                                          commission.refImagePaths &&
                                           <Box display="flex" width="100%">
                                               {commission.refImagePaths.map((path, index) => (
                                                   <div className={classes.sampleImg} key={index}>
