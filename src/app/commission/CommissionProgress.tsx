@@ -15,6 +15,10 @@ import {Commission, CommissionState} from "../../domain/commission/model/commiss
 import {useAppDispatch} from "../hooks";
 import React from "react";
 import {PendingValidationArtistCommissionAction} from "./usecase/model/commission-action/pending-validation-commission-action";
+import {useInjection} from "../../iocReact";
+import {RegisterUseCase} from "../../domain/register/register.usecase";
+import {TYPES} from "../../types";
+import {CommissionUseCase} from "../../domain/commission/commission.usecase";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -46,6 +50,7 @@ interface Props {
 export default function CommissionProgress({commission, open, onClose, ...props}: Props) {
     const classes = useStyles();
 
+    const commissionUseCase = useInjection<CommissionUseCase>(TYPES.CommissionUseCase)
     const dispatch = useAppDispatch()
 
     return (
@@ -82,25 +87,16 @@ export default function CommissionProgress({commission, open, onClose, ...props}
 
                 </List>
 
-                <Stepper activeStep={0} orientation="vertical">
-                    <Step>
-                        <StepLabel>{"label"}</StepLabel>
-                        <StepContent>
-                            <Typography>{"title"}</Typography>
-                        </StepContent>
-                    </Step>
-                    <Step>
-                        <StepLabel>{"label"}</StepLabel>
-                        <StepContent>
-                            <Typography>{"title"}</Typography>
-                        </StepContent>
-                    </Step>
-                    <Step>
-                        <StepLabel>{"label"}</StepLabel>
-                        <StepContent>
-                            <Typography>{"title"}</Typography>
-                        </StepContent>
-                    </Step>
+                <Stepper activeStep={commissionUseCase.getCommissionSteps().indexOf(commission.state)} orientation="vertical">
+                    {
+                        commissionUseCase.getCommissionSteps().map((step, index) => {
+                            return (
+                                <Step key={index}>
+                                    <StepLabel>{commissionUseCase.getCommissionStepText(step)}</StepLabel>
+                                </Step>
+                            )
+                        })
+                    }
                 </Stepper>
 
 

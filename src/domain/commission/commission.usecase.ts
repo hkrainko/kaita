@@ -1,4 +1,5 @@
-import {Commission} from './model/commission';
+import {Commission, CommissionState} from './model/commission';
+import {CommissionAction} from "./model/commission-action";
 
 
 export interface CommissionUseCase {
@@ -13,14 +14,6 @@ export interface CommissionUseCase {
     // abstract updateCommission(commId: string, updater: CommissionUpdater): Observable<string>;
     //
     // abstract getCommissionUser(comm: Commission): CommissionUser | null;
-    // abstract getCommissionAction(comm: Commission): CommissionAction | null;
-    isAllowedToSendMessage(comm: Commission): boolean
-
-    // abstract getMessages(commId: string, currentMsgCount: number): Observable<MessagesBatch>;
-    // abstract sendMessage(msgCreator: MessageCreator): Observable<Message>;
-    //
-    // abstract startStm(): Error | null;
-    // abstract stopStm(): void;
 
     isDayNeedValid(value: number): boolean
 
@@ -43,5 +36,15 @@ export interface CommissionUseCase {
     isDescValid(value: string): boolean
 
     getLastMessageText(commission: Commission): string
+
+    getCommissionSteps(): CommissionState[]
+
+    getCommissionStepText(state: CommissionState): string | null
+
+    getCommissionActionDesc(state: CommissionState, type: 'artist' | 'requester'): string | null
+
+    getCommissionAction(comm: Commission, userId: string): CommissionAction | null
+
+    isAllowedToSendMessage(comm: Commission): boolean
 
 }
