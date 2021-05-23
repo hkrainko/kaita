@@ -20,24 +20,22 @@ import {useAppDispatch, useAppSelector} from "../hooks";
 import {ListChildComponentProps, VariableSizeList} from "react-window";
 import AutoSizer from "react-virtualized-auto-sizer";
 import {AccountCircle, AssignmentOutlined, AttachFile, LinearScaleOutlined, Send} from "@material-ui/icons";
-import {KeyboardEvent, useCallback, useEffect, useState} from "react";
+import React, {KeyboardEvent, useCallback, useEffect, useState} from "react";
 import {Message} from "../../domain/message/model/message";
-import CommissionMessage from "./message/CommissionMessage";
+import CommissionMessage, {MessageDirectionType} from "./message/CommissionMessage";
 import {useInjection} from "../../iocReact";
 import {CommissionUseCase} from "../../domain/commission/commission.usecase";
 import {TYPES} from "../../types";
 import {
     connectCommissionService,
-    disconnectCommissionService, getCommission, getCommissions,
+    disconnectCommissionService,
+    getCommission,
     getMessages,
     sendMessage
 } from "./usecase/commissionSlice";
-import {User, UserState} from "../../domain/user/user";
 import {SimpleUser} from "../../domain/user/simple-user";
 import {Commission as DomainCommission} from "../../domain/commission/model/commission";
-import {OpenCommission} from "../../domain/open-commission/model/open-commission";
 import CommissionDetail from "./CommissionDetails";
-import React from "react";
 
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -147,6 +145,7 @@ export default function Commission({...props}: Props) {
             return (<></>)
         }
         let user: SimpleUser | undefined
+        let direction: MessageDirectionType
         if (message.from === commission.artistId) {
             user = {
                 userId: commission.artistId,
@@ -160,13 +159,20 @@ export default function Commission({...props}: Props) {
                 profilePath: commission.requesterProfilePath,
             }
         }
+        if (message.from === authUser?.userId) {
+            direction = MessageDirectionType.Send
+        } else if (message.from) {
+            direction = MessageDirectionType.Receive
+        } else {
+            direction = MessageDirectionType.System
+        }
 
         return (
             <ListItem button style={style} key={index}>
                 <CommissionMessage
                     user={user}
                     message={message}
-                    direction={'receive'}/>
+                    direction={direction}/>
             </ListItem>
         );
     }, [authUser, commission])

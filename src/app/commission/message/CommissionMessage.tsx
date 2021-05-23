@@ -4,7 +4,7 @@ import {useMemo} from "react";
 import moment from "moment";
 import {SimpleUser} from "../../../domain/user/simple-user";
 
-enum MessageDirectionType {
+export enum MessageDirectionType {
     Receive,
     Send,
     System
@@ -12,30 +12,25 @@ enum MessageDirectionType {
 
 interface MessageDisplay {
     text: string | undefined
-    messageDirection: MessageDirectionType
 }
 
 const displayElementFor = (message: Message, user: SimpleUser | undefined): MessageDisplay => {
     switch (message.messageType) {
         case MessageType.Text:
             return {
-                text: (message as TextMessage).text,
-                messageDirection: (message as TextMessage).from === user?.userId ? MessageDirectionType.Send : MessageDirectionType.Receive
+                text: (message as TextMessage).text
             }
         case MessageType.Image:
             return {
-                text: (message as ImageMessage).text,
-                messageDirection: (message as ImageMessage).from === user?.userId ? MessageDirectionType.Send : MessageDirectionType.Receive,
+                text: (message as ImageMessage).text
             }
         case MessageType.System:
             return {
-                text: (message as SystemMessage).text,
-                messageDirection: MessageDirectionType.System,
+                text: (message as SystemMessage).text
             }
         default:
             return {
-                text: '未支援此訊息',
-                messageDirection: MessageDirectionType.System,
+                text: '未支援此訊息'
             };
     }
 }
@@ -67,9 +62,10 @@ const useStyles = makeStyles((theme: Theme) =>
 interface Props extends StandardProps<any, any> {
     user?: SimpleUser
     message: Message
+    direction: MessageDirectionType
 }
 
-export default function CommissionMessage({direction, message, user, ...props}: Props) {
+export default function CommissionMessage({user, message, direction, ...props}: Props) {
     const classes = useStyles(props.className)
 
     const messageDisplay = useMemo(() => {
@@ -90,7 +86,7 @@ export default function CommissionMessage({direction, message, user, ...props}: 
     return (
         <Box
             className={classes.root}
-            justifyContent={renderDirection(messageDisplay.messageDirection)}>
+            justifyContent={renderDirection(direction)}>
             <Card variant="outlined" className={classes.card}>
                 <CardContent className={classes.cardContent}>
                     <Typography variant="h6">
