@@ -47,6 +47,13 @@ const useStyles = makeStyles((theme: Theme) =>
             display: 'flex',
             width: '100%'
         },
+        card: {
+            padding: theme.spacing(0),
+            margin: theme.spacing(0)
+        },
+        cardContent: {
+            padding: theme.spacing(2),
+        },
         userAvatar: {
             height: '10px',
             width: '10px'
@@ -84,9 +91,9 @@ export default function CommissionMessage({direction, message, user, ...props}: 
         <Box
             className={classes.root}
             justifyContent={renderDirection(messageDisplay.messageDirection)}>
-            <Card variant="outlined">
-                <CardContent>
-                    <Typography variant="body2">
+            <Card variant="outlined" className={classes.card}>
+                <CardContent className={classes.cardContent}>
+                    <Typography variant="h6">
                         {messageDisplay.text}
                     </Typography>
                     <Typography variant="body2">

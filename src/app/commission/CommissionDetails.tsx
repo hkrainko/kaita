@@ -20,7 +20,7 @@ const useStyles = makeStyles((theme: Theme) =>
             flexGrow: 1,
         },
         sampleImg: {
-            width: '100%',
+            maxWidth: '33%'
         },
     }),
 );
@@ -70,7 +70,7 @@ export default function CommissionDetail({commission, open, onClose, ...props}: 
                             <div className={classes.sampleImg} key={index}>
                                 <AuthImage
                                     src={`http://192.168.64.12:31398/${path}`}
-                                    alt="範例" className={classes.sampleImg}/>
+                                    alt="範例"/>
                             </div>
                         ))}
                     </Box>

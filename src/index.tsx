@@ -14,11 +14,29 @@ import {createMuiTheme, MuiThemeProvider} from "@material-ui/core";
 
 let persistor = persistStore(store);
 
-const theme = createMuiTheme({
+let theme = createMuiTheme({
     palette: {
         primary: { main: '#1976d2' },
     },
+    props: {
+        MuiTypography: {
+            variantMapping: {
+
+            },
+
+        },
+    },
+    typography: {
+        fontFamily: [
+            "Noto Sans TC",
+            'Roboto',
+            'Helvetica',
+            'Arial',
+        ].join(','),
+        fontSize: 12,
+    }
 });
+// theme = responsiveFontSizes(theme)
 
 ReactDOM.render(
   <React.StrictMode>

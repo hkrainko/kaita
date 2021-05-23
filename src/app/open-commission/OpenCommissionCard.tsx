@@ -173,7 +173,7 @@ export default function OpenCommissionCard({openCommission, onMainAction, onEdit
             </CardActionArea>
             <CardActions>
                 <Box display={"flex"} flexGrow={1} px={1}>
-                    <Typography variant={"caption"}>@{openCommission.artistId}</Typography>
+                    <Typography variant={"subtitle2"}>@{openCommission.artistId}</Typography>
                 </Box>
                 <IconButton onClick={() => onEdit && onEdit(openCommission)}>
                     <Edit/>
