@@ -134,6 +134,69 @@ export default class DefaultCommissionUseCase implements CommissionUseCase {
         }
     }
 
+    getCommissionActionDesc(state: CommissionState, type: 'artist' | 'requester'): string | null {
+        switch (type) {
+            case 'artist':
+                switch (state) {
+                    case CommissionState.PendingValidation:
+                        return "請等待系統審查委托。";
+                    case CommissionState.InvalidatedDueToOpenCommission:
+                        return "系統審查失敗，委托失效。";
+                    case CommissionState.InvalidatedDueToUsers:
+                        return "系統審查失敗，委托失效。";
+                    case CommissionState.PendingArtistApproval:
+                        return "等待接受委托。";
+                    case CommissionState.InProgress:
+                        return "請在期限內完成委托。";
+                    case CommissionState.PendingRequesterAcceptance:
+                        return "等待委托人查看完稿。";
+                    case CommissionState.DeclinedByArtist:
+                        return "您已拒絕接收此委托。";
+                    case CommissionState.CancelledByRequester:
+                        return "委托人已取消此委托。";
+                    case CommissionState.PendingUploadProduct:
+                        return "請上傳收完成品。";
+                    case CommissionState.PendingUploadProductDueToRevisionExceed:
+                        return "已到達完稿修訂上限，請上傳收完成品。";
+                    case CommissionState.PendingRequesterAcceptProduct:
+                        return "正在等待委托人接收完成品。";
+                    case CommissionState.Completed:
+                        return "委托已完成。";
+                    default:
+                        return null;
+                }
+            case 'requester':
+                switch (state) {
+                    case CommissionState.PendingValidation:
+                        return "請等待系統審查委托。";
+                    case CommissionState.InvalidatedDueToOpenCommission:
+                        return "系統審查失敗，委托失效。";
+                    case CommissionState.InvalidatedDueToUsers:
+                        return "系統審查失敗，委托失效。";
+                    case CommissionState.PendingArtistApproval:
+                        return "等待繪師接受委托。";
+                    case CommissionState.InProgress:
+                        return "等待繪師完成委托。";
+                    case CommissionState.PendingRequesterAcceptance:
+                        return "完稿已上傳，請查看。";
+                    case CommissionState.DeclinedByArtist:
+                        return "繪師已拒絕接受此委托。";
+                    case CommissionState.CancelledByRequester:
+                        return "您已取消此委托。";
+                    case CommissionState.PendingUploadProduct:
+                        return "等待繪師上傳完成品。";
+                    case CommissionState.PendingUploadProductDueToRevisionExceed:
+                        return "已到達完稿修訂上限，請等待繪師上傳完成品。";
+                    case CommissionState.PendingRequesterAcceptProduct:
+                        return "請接收完成品。";
+                    case CommissionState.Completed:
+                        return "委托已完成。";
+                    default:
+                        return null;
+                }
+        }
+    }
+
     getCommissionAction(comm: Commission, userId: string): CommissionAction | null {
         if (userId === comm.artistId) {
             switch (comm.state) {
