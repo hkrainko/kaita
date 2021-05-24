@@ -37,6 +37,7 @@ import {SimpleUser} from "../../domain/user/simple-user";
 import {Commission as DomainCommission} from "../../domain/commission/model/commission";
 import CommissionDetail from "./CommissionDetails";
 import CommissionProgress from "./CommissionProgress";
+import CommissionActionPanel from "./CommissionActionPanel";
 
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -248,6 +249,12 @@ export default function Commission({...props}: Props) {
                             </AutoSizer> : <Typography variant={"h5"}>沒有訊息</Typography>
                         }
                     </Box>
+                    {
+                        commission &&
+                        <Box mx={3} mt={1}>
+                            <CommissionActionPanel commission={commission}/>
+                        </Box>
+                    }
                     <OutlinedInput
                         startAdornment={
                             <InputAdornment position="start">
