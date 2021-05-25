@@ -44,10 +44,17 @@ const useStyles = makeStyles((theme: Theme) =>
         },
         card: {
             padding: theme.spacing(0),
-            margin: theme.spacing(0)
+            margin: theme.spacing(0),
+            borderRadius: theme.spacing(2),
+            borderWidth: '1px',
+            borderStyle: 'solid',
+            borderColor: theme.palette.grey["400"]
         },
         cardContent: {
-            padding: theme.spacing(2),
+            paddingTop: theme.spacing(1),
+            paddingBottom: theme.spacing(1),
+            paddingLeft: theme.spacing(2),
+            paddingRight: theme.spacing(2),
         },
         userAvatar: {
             height: '10px',
@@ -87,16 +94,16 @@ export default function CommissionMessage({user, message, direction, ...props}: 
         <Box
             className={classes.root}
             justifyContent={renderDirection(direction)}>
-            <Card variant="outlined" className={classes.card}>
-                <CardContent className={classes.cardContent}>
+            <div className={classes.card}>
+                <div className={classes.cardContent}>
                     <Typography variant="h6">
                         {messageDisplay.text}
                     </Typography>
                     <Typography variant="body2">
                         {moment(message.createTime).calendar()}
                     </Typography>
-                </CardContent>
-            </Card>
+                </div>
+            </div>
         </Box>
     )
 }
