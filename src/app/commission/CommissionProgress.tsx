@@ -8,15 +8,16 @@ import {
     List,
     ListItem,
     ListItemText,
-    makeStyles, Step, StepContent, StepLabel, Stepper,
-    Theme, Typography
+    makeStyles,
+    Step,
+    StepLabel,
+    Stepper,
+    Theme
 } from "@material-ui/core";
 import {Commission, CommissionState} from "../../domain/commission/model/commission";
 import {useAppDispatch} from "../hooks";
 import React from "react";
-import {PendingValidationArtistCommissionAction} from "./usecase/model/commission-action/pending-validation-commission-action";
 import {useInjection} from "../../iocReact";
-import {RegisterUseCase} from "../../domain/register/register.usecase";
 import {TYPES} from "../../types";
 import {CommissionUseCase} from "../../domain/commission/commission.usecase";
 

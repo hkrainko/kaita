@@ -43,8 +43,6 @@ export interface CommissionUseCase {
 
     getCommissionActionDesc(state: CommissionState, type: 'artist' | 'requester'): string | null
 
-    getCommissionAction(comm: Commission, userId: string): CommissionAction | null
-
     isAllowedToSendMessage(comm: Commission): boolean
 
 }

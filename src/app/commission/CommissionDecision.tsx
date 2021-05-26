@@ -1,8 +1,8 @@
 import {Button, createStyles, makeStyles, Theme} from "@material-ui/core";
-import {Commission} from "../../../../domain/commission/model/commission";
-import {useInjection} from "../../../../iocReact";
-import {CommissionUseCase} from "../../../../domain/commission/commission.usecase";
-import {TYPES} from "../../../../types";
+import {Commission} from "../../domain/commission/model/commission";
+import {useInjection} from "../../iocReact";
+import {CommissionUseCase} from "../../domain/commission/commission.usecase";
+import {TYPES} from "../../types";
 import React from "react";
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -19,6 +19,9 @@ const useStyles = makeStyles((theme: Theme) =>
 
 export interface Decision {
     title: string
+    desc: string
+    optName: string
+    path: string
     onClick: () => void
 }
 
