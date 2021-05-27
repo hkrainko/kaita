@@ -1,6 +1,6 @@
-import {CommissionDecision} from "./commission-decision";
+import {CommissionDecisionOption} from "./commission-decision-option";
 
 export interface CommissionAction {
   title: string;
-  decisions: CommissionDecision[];
+  decisions: CommissionDecisionOption[];
 }

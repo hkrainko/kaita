@@ -1,9 +1,12 @@
-import {Commission, CommissionState} from "../../domain/commission/model/commission";
+import {Commission, CommissionDecision, CommissionState} from "../../domain/commission/model/commission";
 import {Box, createStyles, makeStyles, Theme, Typography} from "@material-ui/core";
 import {useInjection} from "../../iocReact";
 import {CommissionUseCase} from "../../domain/commission/commission.usecase";
 import {TYPES} from "../../types";
-import CommissionDecision, {Decision} from "./CommissionDecision";
+import {CommissionDecisionOption} from "../../domain/commission/model/commission-decision-option";
+import CommissionDecisionButton from "./CommissionDecisionButton";
+import {Fragment, useState} from "react";
+import AppDialog from "../component/AppDialog";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -19,10 +22,10 @@ const useStyles = makeStyles((theme: Theme) =>
 
 interface CommissionAction {
     title: string
-    decisions?: Decision[]
+    decisionOptions?: CommissionDecisionOption[]
 }
 
-const getDecisions = (commState: CommissionState, type: 'artist' | 'requester'): Decision[] => {
+const getDecisions = (commState: CommissionState, type: 'artist' | 'requester'): CommissionDecisionOption[] => {
     switch (commState) {
         case CommissionState.PendingArtistApproval:
             if (type === 'artist') {
@@ -31,15 +34,13 @@ const getDecisions = (commState: CommissionState, type: 'artist' | 'requester'):
                         optName: '拒絕',
                         title: '拒絕委托',
                         desc: '拒絕後將不能恢復。',
-                        path: 'artist-decline',
-                        onClick: () => console.log("")
+                        decision: CommissionDecision.ArtistDecline,
                     },
                     {
                         optName: '接受',
                         title: '接受委托',
                         desc: '委托將馬上開始，需根據限期內完成委托內容。',
-                        path: 'artist-accept',
-                        onClick: () => console.log("")
+                        decision: CommissionDecision.ArtistAccept,
                     }
                 ]
             } else {
@@ -48,8 +49,7 @@ const getDecisions = (commState: CommissionState, type: 'artist' | 'requester'):
                         optName: '取消',
                         title: '取消委托',
                         desc: '取消委托後將不能恢復。',
-                        path: 'requester-cancel',
-                        onClick: () => console.log("")
+                        decision: CommissionDecision.RequesterCancel,
                     }
                 ]
             }
@@ -60,8 +60,7 @@ const getDecisions = (commState: CommissionState, type: 'artist' | 'requester'):
                         title: '上傳完稿',
                         desc: '請上傳完稿以供委托人查閱。',
                         optName: '上傳完稿',
-                        path: 'upload-proof-copy',
-                        onClick: () => console.log("")
+                        decision: CommissionDecision.ArtistUploadProofCopy,
                     }
                 ]
             } else {
@@ -76,15 +75,13 @@ const getDecisions = (commState: CommissionState, type: 'artist' | 'requester'):
                         optName: '提出修改',
                         title: '提出修改',
                         desc: '提出修改後繪師將會重新繪制。',
-                        path: 'request-revision',
-                        onClick: () => console.log("")
+                        decision: CommissionDecision.RequesterRequestRevision,
                     },
                     {
                         optName: '接受',
                         title: '接受完稿。',
                         desc: '接受完稿後繪師將繪制完成品。',
-                        path: 'accept-proof-copy',
-                        onClick: () => console.log("")
+                        decision: CommissionDecision.RequesterAcceptProofCopy,
                     }
                 ]
             }
@@ -95,8 +92,7 @@ const getDecisions = (commState: CommissionState, type: 'artist' | 'requester'):
                         optName: '提交完成品',
                         title: '提交完成品並完成委托',
                         desc: '根據委托人要求上傳完成品。',
-                        path: 'upload-product',
-                        onClick: () => console.log("")
+                        decision: CommissionDecision.ArtistUploadProduct,
                     }
                 ]
             }
@@ -108,8 +104,7 @@ const getDecisions = (commState: CommissionState, type: 'artist' | 'requester'):
                         optName: '提交完成品',
                         title: '提交完成品並完成委托',
                         desc: '根據委托人要求上傳完成品。',
-                        path: 'upload-product',
-                        onClick: () => console.log("")
+                        decision: CommissionDecision.ArtistUploadProduct,
                     }
                 ]
             }
@@ -123,13 +118,32 @@ const getDecisions = (commState: CommissionState, type: 'artist' | 'requester'):
                         optName: '接受',
                         title: '接受完成品',
                         desc: '接受後將完成委托程序。',
-                        path: 'accept-product',
-                        onClick: () => console.log("")
+                        decision: CommissionDecision.RequesterAcceptProduct,
                     }
                 ]
             }
     }
     return []
+}
+
+const getDecisionDialog = (option: CommissionDecisionOption, onClose: () => void, onConfirm: () => void): JSX.Element => {
+    switch (option.decision) {
+        case CommissionDecision.ArtistAccept:
+        case CommissionDecision.ArtistDecline:
+        case CommissionDecision.RequesterCancel:
+        case CommissionDecision.RequesterAcceptProofCopy:
+        case CommissionDecision.RequesterRequestRevision:
+            return <AppDialog open={true} onClose={onClose} onConfirm={onConfirm} title={option.title}
+                              content={option.desc}/>
+
+        case CommissionDecision.ArtistUploadProofCopy:
+            return <></>
+        case CommissionDecision.ArtistUploadProduct:
+            return <></>
+        case CommissionDecision.RequesterAcceptProduct:
+            return <></>
+    }
+    return <></>
 }
 
 interface Props {
@@ -139,26 +153,46 @@ interface Props {
 export default function CommissionActionPanel({commission, ...props}: Props) {
     const classes = useStyles();
 
+    const [showDecisionOption, setShowDecisionOption] = useState<CommissionDecisionOption | null>(null)
     const commUseCase = useInjection<CommissionUseCase>(TYPES.CommissionUseCase)
 
     const action: CommissionAction = {
         title: commUseCase.getCommissionActionDesc(commission.state, "artist") ?? "",
-        decisions: getDecisions(commission.state, 'artist')
+        decisionOptions: getDecisions(commission.state, 'artist')
     }
 
     return (
-        <Box className={classes.root}>
-            <Box py={{xs: 1, md: 1}} px={{xs: 2, md: 3}} alignItems="center" display="flex"
-                 justifyContent="flex-around">
-                <Box marginRight={5}>
-                    <Typography>{action.title}</Typography>
+        <Fragment>
+            <Box className={classes.root}>
+                <Box py={{xs: 1, md: 1}} px={{xs: 2, md: 3}} alignItems="center" display="flex"
+                     justifyContent="flex-around">
+                    <Box marginRight={5}>
+                        <Typography>{action.title}</Typography>
+                    </Box>
+                    {
+                        action.decisionOptions?.map(option =>
+                            <CommissionDecisionButton
+                                decisionOptions={option}
+                                onClick={() => {
+                                    console.log(`${JSON.stringify(option)}`)
+                                    setShowDecisionOption(option)
+                                }}
+                            />
+                        )
+                    }
                 </Box>
-                {
-                    action.decisions?.map(decision =>
-                        <CommissionDecision decision={decision}/>
-                    )
-                }
             </Box>
-        </Box>
+            {
+                showDecisionOption &&
+                getDecisionDialog(showDecisionOption,
+                    () => {
+                        setShowDecisionOption(null)
+                    },
+                    () => {
+                        console.log("showDecisionOption onConfirm")
+                    }
+                )
+            }
+        </Fragment>
     )
 }
