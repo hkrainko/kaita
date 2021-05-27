@@ -7,6 +7,9 @@ import {CommissionDecisionOption} from "../../domain/commission/model/commission
 import CommissionDecisionButton from "./CommissionDecisionButton";
 import {Fragment, useState} from "react";
 import AppDialog from "../component/AppDialog";
+import {useAppDispatch, useAppSelector} from "../hooks";
+import {updateCommission} from "./usecase/commissionSlice";
+import {CommissionUpdater} from "../../domain/commission/model/commission-updater";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -151,14 +154,25 @@ interface Props {
 }
 
 export default function CommissionActionPanel({commission, ...props}: Props) {
-    const classes = useStyles();
+    const classes = useStyles()
 
+    const dispatch = useAppDispatch()
     const [showDecisionOption, setShowDecisionOption] = useState<CommissionDecisionOption | null>(null)
     const commUseCase = useInjection<CommissionUseCase>(TYPES.CommissionUseCase)
+    const userId = useAppSelector<string | undefined>(state => state.auth.authUser?.userId)
+
+    let commUserType: 'artist' | 'requester'
+    if (userId === commission.artistId) {
+        commUserType = 'artist'
+    } else if (userId === commission.requesterId) {
+        commUserType = 'requester'
+    } else {
+        return <></>
+    }
 
     const action: CommissionAction = {
-        title: commUseCase.getCommissionActionDesc(commission.state, "artist") ?? "",
-        decisionOptions: getDecisions(commission.state, 'artist')
+        title: commUseCase.getCommissionActionDesc(commission.state, commUserType) ?? "",
+        decisionOptions: getDecisions(commission.state, commUserType)
     }
 
     return (
@@ -189,7 +203,12 @@ export default function CommissionActionPanel({commission, ...props}: Props) {
                         setShowDecisionOption(null)
                     },
                     () => {
+                        const updater: CommissionUpdater = {
+                            decision: showDecisionOption.decision
+                        }
+                        dispatch(updateCommission({commId: commission.id, updater}))
                         console.log("showDecisionOption onConfirm")
+                        setShowDecisionOption(null)
                     }
                 )
             }
