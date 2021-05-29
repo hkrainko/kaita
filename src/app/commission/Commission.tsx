@@ -21,7 +21,7 @@ import {ListChildComponentProps, VariableSizeList} from "react-window";
 import AutoSizer from "react-virtualized-auto-sizer";
 import {AccountCircle, AssignmentOutlined, AttachFile, LinearScaleOutlined, Send} from "@material-ui/icons";
 import React, {KeyboardEvent, useCallback, useEffect, useRef, useState} from "react";
-import {Message, MessageType, SystemMessage} from "../../domain/message/model/message";
+import {ImageMessage, Message, MessageType, TextMessage} from "../../domain/message/model/message";
 import CommissionMessage, {MessageDirectionType} from "./message/CommissionMessage";
 import {useInjection} from "../../iocReact";
 import {CommissionUseCase} from "../../domain/commission/commission.usecase";
@@ -94,12 +94,12 @@ export default function Commission({...props}: Props) {
     const classes = useStyles(props.className)
 
     const location = useLocation()
+    const msgListRef = useRef<VariableSizeList>(null)
     let {id} = useParams<{ id: string }>()
     const [openDrawer, setOpenDrawer] = useState(false);
     const [showCommDetails, setShowCommDetails] = useState<boolean>(false)
     const [showCommProgress, setShowCommProgress] = useState<boolean>(false)
-    // const [lastSystemMsgId, setLastSystemMsgId] = useState<string | null>(null)
-    const lastSystemMsgId = useRef<string | null>(null)
+    const lastTriggerScrollingMsgId = useRef<string | null>(null)
     const dispatch = useAppDispatch()
     const commUseCase = useInjection<CommissionUseCase>(TYPES.CommissionUseCase)
     const authUser = useAppSelector((state) => state.auth.authUser)
@@ -108,15 +108,24 @@ export default function Commission({...props}: Props) {
         return state.commission.byId[id]
     })
     const messages = useAppSelector(state => {
-        const msgs = state.commission.messageIdsByCommissionId[id]?.map( msgId => {
-            return state.commission.messageByIds[msgId]
-        });
+        const msgs = state.commission.messageIdsByCommissionId[id]?.map(msgId => state.commission.messageByIds[msgId]);
         if (msgs && msgs.length > 0) {
             const lastMsg = msgs[msgs.length - 1]
             if (lastMsg.messageType === MessageType.System) {
-                if (lastSystemMsgId.current !== lastMsg.id) {
-                    lastSystemMsgId.current = lastMsg.id
+                if (lastTriggerScrollingMsgId.current !== lastMsg.id) {
+                    lastTriggerScrollingMsgId.current = lastMsg.id
                     dispatch(getCommission({commId: id}))
+                    msgListRef.current?.scrollTo(Number.MAX_SAFE_INTEGER)
+                }
+            } else if (lastMsg.messageType === MessageType.Text && (lastMsg as TextMessage).from === authUser?.userId) {
+                if (lastTriggerScrollingMsgId.current !== lastMsg.id) {
+                    lastTriggerScrollingMsgId.current = lastMsg.id
+                    msgListRef.current?.scrollTo(Number.MAX_SAFE_INTEGER)
+                }
+            } else if (lastMsg.messageType === MessageType.Image && (lastMsg as ImageMessage).from === authUser?.userId) {
+                if (lastTriggerScrollingMsgId.current !== lastMsg.id) {
+                    lastTriggerScrollingMsgId.current = lastMsg.id
+                    msgListRef.current?.scrollTo(Number.MAX_SAFE_INTEGER)
                 }
             }
         }
@@ -124,14 +133,17 @@ export default function Commission({...props}: Props) {
     })
     useEffect(() => {
         dispatch(getCommission({commId: id}))
-    }, [dispatch, id, lastSystemMsgId])
+    }, [dispatch, id, lastTriggerScrollingMsgId])
+    // useEffect(() => {
+    //     msgListRef.current?.scrollToItem(messages.length)
+    // }, [lastSystemMsgId, messages.length])
 
     const [text, setText] = useState("")
 
     const onClickSend = useCallback(() => {
         dispatch(sendMessage({
             msgCreator: {
-                commissionId: id,text
+                commissionId: id, text
             }
         }))
         setText("")
@@ -143,7 +155,7 @@ export default function Commission({...props}: Props) {
         }
         dispatch(sendMessage({
             msgCreator: {
-                commissionId: id,text
+                commissionId: id, text
             }
         }))
         setText("")
@@ -255,11 +267,13 @@ export default function Commission({...props}: Props) {
                             messages ? <AutoSizer>
                                 {({height, width}) => {
                                     return <VariableSizeList
+                                        ref={msgListRef}
                                         itemSize={(index) => 100}
                                         height={height}
                                         itemCount={messages?.length}
                                         width={width}
                                         itemData={messages}
+                                        initialScrollOffset={Number.MAX_SAFE_INTEGER}
                                     >
                                         {renderRow}
                                     </VariableSizeList>
@@ -305,7 +319,7 @@ export default function Commission({...props}: Props) {
             </Container>
             {
                 (showCommDetails && commission) &&
-                    <CommissionDetail commission={commission} open={true} onClose={() => setShowCommDetails(false)}/>
+                <CommissionDetail commission={commission} open={true} onClose={() => setShowCommDetails(false)}/>
             }
             {
                 (showCommProgress && commission) &&
