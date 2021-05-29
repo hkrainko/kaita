@@ -1,7 +1,7 @@
-import {Commission} from "../../../domain/commission/model/commission";
 import {
     Button,
-    createStyles, Dialog,
+    createStyles,
+    Dialog,
     DialogActions,
     DialogContent,
     DialogContentText,
@@ -11,9 +11,11 @@ import {
 } from "@material-ui/core";
 import {useAppDispatch} from "../../hooks";
 import React, {useCallback, useState} from "react";
-import AppImageCrop from "../../component/AppImageCrop";
 import AppDropzone from "../../component/AppDropzone";
 import AppRemovableImage from "../../component/AppRemovableImage";
+import {CommissionDecisionOption} from "../../../domain/commission/model/commission-decision-option";
+import {CommissionUpdater} from "../../../domain/commission/model/commission-updater";
+import {CommissionDecision} from "../../../domain/commission/model/commission";
 
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -29,26 +31,22 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 interface Props {
-    commission: Commission
+    commDecisionOpt: CommissionDecisionOption
     open: boolean
     onClose: () => void
-    onConfirm: () => void
-    title: string
-    content: string
+    onConfirm: (updater: CommissionUpdater) => void
 }
 
-export default function ArtistUploadProofCopyDecisionModal({
-                                                               open,
-                                                               onClose,
-                                                               onConfirm,
-                                                               title,
-                                                               content,
-                                                               ...props
-                                                           }: Props) {
+export default function ArtistUploadProofCopyDecisionDialog({
+                                                                commDecisionOpt,
+                                                                open,
+                                                                onClose,
+                                                                onConfirm,
+                                                                ...props
+                                                            }: Props) {
     const classes = useStyles()
 
     const [file, setFile] = useState<File | null>(null);
-    const [proofCopyFile, setProofCopyFile] = useState<File | null>(null);
     const dispatch = useAppDispatch()
 
     const filesCallback = useCallback(
@@ -60,9 +58,19 @@ export default function ArtistUploadProofCopyDecisionModal({
     const onClickDeleteImage = useCallback(
         () => {
             setFile(null)
-            setProofCopyFile(null)
         }
         , [])
+
+    const onClickConfirmButton = useCallback(() => {
+        if (!file) {
+            return
+        }
+        const updater: CommissionUpdater = {
+            decision: CommissionDecision.ArtistUploadProofCopy,
+            proofCopyImage: file
+        }
+        onConfirm(updater)
+    }, [file, onConfirm])
 
     return (
         <Dialog
@@ -70,10 +78,12 @@ export default function ArtistUploadProofCopyDecisionModal({
             onClose={onClose}
             aria-labelledby="alert-dialog-title"
             aria-describedby="alert-dialog-description"
+            fullWidth
+            maxWidth="sm"
         >
-            <DialogTitle id="alert-dialog-title">{title}</DialogTitle>
-            <DialogContentText>{content}</DialogContentText>
+            <DialogTitle id="alert-dialog-title">{commDecisionOpt.title}</DialogTitle>
             <DialogContent>
+                <DialogContentText>{commDecisionOpt.desc}</DialogContentText>
                 {file
                     ? <AppRemovableImage
                         onClickDelete={onClickDeleteImage}
@@ -88,7 +98,7 @@ export default function ArtistUploadProofCopyDecisionModal({
                 <Button onClick={onClose} color="default" fullWidth>
                     取消
                 </Button>
-                <Button onClick={onConfirm} color="primary" fullWidth>
+                <Button onClick={onClickConfirmButton} color="primary" fullWidth>
                     確定
                 </Button>
             </DialogActions>

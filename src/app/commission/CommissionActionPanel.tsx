@@ -10,6 +10,10 @@ import AppDialog from "../component/AppDialog";
 import {useAppDispatch, useAppSelector} from "../hooks";
 import {updateCommission} from "./usecase/commissionSlice";
 import {CommissionUpdater} from "../../domain/commission/model/commission-updater";
+import ArtistUploadProofCopyDecisionDialog from "./decision-modal/ArtistUploadProofCopyDecisionDialog";
+import ArtistUploadProductDecisionDialog from "./decision-modal/ArtistUploadProductDecisionDialog";
+import RequesterAcceptProductCommissionDecisionDialog
+    from "./decision-modal/RequesterAcceptProductCommissionDecisionDialog";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -129,22 +133,37 @@ const getDecisions = (commState: CommissionState, type: 'artist' | 'requester'):
     return []
 }
 
-const getDecisionDialog = (option: CommissionDecisionOption, onClose: () => void, onConfirm: () => void): JSX.Element => {
+const getDecisionDialog = (option: CommissionDecisionOption, onClose: () => void, onConfirm: (updater: CommissionUpdater) => void): JSX.Element => {
     switch (option.decision) {
         case CommissionDecision.ArtistAccept:
         case CommissionDecision.ArtistDecline:
         case CommissionDecision.RequesterCancel:
         case CommissionDecision.RequesterAcceptProofCopy:
         case CommissionDecision.RequesterRequestRevision:
-            return <AppDialog open={true} onClose={onClose} onConfirm={onConfirm} title={option.title}
+            return <AppDialog open={true}
+                              onClose={onClose}
+                              onConfirm={() => {onConfirm( {decision: option.decision})}}
+                              title={option.title}
                               content={option.desc}/>
 
         case CommissionDecision.ArtistUploadProofCopy:
-            return <></>
+            return <ArtistUploadProofCopyDecisionDialog
+                commDecisionOpt={option}
+                open={true}
+                onClose={onClose}
+                onConfirm={onConfirm}/>
         case CommissionDecision.ArtistUploadProduct:
-            return <></>
+            return <ArtistUploadProductDecisionDialog
+                commDecisionOpt={option}
+                open={true}
+                onClose={onClose}
+                onConfirm={(onConfirm)}/>
         case CommissionDecision.RequesterAcceptProduct:
-            return <></>
+            return <RequesterAcceptProductCommissionDecisionDialog
+                commDecisionOpt={option}
+                open={true}
+                onClose={onClose}
+                onConfirm={onConfirm}/>
     }
     return <></>
 }
@@ -202,10 +221,7 @@ export default function CommissionActionPanel({commission, ...props}: Props) {
                     () => {
                         setShowDecisionOption(null)
                     },
-                    () => {
-                        const updater: CommissionUpdater = {
-                            decision: showDecisionOption.decision
-                        }
+                    (updater) => {
                         dispatch(updateCommission({commId: commission.id, updater}))
                         console.log("showDecisionOption onConfirm")
                         setShowDecisionOption(null)

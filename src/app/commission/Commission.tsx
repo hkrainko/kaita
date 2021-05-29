@@ -20,8 +20,8 @@ import {useAppDispatch, useAppSelector} from "../hooks";
 import {ListChildComponentProps, VariableSizeList} from "react-window";
 import AutoSizer from "react-virtualized-auto-sizer";
 import {AccountCircle, AssignmentOutlined, AttachFile, LinearScaleOutlined, Send} from "@material-ui/icons";
-import React, {KeyboardEvent, useCallback, useEffect, useState} from "react";
-import {Message} from "../../domain/message/model/message";
+import React, {KeyboardEvent, useCallback, useEffect, useRef, useState} from "react";
+import {Message, MessageType, SystemMessage} from "../../domain/message/model/message";
 import CommissionMessage, {MessageDirectionType} from "./message/CommissionMessage";
 import {useInjection} from "../../iocReact";
 import {CommissionUseCase} from "../../domain/commission/commission.usecase";
@@ -98,20 +98,33 @@ export default function Commission({...props}: Props) {
     const [openDrawer, setOpenDrawer] = useState(false);
     const [showCommDetails, setShowCommDetails] = useState<boolean>(false)
     const [showCommProgress, setShowCommProgress] = useState<boolean>(false)
+    // const [lastSystemMsgId, setLastSystemMsgId] = useState<string | null>(null)
+    const lastSystemMsgId = useRef<string | null>(null)
     const dispatch = useAppDispatch()
     const commUseCase = useInjection<CommissionUseCase>(TYPES.CommissionUseCase)
     const authUser = useAppSelector((state) => state.auth.authUser)
+
     const commission = useAppSelector<DomainCommission | null>(state => {
         return state.commission.byId[id]
     })
     const messages = useAppSelector(state => {
-        return state.commission.messageIdsByCommissionId[id]?.map( msgId => {
+        const msgs = state.commission.messageIdsByCommissionId[id]?.map( msgId => {
             return state.commission.messageByIds[msgId]
         });
+        if (msgs && msgs.length > 0) {
+            const lastMsg = msgs[msgs.length - 1]
+            if (lastMsg.messageType === MessageType.System) {
+                if (lastSystemMsgId.current !== lastMsg.id) {
+                    lastSystemMsgId.current = lastMsg.id
+                    dispatch(getCommission({commId: id}))
+                }
+            }
+        }
+        return msgs
     })
     useEffect(() => {
         dispatch(getCommission({commId: id}))
-    }, [dispatch, id])
+    }, [dispatch, id, lastSystemMsgId])
 
     const [text, setText] = useState("")
 
@@ -241,8 +254,13 @@ export default function Commission({...props}: Props) {
                         {
                             messages ? <AutoSizer>
                                 {({height, width}) => {
-                                    return <VariableSizeList itemSize={(index) => 100} height={height} itemCount={messages?.length}
-                                                             width={width} itemData={messages}>
+                                    return <VariableSizeList
+                                        itemSize={(index) => 100}
+                                        height={height}
+                                        itemCount={messages?.length}
+                                        width={width}
+                                        itemData={messages}
+                                    >
                                         {renderRow}
                                     </VariableSizeList>
                                 }}
