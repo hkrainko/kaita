@@ -4,7 +4,7 @@ import {
     Dialog, DialogActions,
     DialogContent,
     DialogContentText,
-    DialogTitle,
+    DialogTitle, Divider,
     makeStyles,
     Theme
 } from "@material-ui/core";
@@ -36,12 +36,12 @@ interface Props {
 }
 
 export default function ArtistUploadProductDecisionDialog({
-                                                                commDecisionOpt,
-                                                                open,
-                                                                onClose,
-                                                                onConfirm,
-                                                                ...props
-                                                            }: Props) {
+                                                              commDecisionOpt,
+                                                              open,
+                                                              onClose,
+                                                              onConfirm,
+                                                              ...props
+                                                          }: Props) {
     const classes = useStyles()
 
     const [displayImage, setDisplayImage] = useState<File | null>(null)
@@ -63,7 +63,7 @@ export default function ArtistUploadProductDecisionDialog({
     const productFileCallback = useCallback(
         (files: File[]) => {
             console.log(files)
-            files.length ? setDisplayImage(files[0]) : setDisplayImage(null)
+            files.length ? setProductFile(files[0]) : setProductFile(null)
         }, []);
 
     const onClickDeleteProductFile = useCallback(
@@ -94,27 +94,26 @@ export default function ArtistUploadProductDecisionDialog({
             maxWidth="sm"
         >
             <DialogTitle id="alert-dialog-title">{commDecisionOpt.title}</DialogTitle>
-            <DialogContentText>{commDecisionOpt.desc}</DialogContentText>
             <DialogContent>
+                <DialogContentText>{commDecisionOpt.desc}</DialogContentText>
                 {displayImage
                     ? <AppRemovableImage
                         onClickDelete={onClickDeleteImage}
                         preCropHeightPercent={50}
                         preCropWidthPercent={50}
-                        alt="drop file" key={0}
+                        alt="drop file"
+                        key={0}
                         src={displayImage}/>
                     : <AppDropzone onDrop={displayImageCallback}/>
                 }
-            </DialogContent>
-
-            <DialogContentText>上傳完成品檔案</DialogContentText>
-            <DialogContent>
+                <DialogContentText>上傳完成品檔案</DialogContentText>
                 {productFile
                     ? <AppRemovableImage
                         onClickDelete={onClickDeleteProductFile}
                         preCropHeightPercent={50}
                         preCropWidthPercent={50}
-                        alt="drop file" key={0}
+                        alt="drop file"
+                        key={1}
                         src={productFile}/>
                     : <AppDropzone onDrop={productFileCallback}/>
                 }

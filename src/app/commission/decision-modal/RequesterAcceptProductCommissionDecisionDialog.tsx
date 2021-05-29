@@ -58,7 +58,7 @@ export default function RequesterAcceptProductCommissionDecisionDialog({
             return
         }
         const updater: CommissionUpdater = {
-            decision: CommissionDecision.ArtistUploadProofCopy,
+            decision: CommissionDecision.RequesterAcceptProduct,
             rating: rating,
             comment
         }
