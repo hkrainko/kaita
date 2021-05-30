@@ -1,4 +1,5 @@
 import {
+    Box,
     Button,
     createStyles,
     Dialog,
@@ -12,7 +13,7 @@ import {
     Step,
     StepLabel,
     Stepper,
-    Theme
+    Theme, Typography
 } from "@material-ui/core";
 import {Commission, CommissionState} from "../../domain/commission/model/commission";
 import {useAppDispatch} from "../hooks";
@@ -20,6 +21,8 @@ import React from "react";
 import {useInjection} from "../../iocReact";
 import {TYPES} from "../../types";
 import {CommissionUseCase} from "../../domain/commission/commission.usecase";
+import AuthImage from "../component/AuthImage";
+import AuthFile from "../component/AuthFile";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -40,6 +43,48 @@ const getStep = (commState: CommissionState, userType: 'artist' | 'requester'): 
             break
     }
     return ''
+}
+
+const getStepElement = (currentStep: CommissionState, comm: Commission): React.ReactElement => {
+    switch (currentStep) {
+        case CommissionState.PendingRequesterAcceptance:
+            return (
+                <div>
+                    {
+                        comm.proofCopyImagePaths
+                            ? comm.proofCopyImagePaths.map(path => {
+                                return <Box maxWidth="30%">
+                                    <AuthImage src={`http://192.168.64.12:31398/${path}`}/>
+                                </Box>
+                            })
+                            : <></>
+                    }
+                </div>
+            )
+        case CommissionState.PendingUploadProduct:
+            return (
+                <div>
+                    {
+                        comm.completionFilePath
+                            ? <AuthFile src={`http://192.168.64.12:31398/${comm.completionFilePath}`}/>
+                            : <></>
+                    }
+                </div>
+            )
+        case CommissionState.Completed:
+            return (
+                <div>
+                    {
+                        comm.state === CommissionState.Completed &&
+                            <Box>
+                                <Typography>評分:{comm.rating}</Typography>
+                                <Typography>評語:{comm.comment}</Typography>
+                            </Box>
+                    }
+                </div>
+            )
+    }
+    return <></>
 }
 
 interface Props {
@@ -88,12 +133,16 @@ export default function CommissionProgress({commission, open, onClose, ...props}
 
                 </List>
 
-                <Stepper activeStep={commissionUseCase.getCommissionSteps().indexOf(commission.state)} orientation="vertical">
+                <Stepper activeStep={commissionUseCase.getCommissionSteps().indexOf(commission.state)}
+                         orientation="vertical">
                     {
                         commissionUseCase.getCommissionSteps().map((step, index) => {
                             return (
                                 <Step key={index}>
                                     <StepLabel>{commissionUseCase.getCommissionStepText(step)}</StepLabel>
+                                    {
+                                        getStepElement(step, commission)
+                                    }
                                 </Step>
                             )
                         })
