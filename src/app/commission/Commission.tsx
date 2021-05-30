@@ -212,9 +212,9 @@ export default function Commission({...props}: Props) {
 
     const onScroll = useCallback((props: ListOnScrollProps) => {
         // console.log(`onScroll ${JSON.stringify(props)}`)
-        if (props.scrollOffset <= 0) {
-            dispatch(getMessages({commId: id, count: Math.pow(2, 31) - 1, lastMessageId: undefined}))
-        }
+        // if (props.scrollOffset <= 0) {
+        //     dispatch(getMessages({commId: id, count: Math.pow(2, 31) - 1, lastMessageId: undefined}))
+        // }
     }, [dispatch, id])
 
     const renderRow = useCallback((props: ListChildComponentProps): JSX.Element => {
@@ -266,7 +266,7 @@ export default function Commission({...props}: Props) {
     }, [])
 
     useEffect(() => {
-        dispatch(getMessages({commId: id, count: 10, lastMessageId: undefined}))
+        dispatch(getMessages({commId: id, count: Math.pow(2, 31) - 1, lastMessageId: undefined}))
     }, [id, dispatch])
 
     useEffect(() => {

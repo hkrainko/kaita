@@ -121,7 +121,7 @@ export default function Commissions(props: Props) {
                 count: rowsPerPage,
                 offset: rowsPerPage * page
             }, sorter: {
-                lastUpdateTime: true,
+                lastUpdateTime: false,
             }, type: type as 'submitted' | 'received'
         }))
     }, [dispatch, page, rowsPerPage, type])
@@ -140,9 +140,9 @@ export default function Commissions(props: Props) {
                 return commission.dayNeed.toString()
             case ColumnType.lastUpdateDate:
                 if (commission.lastMessage) {
-                    return moment(commission.lastMessage.createTime).format("YYYY-MM-YY HH:mm:ss")
+                    return moment(commission.lastMessage.createTime).format("YYYY-MM-DD HH:mm:ss")
                 } else {
-                    return moment(commission.createTime).format("YYYY-MM-YY HH:mm:ss")
+                    return moment(commission.lastUpdateTime).format("YYYY-MM-DD HH:mm:ss")
                 }
             default:
                 return ''
