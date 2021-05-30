@@ -290,7 +290,6 @@ export default function Commission({...props}: Props) {
                         {
                             messages ? <AutoSizer>
                                 {({height, width}) => {
-                                    console.log(`height:${height} width:${width}`)
                                     return <VariableSizeList
                                         ref={msgListRef}
                                         itemSize={(index) => getItemHeight(width, messages[index])}

@@ -102,6 +102,10 @@ export default function CommissionDetail({commission, open, onClose, ...props}: 
                                       secondary={`${commission.dayNeed}日`}/>
                     </ListItem>
                     <ListItem>
+                        <ListItemText primary="預算"
+                                      secondary={`${commission.price.amount} ${commission.price.currency}`}/>
+                    </ListItem>
+                    <ListItem>
                         <ListItemText primary="付款方式"
                                       secondary={commission.paymentMethod}/>
                     </ListItem>

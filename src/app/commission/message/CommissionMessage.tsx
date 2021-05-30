@@ -8,10 +8,11 @@ import {
     SystemMessageType,
     TextMessage, UploadProductSystemMessage, UploadProofCopySystemMessage
 } from "../../../domain/message/model/message";
-import {useMemo} from "react";
+import React, {useMemo} from "react";
 import moment from "moment";
 import {SimpleUser} from "../../../domain/user/simple-user";
 import AuthImage from "../../component/AuthImage";
+import AuthFile from "../../component/AuthFile";
 
 export enum MessageDirectionType {
     Receive,
@@ -148,7 +149,9 @@ export default function CommissionMessage({user, message, direction, ...props}: 
                     }
                     {
                         messageDisplay.filePath &&
-                        <div>{messageDisplay.filePath}</div>
+                        <Box className={classes.messageFile}>
+                            <AuthFile src={`http://192.168.64.12:31398/${messageDisplay.filePath}`}/>
+                        </Box>
                     }
                     {
                         messageDisplay.rating &&
