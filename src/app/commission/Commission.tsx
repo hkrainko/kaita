@@ -17,7 +17,7 @@ import {
 } from "@material-ui/core";
 import {Link, useLocation, useParams} from "react-router-dom";
 import {useAppDispatch, useAppSelector} from "../hooks";
-import {ListChildComponentProps, VariableSizeList} from "react-window";
+import {ListChildComponentProps, ListOnScrollProps, VariableSizeList} from "react-window";
 import AutoSizer from "react-virtualized-auto-sizer";
 import {AccountCircle, AssignmentOutlined, AttachFile, LinearScaleOutlined, Send} from "@material-ui/icons";
 import React, {KeyboardEvent, useCallback, useEffect, useRef, useState} from "react";
@@ -188,6 +188,13 @@ export default function Commission({...props}: Props) {
     const onClickAttachment = useCallback(() => {
     }, [])
 
+    const onScroll = useCallback((props: ListOnScrollProps) => {
+        console.log(`onScroll ${JSON.stringify(props)}`)
+        if (props.scrollOffset <= 0) {
+            dispatch(getMessages({commId: id, count: Math.pow(2, 31) - 1, lastMessageId: undefined}))
+        }
+    }, [dispatch, id, messages])
+
     const renderRow = useCallback((props: ListChildComponentProps): JSX.Element => {
         const {index, style, data} = props;
         const message = data[index]
@@ -298,6 +305,7 @@ export default function Commission({...props}: Props) {
                                         width={width}
                                         itemData={messages}
                                         initialScrollOffset={Number.MAX_SAFE_INTEGER}
+                                        onScroll={onScroll}
                                     >
                                         {renderRow}
                                     </VariableSizeList>
