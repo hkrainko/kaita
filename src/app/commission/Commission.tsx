@@ -4,7 +4,7 @@ import {
     Breadcrumbs,
     Container,
     createStyles,
-    IconButton,
+    IconButton, Input,
     InputAdornment,
     ListItem,
     makeStyles,
@@ -20,7 +20,7 @@ import {useAppDispatch, useAppSelector} from "../hooks";
 import {ListChildComponentProps, ListOnScrollProps, VariableSizeList} from "react-window";
 import AutoSizer from "react-virtualized-auto-sizer";
 import {AccountCircle, AssignmentOutlined, AttachFile, LinearScaleOutlined, Send} from "@material-ui/icons";
-import React, {KeyboardEvent, useCallback, useEffect, useRef, useState} from "react";
+import React, {ChangeEvent, KeyboardEvent, useCallback, useEffect, useRef, useState} from "react";
 import {
     ImageMessage,
     Message,
@@ -45,6 +45,7 @@ import {Commission as DomainCommission} from "../../domain/commission/model/comm
 import CommissionDetail from "./CommissionDetails";
 import CommissionProgress from "./CommissionProgress";
 import CommissionActionPanel from "./CommissionActionPanel";
+import AppRemovableImage from "../component/AppRemovableImage";
 
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -70,13 +71,30 @@ const useStyles = makeStyles((theme: Theme) =>
             display: 'flex',
             flexDirection: 'column',
         },
-        input: {
+        textOnlyInput: {
             marginRight: theme.spacing(3),
             marginLeft: theme.spacing(3),
             marginTop: theme.spacing(1),
             marginBottom: theme.spacing(1),
             height: theme.spacing(6),
             borderRadius: '30px',
+        },
+        imageInput: {
+            marginRight: theme.spacing(3),
+            marginLeft: theme.spacing(3),
+            marginTop: theme.spacing(1),
+            marginBottom: theme.spacing(1),
+            height: theme.spacing(16),
+            borderRadius: '30px',
+        },
+        attachmentFileInput: {
+            display: 'none',
+        },
+        attachedImage: {
+            marginLeft: theme.spacing(1),
+            position: 'relative',
+            overflow: 'hidden',
+            maxWidth: '100px',
         },
         container: {
             height: '100%'
@@ -123,7 +141,8 @@ export default function Commission({...props}: Props) {
     const location = useLocation()
     const msgListRef = useRef<VariableSizeList>(null)
     let {id} = useParams<{ id: string }>()
-    const [openDrawer, setOpenDrawer] = useState(false);
+    const [openDrawer, setOpenDrawer] = useState(false)
+    const [attachedImage, setAttachedImage] = useState<File | null>(null)
     const [showCommDetails, setShowCommDetails] = useState<boolean>(false)
     const [showCommProgress, setShowCommProgress] = useState<boolean>(false)
     const lastTriggerScrollingMsgId = useRef<string | null>(null)
@@ -167,11 +186,14 @@ export default function Commission({...props}: Props) {
     const onClickSend = useCallback(() => {
         dispatch(sendMessage({
             msgCreator: {
-                commissionId: id, text
+                commissionId: id,
+                text: text.length > 0 ? text : undefined,
+                image: attachedImage ?? undefined
             }
         }))
         setText("")
-    }, [dispatch, id, text])
+        setAttachedImage(null)
+    }, [attachedImage, dispatch, id, text])
 
     const onKeyDown = useCallback((event: KeyboardEvent) => {
         if (event.key !== "Enter") {
@@ -179,21 +201,21 @@ export default function Commission({...props}: Props) {
         }
         dispatch(sendMessage({
             msgCreator: {
-                commissionId: id, text
+                commissionId: id,
+                text: text.length > 0 ? text : undefined,
+                image: attachedImage ?? undefined
             }
         }))
         setText("")
-    }, [dispatch, id, text])
-
-    const onClickAttachment = useCallback(() => {
-    }, [])
+        setAttachedImage(null)
+    }, [attachedImage, dispatch, id, text])
 
     const onScroll = useCallback((props: ListOnScrollProps) => {
-        console.log(`onScroll ${JSON.stringify(props)}`)
+        // console.log(`onScroll ${JSON.stringify(props)}`)
         if (props.scrollOffset <= 0) {
             dispatch(getMessages({commId: id, count: Math.pow(2, 31) - 1, lastMessageId: undefined}))
         }
-    }, [dispatch, id, messages])
+    }, [dispatch, id])
 
     const renderRow = useCallback((props: ListChildComponentProps): JSX.Element => {
         const {index, style, data} = props;
@@ -234,6 +256,14 @@ export default function Commission({...props}: Props) {
             </ListItem>
         );
     }, [authUser, commission])
+
+    const onFileInputChanged = useCallback((event: ChangeEvent<HTMLInputElement>) => {
+        if (!event.target.files) {
+            setAttachedImage(null)
+            return
+        }
+        setAttachedImage(event.target.files[0])
+    }, [])
 
     useEffect(() => {
         dispatch(getMessages({commId: id, count: 10, lastMessageId: undefined}))
@@ -322,13 +352,33 @@ export default function Commission({...props}: Props) {
                     <OutlinedInput
                         startAdornment={
                             <InputAdornment position="start">
-                                <IconButton
-                                    aria-label="toggle password visibility"
-                                    onClick={onClickAttachment}
-                                    // onMouseDown={handleMouseDownPassword}
-                                >
-                                    <AttachFile/>
-                                </IconButton>
+                                {
+                                    attachedImage
+                                        ? <AppRemovableImage
+                                            key={0}
+                                            className={classes.attachedImage}
+                                            src={attachedImage}
+                                            onClickDelete={() => setAttachedImage(null)}
+                                        />
+                                        :
+                                        <Box>
+                                            <input id="icon-button-file"
+                                                   type="file"
+                                                   accept="image/*"
+                                                   className={classes.attachmentFileInput}
+                                                   onChange={onFileInputChanged}
+                                            />
+                                            <label htmlFor="icon-button-file">
+                                                <IconButton
+                                                    aria-label="toggle password visibility"
+                                                    // onMouseDown={handleMouseDownPassword}
+                                                    component="span"
+                                                >
+                                                    <AttachFile/>
+                                                </IconButton>
+                                            </label>
+                                        </Box>
+                                }
                             </InputAdornment>
                         }
                         endAdornment={
@@ -345,7 +395,7 @@ export default function Commission({...props}: Props) {
                         value={text}
                         onChange={(e) => setText(e.target.value)}
                         onKeyDown={onKeyDown}
-                        className={classes.input}
+                        className={attachedImage ? classes.imageInput : classes.textOnlyInput}
                     />
                 </Paper>
             </Container>

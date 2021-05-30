@@ -191,7 +191,7 @@ export default function NewCommissionModal({openComm, open, onClose, ...Props}: 
                 console.log(`parse file error`)
             })
 
-        }, [regImages])
+        }, [dispatch, openComm.artistId, openComm.id, regImages])
 
     return (
         <Dialog

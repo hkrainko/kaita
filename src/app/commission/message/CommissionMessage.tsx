@@ -36,7 +36,8 @@ const displayElementFor = (message: Message, user: SimpleUser | undefined): Mess
             }
         case MessageType.Image:
             return {
-                text: (message as ImageMessage).text
+                text: (message as ImageMessage).text,
+                imagePath: (message as ImageMessage).imagePath
             }
         case MessageType.System:
             switch ((message as SystemMessage).systemMessageType) {

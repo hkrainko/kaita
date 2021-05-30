@@ -30,8 +30,8 @@ const useStyles = makeStyles((theme: Theme) =>
 
 interface CommissionAction {
     title: string
-    imagePath: string[] | undefined
-    filePath: string | undefined
+    // imagePath: string[] | undefined
+    // filePath: string | undefined
     decisionOptions?: CommissionDecisionOption[]
 }
 
@@ -136,21 +136,21 @@ const getDecisions = (commState: CommissionState, type: 'artist' | 'requester'):
     return []
 }
 
-const getCommImagePath = (comm: Commission): string[] | undefined => {
-    switch (comm.state) {
-        case CommissionState.PendingRequesterAcceptance:
-            return comm.proofCopyImagePaths
-        default:
-            return undefined
-    }
-}
-
-const getCommFilePath = (comm: Commission): string | undefined => {
-    switch (comm.state) {
-        default:
-            return undefined
-    }
-}
+// const getCommImagePath = (comm: Commission): string[] | undefined => {
+//     switch (comm.state) {
+//         case CommissionState.PendingRequesterAcceptance:
+//             return comm.proofCopyImagePaths
+//         default:
+//             return undefined
+//     }
+// }
+//
+// const getCommFilePath = (comm: Commission): string | undefined => {
+//     switch (comm.state) {
+//         default:
+//             return undefined
+//     }
+// }
 
 const getDecisionDialog = (option: CommissionDecisionOption, onClose: () => void, onConfirm: (updater: CommissionUpdater) => void): JSX.Element => {
     switch (option.decision) {
@@ -212,8 +212,8 @@ export default function CommissionActionPanel({commission, ...props}: Props) {
 
     const action: CommissionAction = {
         title: commUseCase.getCommissionActionDesc(commission.state, commUserType) ?? "",
-        imagePath: getCommImagePath(commission),
-        filePath: getCommFilePath(commission),
+        // imagePath: getCommImagePath(commission),
+        // filePath: getCommFilePath(commission),
         decisionOptions: getDecisions(commission.state, commUserType)
     }
 
@@ -225,10 +225,10 @@ export default function CommissionActionPanel({commission, ...props}: Props) {
                     <Box marginRight={5}>
                         <Typography>{action.title}</Typography>
                     </Box>
-                    {
-                        action.imagePath &&
-                        <AuthImage src={action.imagePath[0]}/>
-                    }
+                    {/*{*/}
+                    {/*    action.imagePath &&*/}
+                    {/*    <AuthImage src={action.imagePath[0]}/>*/}
+                    {/*}*/}
                     {
                         action.decisionOptions?.map(option =>
                             <CommissionDecisionButton
