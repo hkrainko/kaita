@@ -21,7 +21,14 @@ import {ListChildComponentProps, VariableSizeList} from "react-window";
 import AutoSizer from "react-virtualized-auto-sizer";
 import {AccountCircle, AssignmentOutlined, AttachFile, LinearScaleOutlined, Send} from "@material-ui/icons";
 import React, {KeyboardEvent, useCallback, useEffect, useRef, useState} from "react";
-import {ImageMessage, Message, MessageType, TextMessage} from "../../domain/message/model/message";
+import {
+    ImageMessage,
+    Message,
+    MessageType,
+    SystemMessage,
+    SystemMessageType,
+    TextMessage
+} from "../../domain/message/model/message";
 import CommissionMessage, {MessageDirectionType} from "./message/CommissionMessage";
 import {useInjection} from "../../iocReact";
 import {CommissionUseCase} from "../../domain/commission/commission.usecase";
@@ -81,10 +88,30 @@ const useStyles = makeStyles((theme: Theme) =>
     }),
 );
 
-function getItemSize(message: Message): number {
-    return 20
+const getItemHeight = (listWidth: number, msg: Message): number => {
+    switch (msg.messageType) {
+        case MessageType.Text:
+            let textMsg = (msg as TextMessage)
+            return 100
+        case MessageType.Image:
+            return 160
+        case MessageType.System:
+            switch ((msg as SystemMessage).systemMessageType) {
+                case SystemMessageType.Plain:
+                    return 100
+                case SystemMessageType.UploadProofCopy:
+                    return 160
+                case SystemMessageType.UploadProduct:
+                    return 160
+                case SystemMessageType.AcceptProduct:
+                    return 160
+                default:
+                    return 160
+            }
+        default:
+            return 100
+    }
 }
-
 
 interface Props extends StandardProps<any, any> {
 
@@ -134,9 +161,6 @@ export default function Commission({...props}: Props) {
     useEffect(() => {
         dispatch(getCommission({commId: id}))
     }, [dispatch, id, lastTriggerScrollingMsgId])
-    // useEffect(() => {
-    //     msgListRef.current?.scrollToItem(messages.length)
-    // }, [lastSystemMsgId, messages.length])
 
     const [text, setText] = useState("")
 
@@ -266,9 +290,10 @@ export default function Commission({...props}: Props) {
                         {
                             messages ? <AutoSizer>
                                 {({height, width}) => {
+                                    console.log(`height:${height} width:${width}`)
                                     return <VariableSizeList
                                         ref={msgListRef}
-                                        itemSize={(index) => 100}
+                                        itemSize={(index) => getItemHeight(width, messages[index])}
                                         height={height}
                                         itemCount={messages?.length}
                                         width={width}

@@ -14,6 +14,7 @@ import ArtistUploadProofCopyDecisionDialog from "./decision-modal/ArtistUploadPr
 import ArtistUploadProductDecisionDialog from "./decision-modal/ArtistUploadProductDecisionDialog";
 import RequesterAcceptProductCommissionDecisionDialog
     from "./decision-modal/RequesterAcceptProductCommissionDecisionDialog";
+import AuthImage from "../component/AuthImage";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -29,6 +30,8 @@ const useStyles = makeStyles((theme: Theme) =>
 
 interface CommissionAction {
     title: string
+    imagePath: string[] | undefined
+    filePath: string | undefined
     decisionOptions?: CommissionDecisionOption[]
 }
 
@@ -133,6 +136,22 @@ const getDecisions = (commState: CommissionState, type: 'artist' | 'requester'):
     return []
 }
 
+const getCommImagePath = (comm: Commission): string[] | undefined => {
+    switch (comm.state) {
+        case CommissionState.PendingRequesterAcceptance:
+            return comm.proofCopyImagePaths
+        default:
+            return undefined
+    }
+}
+
+const getCommFilePath = (comm: Commission): string | undefined => {
+    switch (comm.state) {
+        default:
+            return undefined
+    }
+}
+
 const getDecisionDialog = (option: CommissionDecisionOption, onClose: () => void, onConfirm: (updater: CommissionUpdater) => void): JSX.Element => {
     switch (option.decision) {
         case CommissionDecision.ArtistAccept:
@@ -142,7 +161,9 @@ const getDecisionDialog = (option: CommissionDecisionOption, onClose: () => void
         case CommissionDecision.RequesterRequestRevision:
             return <AppDialog open={true}
                               onClose={onClose}
-                              onConfirm={() => {onConfirm( {decision: option.decision})}}
+                              onConfirm={() => {
+                                  onConfirm({decision: option.decision})
+                              }}
                               title={option.title}
                               content={option.desc}/>
 
@@ -191,6 +212,8 @@ export default function CommissionActionPanel({commission, ...props}: Props) {
 
     const action: CommissionAction = {
         title: commUseCase.getCommissionActionDesc(commission.state, commUserType) ?? "",
+        imagePath: getCommImagePath(commission),
+        filePath: getCommFilePath(commission),
         decisionOptions: getDecisions(commission.state, commUserType)
     }
 
@@ -202,6 +225,10 @@ export default function CommissionActionPanel({commission, ...props}: Props) {
                     <Box marginRight={5}>
                         <Typography>{action.title}</Typography>
                     </Box>
+                    {
+                        action.imagePath &&
+                        <AuthImage src={action.imagePath[0]}/>
+                    }
                     {
                         action.decisionOptions?.map(option =>
                             <CommissionDecisionButton

@@ -1,8 +1,17 @@
-import {Box, Card, CardContent, createStyles, makeStyles, StandardProps, Theme, Typography} from "@material-ui/core";
-import {ImageMessage, Message, MessageType, SystemMessage, TextMessage} from "../../../domain/message/model/message";
+import {Box, createStyles, makeStyles, StandardProps, Theme, Typography} from "@material-ui/core";
+import {
+    AcceptProductSystemMessage,
+    ImageMessage,
+    Message,
+    MessageType,
+    SystemMessage,
+    SystemMessageType,
+    TextMessage, UploadProductSystemMessage, UploadProofCopySystemMessage
+} from "../../../domain/message/model/message";
 import {useMemo} from "react";
 import moment from "moment";
 import {SimpleUser} from "../../../domain/user/simple-user";
+import AuthImage from "../../component/AuthImage";
 
 export enum MessageDirectionType {
     Receive,
@@ -12,6 +21,10 @@ export enum MessageDirectionType {
 
 interface MessageDisplay {
     text: string | undefined
+    imagePath?: string
+    filePath?: string
+    rating?: number
+    comment?: string
 }
 
 const displayElementFor = (message: Message, user: SimpleUser | undefined): MessageDisplay => {
@@ -25,8 +38,30 @@ const displayElementFor = (message: Message, user: SimpleUser | undefined): Mess
                 text: (message as ImageMessage).text
             }
         case MessageType.System:
-            return {
-                text: (message as SystemMessage).text
+            switch ((message as SystemMessage).systemMessageType) {
+                case SystemMessageType.UploadProofCopy:
+                    const uploadProofCopySystemMessage = (message as UploadProofCopySystemMessage)
+                    return {
+                        text: uploadProofCopySystemMessage.text,
+                        imagePath: uploadProofCopySystemMessage.imagePath
+                    }
+                case SystemMessageType.UploadProduct:
+                    const uploadProductSystemMessage = (message as UploadProductSystemMessage)
+                    return {
+                        text: uploadProductSystemMessage.text,
+                        filePath: uploadProductSystemMessage.filePath
+                    }
+                case SystemMessageType.AcceptProduct:
+                    const acceptProductSystemMessage = (message as AcceptProductSystemMessage)
+                    return {
+                        text: acceptProductSystemMessage.text,
+                        rating: acceptProductSystemMessage.rating,
+                        comment: acceptProductSystemMessage.comment
+                    }
+                default:
+                    return {
+                        text: (message as SystemMessage).text
+                    }
             }
         default:
             return {
@@ -63,6 +98,10 @@ const useStyles = makeStyles((theme: Theme) =>
         userName: {
             fontsize: '6px'
         },
+        messageImage: {
+            width: '100px'
+        },
+        messageFile: {}
     }),
 );
 
@@ -80,7 +119,7 @@ export default function CommissionMessage({user, message, direction, ...props}: 
     }, [message, user])
 
     const renderDirection = (type: MessageDirectionType): string => {
-        switch(type) {
+        switch (type) {
             case MessageDirectionType.Receive:
                 return 'flex-start';
             case MessageDirectionType.Send:
@@ -99,7 +138,27 @@ export default function CommissionMessage({user, message, direction, ...props}: 
                     <Typography variant="h6">
                         {messageDisplay.text}
                     </Typography>
-                    <Typography variant="body2">
+                    {
+                        messageDisplay.imagePath &&
+                        <Box className={classes.messageImage}>
+                            <AuthImage
+                                src={`http://192.168.64.12:31398/${messageDisplay.imagePath}`}
+                            />
+                        </Box>
+                    }
+                    {
+                        messageDisplay.filePath &&
+                        <div>{messageDisplay.filePath}</div>
+                    }
+                    {
+                        messageDisplay.rating &&
+                        <Typography>評分: {messageDisplay.rating}</Typography>
+                    }
+                    {
+                        messageDisplay.comment &&
+                        <Typography>評語: {messageDisplay.comment}</Typography>
+                    }
+                    <Typography variant="body2" align="right">
                         {moment(message.createTime).calendar()}
                     </Typography>
                 </div>
