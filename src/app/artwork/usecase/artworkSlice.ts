@@ -89,7 +89,7 @@ export const artworkSlice = createSlice({
                 state.forArtist = {
                     artistId: action.meta.arg.filter.artistId,
                     ids: ids,
-                    fetchCount: action.payload.fetchCount,
+                    fetchCount: action.meta.arg.filter.count,
                     offset: action.payload.offset,
                     total: action.payload.total,
                     requestState: RequestState.Succeed,

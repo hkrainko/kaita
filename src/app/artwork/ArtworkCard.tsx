@@ -1,16 +1,21 @@
 import {
+    Box,
     Button,
     Card,
     CardActionArea,
     CardActions,
     CardContent,
     CardMedia,
-    createStyles,
+    createStyles, IconButton,
     makeStyles,
     StandardProps,
     Theme,
     Typography
 } from "@material-ui/core";
+import {Artwork} from "../../domain/artwork/artwork";
+import {Delete, Edit, ExpandMoreOutlined} from "@material-ui/icons";
+import React from "react";
+import {OpenCommission} from "../../domain/open-commission/model/open-commission";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -19,10 +24,12 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 interface Props extends StandardProps<any, any> {
-
+    artwork: Artwork
+    onEdit?: (artwork: Artwork) => void
+    onDelete?: (artwork: Artwork) => void
 }
 
-export default function ArtworkCard(props: Props) {
+export default function ArtworkCard({artwork, onEdit, onDelete, ...props}: Props) {
 
     const classes = useStyles(props.className)
 
@@ -33,23 +40,28 @@ export default function ArtworkCard(props: Props) {
                     component="img"
                     alt="Contemplative Reptile"
                     height="140"
-                    image="/static/images/cards/contemplative-reptile.jpg"
+                    image={`http://192.168.64.12:31398/${artwork.path}`}
                     title="Contemplative Reptile"
                 />
                 <CardContent>
                     <Typography gutterBottom variant="h5" component="h2">
-                        Lizard
+                        {artwork.title}
                     </Typography>
                     <Typography variant="body2" color="textSecondary" component="p">
-                        Lizards are a widespread group of squamate reptiles, with over 6,000 species, ranging
-                        across all continents except Antarctica
+                        {artwork.id}
                     </Typography>
                 </CardContent>
             </CardActionArea>
             <CardActions>
-                <Button size="small" color="primary">
-                    Edit
-                </Button>
+                <Box display={"flex"} flexGrow={1} px={1}>
+                    <Typography variant={"subtitle2"}>@{artwork.artistId}</Typography>
+                </Box>
+                <IconButton onClick={() => onEdit && onEdit(artwork)}>
+                    <Edit/>
+                </IconButton>
+                <IconButton onClick={() => onDelete && onDelete(artwork)}>
+                    <Delete/>
+                </IconButton>
             </CardActions>
         </Card>
     )

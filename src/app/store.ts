@@ -1,4 +1,4 @@
-import {Action, combineReducers, configureStore, getDefaultMiddleware, ThunkAction} from "@reduxjs/toolkit";
+import {Action, combineReducers, configureStore, ThunkAction} from "@reduxjs/toolkit";
 import AppDependency from "./di";
 import authReducer from './auth/usecase/authSlice'
 import artistReducer from './artist/usecase/artistSlice'
@@ -6,6 +6,7 @@ import loadingReducer from './loading/usecase/loadingSlice'
 import errorReducer from './error/usecase/errorSlice'
 import openCommissionReducer from './open-commission/usecase/openCommissionSlice'
 import commissionReducer, {wsMiddleWare} from './commission/usecase/commissionSlice'
+import artworkReducer from './artwork/usecase/artworkSlice'
 import {FLUSH, PAUSE, PERSIST, persistReducer, PURGE, REGISTER, REHYDRATE} from 'redux-persist'
 import storage from 'redux-persist/lib/storage'
 
@@ -15,6 +16,7 @@ const reducers = combineReducers(
         artist: artistReducer,
         openCommission: openCommissionReducer,
         commission: commissionReducer,
+        artwork: artworkReducer,
         loading: loadingReducer,
         error: errorReducer
     })
