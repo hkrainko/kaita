@@ -8,7 +8,7 @@ import axios from "axios";
 
 
 @injectable()
-export class HttpArtistRepo extends ArtistRepo {
+export class HttpArtistRepo implements ArtistRepo {
 
     getArtistMapper = new HttpGetArtistMapper();
     updateArtistMapper = new HttpUpdateArtistMapper();

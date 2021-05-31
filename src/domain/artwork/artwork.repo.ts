@@ -1,10 +1,11 @@
 import {Artwork} from './artwork';
-import {Observable} from 'rxjs';
 import {ArtworkFilter} from './model/artwork-filter';
 import {ArtworkSorter} from './model/artwork-sorter';
+import GetArtworksResult from "./model/get-artworks-result";
 
 
-export abstract class ArtworkRepo {
-  abstract getArtworkById(apiToken: string, id: string): Observable<Artwork>;
-  abstract getArtworks(apiToken: string, filter: ArtworkFilter, sorter: ArtworkSorter): Observable<Artwork[]>;
+export interface ArtworkRepo {
+    getArtworkById(apiToken: string | undefined, id: string): Promise<Artwork>;
+
+    getArtworks(apiToken: string | undefined, filter: ArtworkFilter, sorter: ArtworkSorter): Promise<GetArtworksResult>;
 }

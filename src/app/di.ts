@@ -8,6 +8,8 @@ import {OpenCommissionRepo} from "../domain/open-commission/open-commission.repo
 import {HttpOpenCommissionRepo} from "./open-commission/repo/http/http.open-commission.repo";
 import {CommissionRepo} from "../domain/commission/commission.repo";
 import {HttpCommissionRepo} from "./commission/repo/http-commission/http.commission.repo";
+import {ArtworkRepo} from "../domain/artwork/artwork.repo";
+import {HttpArtworkRepo} from "./artwork/repo/http-artwork/http.artwork.repo";
 
 export default class AppDependency {
 
@@ -16,6 +18,7 @@ export default class AppDependency {
     artistRepo: ArtistRepo
     openCommRepo: OpenCommissionRepo
     commRepo: CommissionRepo
+    artworkRepo: ArtworkRepo
 
     constructor() {
         this.authRepo = new HttpAuthRepo()
@@ -23,5 +26,6 @@ export default class AppDependency {
         this.artistRepo = new HttpArtistRepo()
         this.openCommRepo = new HttpOpenCommissionRepo()
         this.commRepo = new HttpCommissionRepo()
+        this.artworkRepo = new HttpArtworkRepo()
     }
 }

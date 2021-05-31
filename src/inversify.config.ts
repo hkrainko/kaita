@@ -14,6 +14,10 @@ import {CommissionRepo} from "./domain/commission/commission.repo";
 import {HttpCommissionRepo} from "./app/commission/repo/http-commission/http.commission.repo";
 import {OpenCommissionRepo} from "./domain/open-commission/open-commission.repo";
 import {HttpOpenCommissionRepo} from "./app/open-commission/repo/http/http.open-commission.repo";
+import {ArtworkUseCase} from "./domain/artwork/artwork.usecase";
+import {DefaultArtworkUseCase} from "./app/artwork/usecase/default.artwork.usecase";
+import {ArtworkRepo} from "./domain/artwork/artwork.repo";
+import {HttpArtworkRepo} from "./app/artwork/repo/http-artwork/http.artwork.repo";
 
 const container = new Container()
 container.bind<AuthRepo>(TYPES.AuthRepo).to(HttpAuthRepo)
@@ -23,5 +27,8 @@ container.bind<OpenCommissionUseCase>(TYPES.OpenCommissionUseCase).to(DefaultOpe
 container.bind<OpenCommissionRepo>(TYPES.OpenCommissionRepo).to(HttpOpenCommissionRepo)
 container.bind<CommissionUseCase>(TYPES.CommissionUseCase).to(DefaultCommissionUseCase)
 container.bind<CommissionRepo>(TYPES.CommissionRepo).to(HttpCommissionRepo)
+container.bind<ArtworkUseCase>(TYPES.ArtworkUseCase).to(DefaultArtworkUseCase)
+container.bind<ArtworkRepo>(TYPES.ArtworkRepo).to(HttpArtworkRepo)
+
 
 export {container};
