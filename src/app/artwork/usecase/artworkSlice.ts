@@ -104,7 +104,7 @@ export const artworkSlice = createSlice({
                 state.forArtist.requestState = RequestState.Failed
             })
             .addCase(getArtwork.fulfilled, (state, action) => {
-
+                state.byId[action.payload.id] = action.payload
             })
     })
 })

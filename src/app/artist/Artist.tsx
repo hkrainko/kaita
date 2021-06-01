@@ -1,16 +1,15 @@
-import {Box, Container, createStyles, Grid, makeStyles, Tab, Tabs, Theme} from "@material-ui/core";
+import {Box, Container, createStyles, Grid, makeStyles, StandardProps, Tab, Tabs, Theme} from "@material-ui/core";
 import {Link, Route, Switch, useLocation, useParams, useRouteMatch} from "react-router-dom";
 import {useAppDispatch, useAppSelector} from "../hooks";
 import ArtistBanner from "./banner/ArtistBanner";
 import ArtistNameCard from "./ArtistNameCard";
 import ArtistInfo from "./artist-info/ArtistInfo";
-import React, {useEffect, useState} from "react";
+import React, {useEffect} from "react";
 import Artworks from "../artwork/Artworks";
 import OpenCommissions from "../open-commission/OpenCommissions";
 import NotFound from "../error/NotFound";
 import {getArtist} from "./usecase/artistSlice";
 import ArtistDesc from "./artist-intro/ArtistDesc";
-import NewOpenCommissionModal from "../open-commission/new/NewOpenCommissionModal";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -27,8 +26,11 @@ const useStyles = makeStyles((theme: Theme) =>
     }),
 );
 
+interface Props extends StandardProps<any, any> {
 
-function Artist() {
+}
+
+export default function Artist(props: Props) {
     const classes = useStyles()
     const routeMatch = useRouteMatch()
     const location = useLocation()
@@ -85,6 +87,3 @@ function Artist() {
         </React.Fragment>
     )
 }
-
-
-export default Artist;

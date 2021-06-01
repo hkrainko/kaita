@@ -25,17 +25,18 @@ const useStyles = makeStyles((theme: Theme) =>
 
 interface Props extends StandardProps<any, any> {
     artwork: Artwork
+    onMainAction: (artwork: Artwork) => void
     onEdit?: (artwork: Artwork) => void
     onDelete?: (artwork: Artwork) => void
 }
 
-export default function ArtworkCard({artwork, onEdit, onDelete, ...props}: Props) {
+export default function ArtworkCard({artwork, onMainAction, onEdit, onDelete, ...props}: Props) {
 
     const classes = useStyles(props.className)
 
     return (
         <Card>
-            <CardActionArea>
+            <CardActionArea onClick={() => onMainAction(artwork)}>
                 <CardMedia
                     component="img"
                     alt="Contemplative Reptile"
