@@ -1,26 +1,34 @@
 import {
     Box,
     Button,
-    Checkbox, Chip,
+    Checkbox,
+    Chip,
     createStyles,
     Dialog,
     DialogActions,
     DialogContent,
     DialogContentText,
-    DialogTitle, Divider,
+    DialogTitle,
+    Divider,
     FormControl,
     FormControlLabel,
     FormHelperText,
     FormLabel,
     Grid,
-    InputLabel, List, ListItem, ListItemIcon, ListItemText,
+    InputLabel,
+    List,
+    ListItem,
+    ListItemIcon,
+    ListItemText,
     makeStyles,
     MenuItem,
     Select,
     StandardProps,
     TextField,
     Theme,
-    Typography, useMediaQuery, useTheme
+    Typography,
+    useMediaQuery,
+    useTheme
 } from "@material-ui/core";
 import React, {useCallback, useState} from "react";
 import {Controller, useForm} from "react-hook-form";
@@ -35,10 +43,13 @@ import {TYPES} from "../../../types";
 import {OpenCommission} from "../../../domain/open-commission/model/open-commission";
 import {Currency} from "../../../domain/price/price";
 import {
-    AccountBalanceOutlined,
-    AccountBalanceWalletOutlined, GavelOutlined,
-    LocalAtmOutlined, MmsOutlined, RateReviewOutlined,
-    ScheduleOutlined, SubjectOutlined
+    AccountBalanceWalletOutlined,
+    GavelOutlined,
+    LocalAtmOutlined,
+    MmsOutlined,
+    RateReviewOutlined,
+    ScheduleOutlined,
+    SubjectOutlined
 } from "@material-ui/icons";
 import {CommissionCreator} from "../../../domain/commission/model/commission-creator";
 import {submitCommission} from "../usecase/commissionSlice";
@@ -284,7 +295,7 @@ export default function NewCommissionModal({openComm, open, onClose, ...Props}: 
                                       }/>
                     </ListItem>
                 </List>
-                <form className={classes.form} onSubmit={handleSubmit(onSubmit)}>
+                <form className={classes.form}>
                     <Grid container spacing={2}>
                         <Grid item xs={12}>
                             <DialogContentText>需求</DialogContentText>
@@ -699,10 +710,10 @@ export default function NewCommissionModal({openComm, open, onClose, ...Props}: 
                 </form>
             </DialogContent>
             <DialogActions>
-                <Button onClick={onClose} variant="contained" fullWidth>
+                <Button onClick={onClose} variant="outlined" fullWidth>
                     取消
                 </Button>
-                <Button type="submit" variant="contained" color="primary" onClick={handleSubmit(onSubmit)} fullWidth>
+                <Button variant="outlined" color="primary" onClick={handleSubmit(onSubmit)} fullWidth>
                     確定
                 </Button>
             </DialogActions>

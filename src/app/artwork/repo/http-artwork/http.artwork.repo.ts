@@ -7,14 +7,17 @@ import {HttpGetArtworksMapper, HttpGetArtworksResp} from './resp/http.get-artwor
 import {injectable} from "inversify";
 import GetArtworksResult from "../../../../domain/artwork/model/get-artworks-result";
 import axios from "axios";
+import {ArtworkUpdater} from "../../../../domain/artwork/model/artwork-updater";
+import {HttpUpdateArtworkMapper, HttpUpdateArtworkResp} from "./resp/http.update-artwork.resp";
 
 @injectable()
 export class HttpArtworkRepo implements ArtworkRepo {
 
-    private apiPath = 'http://192.168.64.12:31398/api';
+    private apiPath = 'http://192.168.64.12:31398/api'
 
-    private getArtworkMapper = new HttpGetArtworkMapper();
-    private getArtworksMapper = new HttpGetArtworksMapper();
+    private getArtworkMapper = new HttpGetArtworkMapper()
+    private getArtworksMapper = new HttpGetArtworksMapper()
+    private updateArtworkMapper = new HttpUpdateArtworkMapper()
 
     getArtworkById(apiToken: string | undefined, id: string): Promise<Artwork> {
         return axios
@@ -45,6 +48,28 @@ export class HttpArtworkRepo implements ArtworkRepo {
             })
             .then(resp => {
                 return this.getArtworksMapper.mapFrom(resp.data)
+            })
+    }
+
+    updateArtwork(apiToken: string, updater: ArtworkUpdater): Promise<string> {
+        const formData: any = new FormData();
+        if (updater.title) {
+            formData.append('title', updater.title)
+        }
+        if (updater.textContent) {
+            formData.append('textContent', updater.textContent)
+        }
+
+        const headers = {
+            Authorization: 'Bearer ' + apiToken,
+        };
+
+        return axios
+            .patch<HttpUpdateArtworkResp>(`${this.apiPath}/artworks/${updater.id}`, formData, {
+                headers
+            })
+            .then(resp => {
+                return this.updateArtworkMapper.mapFrom(resp.data)
             })
     }
 

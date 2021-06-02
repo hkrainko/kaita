@@ -6,6 +6,9 @@ import AppDependency from "../../di";
 import GetArtworksResult from "../../../domain/artwork/model/get-artworks-result";
 import {ArtworkFilter} from "../../../domain/artwork/model/artwork-filter";
 import {ArtworkSorter} from "../../../domain/artwork/model/artwork-sorter";
+import {OpenCommissionUpdater} from "../../../domain/open-commission/model/open-commission-updater";
+import {OpenCommissionErrorUnknown} from "../../../domain/open-commission/model/open-commission-error";
+import {ArtworkUpdater} from "../../../domain/artwork/model/artwork-updater";
 
 
 export interface ArtworkState {
@@ -53,6 +56,20 @@ export const getArtworks = createAsyncThunk<GetArtworksResult,
         const authUser = thunkAPI.getState().auth.authUser
         const ad = thunkAPI.extra as AppDependency
         return await ad.artworkRepo.getArtworks(authUser?.apiToken, filter, sorter)
+    }
+)
+
+export const updateArtwork = createAsyncThunk<string,
+    { updater: ArtworkUpdater },
+    { state: RootState, extra: AppDependency }>(
+    'artwork/updateArtwork',
+    async ({updater}, thunkAPI) => {
+        const apiToken = thunkAPI.getState().auth.authUser?.apiToken
+        if (!apiToken) {
+            throw OpenCommissionErrorUnknown
+        }
+        const ad = thunkAPI.extra as AppDependency
+        return await ad.artworkRepo.updateArtwork(apiToken, updater)
     }
 )
 
