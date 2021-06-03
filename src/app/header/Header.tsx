@@ -1,10 +1,10 @@
 import {
     AppBar,
     CircularProgress,
-    createStyles,
-    fade, InputAdornment,
+    createStyles, Divider,
+    fade, IconButton, InputAdornment,
     InputBase,
-    makeStyles, TextField,
+    makeStyles, Paper, TextField,
     Theme,
     Toolbar,
     Typography
@@ -17,6 +17,7 @@ import {AuthState} from "../../domain/auth/model/auth-state";
 import {logout} from "../auth/usecase/authSlice";
 import HeaderDesktopMenu from "./HeaderDesktopMenu";
 import {Autocomplete, AutocompleteChangeReason, AutocompleteInputChangeReason} from "@material-ui/lab";
+import {DirectionsBoat} from "@material-ui/icons";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -91,6 +92,23 @@ const useStyles = makeStyles((theme: Theme) =>
                 //     width: '20ch',
                 // },
             },
+        },
+        searchBox: {
+            padding: '0px 4px',
+            display: 'flex',
+            alignItems: 'center',
+            width: 400,
+        },
+        input: {
+            marginLeft: theme.spacing(1),
+            flex: 1,
+        },
+        iconButton: {
+            padding: 10,
+        },
+        divider: {
+            height: 28,
+            margin: 4,
         },
     }),
 );
@@ -179,55 +197,20 @@ export default function Header() {
                     </Typography>
                     <div className={classes.halfGrow}/>
                     <div className={classes.search}>
-                        <Autocomplete
-                            freeSolo
-                            id="asynchronous-demo"
-                            className={classes.autocomplete}
-                            open={openAutoComplete}
-                            onOpen={() => {
-                                setOpenAutoComplete(true);
-                            }}
-                            onClose={() => {
-                                setOpenAutoComplete(false);
-                            }}
-                            onKeyDown={onSearchInputKeyDown}
-                            onChange={onSearchChange}
-                            onInputChange={onSearchInputChange}
-                            getOptionSelected={(option, value) => true}
-                            getOptionLabel={(option) => {
-                                console.log(`getOptionLabel ${option}`)
-                                return ''
-                            }}
-                            options={searchOptions}
-                            loading={loading}
-                            renderInput={(params) => (
-                                <TextField
-                                    {...params}
-                                    variant="outlined"
-                                    size="small"
-                                    InputProps={{
-                                        ...params.InputProps,
-                                        classes: {
-                                            root: classes.inputRoot,
-                                            notchedOutline: classes.inputNotchedOutline,
-                                            adornedEnd: classes.inputAdornedEnd,
-                                            focused: classes.inputFocused,
-                                        },
-                                        startAdornment: (
-                                            <InputAdornment position="end">
-                                                <SearchIcon />
-                                            </InputAdornment>
-                                        ),
-                                        endAdornment: (
-                                            <React.Fragment>
-                                                {loading ? <CircularProgress color="inherit" size={20} /> : null}
-                                                {params.InputProps.endAdornment}
-                                            </React.Fragment>
-                                        ),
-                                    }}
-                                />
-                            )}
-                        />
+                        <Paper component="form" className={classes.searchBox}>
+                            <InputBase
+                                className={classes.input}
+                                placeholder="Search Google Maps"
+                                inputProps={{ 'aria-label': 'search google maps' }}
+                            />
+                            <IconButton type="submit" className={classes.iconButton} aria-label="search">
+                                <SearchIcon />
+                            </IconButton>
+                            <Divider className={classes.divider} orientation="vertical" />
+                            <IconButton color="primary" className={classes.iconButton} aria-label="directions">
+                                <DirectionsBoat />
+                            </IconButton>
+                        </Paper>
                     </div>
                     <div className={classes.grow}/>
                     {auth.authState === AuthState.Authed && auth.authUser
