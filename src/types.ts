@@ -7,7 +7,9 @@ const TYPES = {
     CommissionUseCase: Symbol.for("CommissionUseCase"),
     CommissionRepo: Symbol.for("CommissionRepo"),
     ArtworkUseCase: Symbol.for("ArtworkUseCase"),
-    ArtworkRepo: Symbol.for("ArtworkRepo")
+    ArtworkRepo: Symbol.for("ArtworkRepo"),
+    SearchUseCase: Symbol.for("SearchUseCase"),
+    SearchRepo: Symbol.for("SearchRepo")
 };
 
 export { TYPES };
