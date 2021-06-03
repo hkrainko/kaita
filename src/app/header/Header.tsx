@@ -1,11 +1,22 @@
-import {AppBar, createStyles, fade, InputBase, makeStyles, Theme, Toolbar, Typography} from "@material-ui/core";
+import {
+    AppBar,
+    CircularProgress,
+    createStyles,
+    fade, InputAdornment,
+    InputBase,
+    makeStyles, TextField,
+    Theme,
+    Toolbar,
+    Typography
+} from "@material-ui/core";
 import SearchIcon from '@material-ui/icons/Search'
 import {useAppDispatch, useAppSelector} from "../hooks";
 import {Link, useHistory, useLocation} from "react-router-dom";
-import React from "react";
+import React, {ChangeEvent, KeyboardEvent, useCallback, useEffect, useState} from "react";
 import {AuthState} from "../../domain/auth/model/auth-state";
 import {logout} from "../auth/usecase/authSlice";
 import HeaderDesktopMenu from "./HeaderDesktopMenu";
+import {Autocomplete, AutocompleteChangeReason, AutocompleteInputChangeReason} from "@material-ui/lab";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -18,9 +29,7 @@ const useStyles = makeStyles((theme: Theme) =>
         halfGrow: {
             flexGrow: 0.5,
         },
-        toolBar: {
-
-        },
+        toolBar: {},
         artistPageToolBar: {
             // backgroundColor: 'white'
         },
@@ -54,8 +63,21 @@ const useStyles = makeStyles((theme: Theme) =>
             alignItems: 'center',
             justifyContent: 'center',
         },
+        autocomplete: {
+            width: '300px',
+        },
         inputRoot: {
-            color: 'inherit',
+            color: 'white',
+        },
+        inputNotchedOutline: {
+            // color: 'white',
+            borderWidth: 0
+        },
+        inputAdornedEnd: {
+            color: 'white'
+        },
+        inputFocused: {
+            color: 'white'
         },
         inputInput: {
             padding: theme.spacing(1, 1, 1, 0),
@@ -73,53 +95,83 @@ const useStyles = makeStyles((theme: Theme) =>
     }),
 );
 
+interface SearchItem {
+    text: string
+}
+
 export default function Header() {
     const classes = useStyles()
     const dispatch = useAppDispatch()
     const history = useHistory()
     const location = useLocation()
     const auth = useAppSelector((state) => state.auth)
+    const [openAutoComplete, setOpenAutoComplete] = useState(false);
+    const [searchOptions, setSearchItems] = useState<SearchItem[]>([]);
+    const [searchText, setSearchText] = useState<string>('')
+    const loading = openAutoComplete && searchOptions.length === 0;
 
-    const onClickSubmittedCommission = () => {
+    useEffect(() => {
+        setSearchItems([
+            {
+                text: '123'
+            }
+        ])
+    }, [])
+
+    const onClickSubmittedCommission = useCallback(() => {
         if (!auth.authUser) {
             return
         }
         history.push(`/commissions?t=submitted`)
-    }
+    }, [auth.authUser, history])
 
-    const onClickReceivedCommission = () => {
+    const onClickReceivedCommission = useCallback(() => {
         if (!auth.authUser) {
             return
         }
         history.push(`/commissions?t=received`)
-    }
+    }, [auth.authUser, history])
 
-    const onClickArtist = () => {
+    const onClickArtist = useCallback(() => {
         if (!auth.authUser) {
             return
         }
         history.push(`/artists/${auth.authUser.userId}`)
-    }
+    }, [auth.authUser, history])
 
-    const onClickUserProfile = () => {
+    const onClickUserProfile = useCallback(() => {
 
-    }
+    }, [])
 
-    const onClickLogout = () => {
+    const onClickLogout = useCallback(() => {
         dispatch(logout())
         history.push('')
-    }
+    }, [dispatch, history])
 
-    const isInArtistPage = (): boolean => {
+    const isInArtistPage = useCallback((): boolean => {
         return location.pathname.indexOf('/artists') !== -1
-    }
+    }, [location.pathname])
+
+    const onSearchChange = useCallback((event: ChangeEvent<{}>, value: string | SearchItem | null, reason: AutocompleteChangeReason) => {
+    }, [])
+
+    const onSearchInputChange = useCallback((event: ChangeEvent<{}>, value: string, reason: AutocompleteInputChangeReason) => {
+        setSearchText(value)
+    }, [])
+
+    const onSearchInputKeyDown = useCallback((event: KeyboardEvent<HTMLDivElement>) => {
+        if (event.key !== "Enter" || !searchText) {
+            return
+        }
+        history.push(`/search?q=${searchText}`)
+    }, [history, searchText])
 
     console.log(`pathname:${location.pathname}`)
 
     return (
         <div className={classes.root}>
             <AppBar position="static">
-                <Toolbar className={isInArtistPage()? classes.artistPageToolBar : classes.toolBar}>
+                <Toolbar className={isInArtistPage() ? classes.artistPageToolBar : classes.toolBar}>
                     <Typography className={classes.title} variant="h6" noWrap>
                         <Link to={`/`}>
                             {`Kaita`}
@@ -127,16 +179,54 @@ export default function Header() {
                     </Typography>
                     <div className={classes.halfGrow}/>
                     <div className={classes.search}>
-                        <div className={classes.searchIcon}>
-                            <SearchIcon/>
-                        </div>
-                        <InputBase
-                            placeholder="Search…"
-                            classes={{
-                                root: classes.inputRoot,
-                                input: classes.inputInput,
+                        <Autocomplete
+                            freeSolo
+                            id="asynchronous-demo"
+                            className={classes.autocomplete}
+                            open={openAutoComplete}
+                            onOpen={() => {
+                                setOpenAutoComplete(true);
                             }}
-                            inputProps={{'aria-label': 'search'}}
+                            onClose={() => {
+                                setOpenAutoComplete(false);
+                            }}
+                            onKeyDown={onSearchInputKeyDown}
+                            onChange={onSearchChange}
+                            onInputChange={onSearchInputChange}
+                            getOptionSelected={(option, value) => true}
+                            getOptionLabel={(option) => {
+                                console.log(`getOptionLabel ${option}`)
+                                return ''
+                            }}
+                            options={searchOptions}
+                            loading={loading}
+                            renderInput={(params) => (
+                                <TextField
+                                    {...params}
+                                    variant="outlined"
+                                    size="small"
+                                    InputProps={{
+                                        ...params.InputProps,
+                                        classes: {
+                                            root: classes.inputRoot,
+                                            notchedOutline: classes.inputNotchedOutline,
+                                            adornedEnd: classes.inputAdornedEnd,
+                                            focused: classes.inputFocused,
+                                        },
+                                        startAdornment: (
+                                            <InputAdornment position="end">
+                                                <SearchIcon />
+                                            </InputAdornment>
+                                        ),
+                                        endAdornment: (
+                                            <React.Fragment>
+                                                {loading ? <CircularProgress color="inherit" size={20} /> : null}
+                                                {params.InputProps.endAdornment}
+                                            </React.Fragment>
+                                        ),
+                                    }}
+                                />
+                            )}
                         />
                     </div>
                     <div className={classes.grow}/>
