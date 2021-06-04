@@ -4,7 +4,7 @@ import {
     createStyles, Divider,
     fade, IconButton, InputAdornment,
     InputBase,
-    makeStyles, Paper, TextField,
+    makeStyles, Paper, Select, TextField,
     Theme,
     Toolbar,
     Typography
@@ -18,6 +18,8 @@ import {logout} from "../auth/usecase/authSlice";
 import HeaderDesktopMenu from "./HeaderDesktopMenu";
 import {Autocomplete, AutocompleteChangeReason, AutocompleteInputChangeReason} from "@material-ui/lab";
 import {DirectionsBoat} from "@material-ui/icons";
+import {artistSlice} from "../artist/usecase/artistSlice";
+import Artist from "../artist/Artist";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -106,12 +108,23 @@ const useStyles = makeStyles((theme: Theme) =>
         iconButton: {
             padding: 10,
         },
+        selectRoot: {
+        },
+        selectSelect: {
+        },
         divider: {
             height: 28,
             margin: 4,
         },
     }),
 );
+
+enum SearchType {
+    All,
+    OpenCommissions,
+    Artists,
+    Artworks
+}
 
 interface SearchItem {
     text: string
@@ -126,6 +139,7 @@ export default function Header() {
     const [openAutoComplete, setOpenAutoComplete] = useState(false);
     const [searchOptions, setSearchItems] = useState<SearchItem[]>([]);
     const [searchText, setSearchText] = useState<string>('')
+    const [searchType, setSearchType] = useState<SearchType>(SearchType.All)
     const loading = openAutoComplete && searchOptions.length === 0;
 
     useEffect(() => {
@@ -198,17 +212,34 @@ export default function Header() {
                     <div className={classes.halfGrow}/>
                     <div className={classes.search}>
                         <Paper component="form" className={classes.searchBox}>
+                            <Select
+                                native
+                                defaultValue={searchType}
+                                value={searchType}
+                                disableUnderline
+                                onChange={event => setSearchType(event.target.value as SearchType)}
+                                classes={{
+                                    root: classes.selectRoot,
+                                    select: classes.selectSelect
+                                }}
+                            >
+                                <option value={SearchType.All}>全部</option>
+                                <option value={SearchType.OpenCommissions}>開放委托</option>
+                                <option value={SearchType.Artists}>繪師</option>
+                                <option value={SearchType.Artworks}>作品</option>
+                            </Select>
+                            <Divider className={classes.divider} orientation="vertical" />
                             <InputBase
                                 className={classes.input}
-                                placeholder="Search Google Maps"
+                                placeholder=""
                                 inputProps={{ 'aria-label': 'search google maps' }}
                             />
+                            <Divider className={classes.divider} orientation="vertical" />
+                            {/*<IconButton color="primary" className={classes.iconButton} aria-label="directions">*/}
+                            {/*    <DirectionsBoat />*/}
+                            {/*</IconButton>*/}
                             <IconButton type="submit" className={classes.iconButton} aria-label="search">
                                 <SearchIcon />
-                            </IconButton>
-                            <Divider className={classes.divider} orientation="vertical" />
-                            <IconButton color="primary" className={classes.iconButton} aria-label="directions">
-                                <DirectionsBoat />
                             </IconButton>
                         </Paper>
                     </div>
