@@ -18,6 +18,7 @@ import React, {useCallback} from "react";
 import {useInjection} from "../../iocReact";
 import {TYPES} from "../../types";
 import {SearchUseCase} from "../../domain/search/search.usecase";
+import SearchOpenCommissionsResult from "./SearchOpenCommissionsResult";
 
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -63,7 +64,7 @@ export default function Search(props: Props) {
                             <FormControlLabel
                                 aria-label="Acknowledge"
                                 control={<Checkbox checked={true} color={"primary"}/>}
-                                label="委托"
+                                label="開放委托"
                             />
                         </AccordionSummary>
                         <AccordionDetails>
@@ -158,7 +159,7 @@ export default function Search(props: Props) {
                     </Accordion>
                 </Grid>
                 <Grid item md={9}>
-                    2332
+                    <SearchOpenCommissionsResult/>
                 </Grid>
             </Grid>
         </Container>

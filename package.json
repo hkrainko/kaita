@@ -32,6 +32,7 @@
     "react-dropzone": "^11.3.2",
     "react-hook-form": "^7.3.6",
     "react-image-crop": "^8.6.9",
+    "react-infinite-scroll-component": "^6.1.0",
     "react-redux": "^7.2.3",
     "react-router-dom": "^5.2.0",
     "react-scripts": "4.0.3",

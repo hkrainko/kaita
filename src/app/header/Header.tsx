@@ -120,7 +120,7 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 enum SearchType {
-    All= 'all',
+    // All= 'all',
     OpenCommissions = 'open-commissions',
     Artists = 'artists',
     Artworks = 'artworks'
@@ -133,7 +133,7 @@ export default function Header() {
     const location = useLocation()
     const auth = useAppSelector((state) => state.auth)
     const [searchText, setSearchText] = useState<string>('')
-    const [searchType, setSearchType] = useState<SearchType>(SearchType.All)
+    const [searchType, setSearchType] = useState<SearchType>(SearchType.OpenCommissions)
 
     const onClickSubmittedCommission = useCallback(() => {
         if (!auth.authUser) {
@@ -210,7 +210,7 @@ export default function Header() {
                                     select: classes.selectSelect
                                 }}
                             >
-                                <option value={SearchType.All}>全部</option>
+                                {/*<option value={SearchType.All}>全部</option>*/}
                                 <option value={SearchType.OpenCommissions}>開放委托</option>
                                 <option value={SearchType.Artists}>繪師</option>
                                 <option value={SearchType.Artworks}>作品</option>
