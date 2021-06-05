@@ -51,7 +51,6 @@ function App() {
                     <Route exact path="/" component={Home}/>
                     <Route path="*" component={Home}/>
                 </Switch>
-                <Footer/>
             </BrowserRouter>
             <Snackbar
                 open={errorSelector.message != null}
