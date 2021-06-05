@@ -1,10 +1,13 @@
 import {
     AppBar,
-    CircularProgress,
-    createStyles, Divider,
-    fade, IconButton, InputAdornment,
+    createStyles,
+    Divider,
+    fade,
+    IconButton,
     InputBase,
-    makeStyles, Paper, Select, TextField,
+    makeStyles,
+    Paper,
+    Select,
     Theme,
     Toolbar,
     Typography
@@ -12,14 +15,10 @@ import {
 import SearchIcon from '@material-ui/icons/Search'
 import {useAppDispatch, useAppSelector} from "../hooks";
 import {Link, useHistory, useLocation} from "react-router-dom";
-import React, {ChangeEvent, KeyboardEvent, useCallback, useEffect, useState} from "react";
+import React, {ChangeEvent, KeyboardEvent, MouseEvent, useCallback, useState} from "react";
 import {AuthState} from "../../domain/auth/model/auth-state";
 import {logout} from "../auth/usecase/authSlice";
 import HeaderDesktopMenu from "./HeaderDesktopMenu";
-import {Autocomplete, AutocompleteChangeReason, AutocompleteInputChangeReason} from "@material-ui/lab";
-import {DirectionsBoat} from "@material-ui/icons";
-import {artistSlice} from "../artist/usecase/artistSlice";
-import Artist from "../artist/Artist";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -111,6 +110,7 @@ const useStyles = makeStyles((theme: Theme) =>
         selectRoot: {
         },
         selectSelect: {
+            paddingLeft: theme.spacing(1),
         },
         divider: {
             height: 28,
@@ -120,14 +120,10 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 enum SearchType {
-    All,
-    OpenCommissions,
-    Artists,
-    Artworks
-}
-
-interface SearchItem {
-    text: string
+    All= 'all',
+    OpenCommissions = 'open-commissions',
+    Artists = 'artists',
+    Artworks = 'artworks'
 }
 
 export default function Header() {
@@ -136,19 +132,8 @@ export default function Header() {
     const history = useHistory()
     const location = useLocation()
     const auth = useAppSelector((state) => state.auth)
-    const [openAutoComplete, setOpenAutoComplete] = useState(false);
-    const [searchOptions, setSearchItems] = useState<SearchItem[]>([]);
     const [searchText, setSearchText] = useState<string>('')
     const [searchType, setSearchType] = useState<SearchType>(SearchType.All)
-    const loading = openAutoComplete && searchOptions.length === 0;
-
-    useEffect(() => {
-        setSearchItems([
-            {
-                text: '123'
-            }
-        ])
-    }, [])
 
     const onClickSubmittedCommission = useCallback(() => {
         if (!auth.authUser) {
@@ -184,19 +169,22 @@ export default function Header() {
         return location.pathname.indexOf('/artists') !== -1
     }, [location.pathname])
 
-    const onSearchChange = useCallback((event: ChangeEvent<{}>, value: string | SearchItem | null, reason: AutocompleteChangeReason) => {
-    }, [])
+    const onClickSearch = useCallback((event: MouseEvent<HTMLButtonElement>) => {
+        history.push(`/search?t=${searchType}&s=${searchText}`)
+        event.stopPropagation()
+    }, [history, searchText, searchType])
 
-    const onSearchInputChange = useCallback((event: ChangeEvent<{}>, value: string, reason: AutocompleteInputChangeReason) => {
-        setSearchText(value)
-    }, [])
-
-    const onSearchInputKeyDown = useCallback((event: KeyboardEvent<HTMLDivElement>) => {
-        if (event.key !== "Enter" || !searchText) {
+    const onSearchKeyDown = useCallback((event: KeyboardEvent) => {
+        console.log(`event:${event.key}`)
+        if (event.key !== 'enter') {
             return
         }
-        history.push(`/search?q=${searchText}`)
-    }, [history, searchText])
+        history.push(`/search?t=${searchType}&s=${searchText}`)
+    }, [history, searchText, searchType])
+
+    const onSearchInputChange = useCallback((event: ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
+        setSearchText(event.target.value)
+    }, [])
 
     console.log(`pathname:${location.pathname}`)
 
@@ -214,7 +202,6 @@ export default function Header() {
                         <Paper component="form" className={classes.searchBox}>
                             <Select
                                 native
-                                defaultValue={searchType}
                                 value={searchType}
                                 disableUnderline
                                 onChange={event => setSearchType(event.target.value as SearchType)}
@@ -232,13 +219,14 @@ export default function Header() {
                             <InputBase
                                 className={classes.input}
                                 placeholder=""
-                                inputProps={{ 'aria-label': 'search google maps' }}
+                                onChange={onSearchInputChange}
+                                onKeyDown={onSearchKeyDown}
                             />
-                            <Divider className={classes.divider} orientation="vertical" />
-                            {/*<IconButton color="primary" className={classes.iconButton} aria-label="directions">*/}
-                            {/*    <DirectionsBoat />*/}
-                            {/*</IconButton>*/}
-                            <IconButton type="submit" className={classes.iconButton} aria-label="search">
+                            <IconButton
+                                className={classes.iconButton}
+                                aria-label="search"
+                                onClick={onClickSearch}
+                            >
                                 <SearchIcon />
                             </IconButton>
                         </Paper>
