@@ -98,7 +98,7 @@ const useStyles = makeStyles((theme: Theme) =>
             padding: '0px 4px',
             display: 'flex',
             alignItems: 'center',
-            width: 400,
+            width: 'auto',
         },
         input: {
             marginLeft: theme.spacing(1),

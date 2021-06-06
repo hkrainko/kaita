@@ -8,7 +8,14 @@ import {OpenCommissionsSearchSorter} from "../../domain/search/model/search-sort
 import OpenCommissionCard from "../open-commission/OpenCommissionCard";
 
 const useStyles = makeStyles((theme: Theme) =>
-    createStyles({}),
+    createStyles({
+        root: {
+
+        },
+        container: {
+            width: '100%',
+        }
+    }),
 );
 
 interface SearchResult {
@@ -24,6 +31,7 @@ interface Props extends StandardProps<any, any> {
 }
 
 export default function SearchOpenCommissionsResult({onFetchData, ...props}: Props) {
+    const classes = useStyles(props.className)
 
     const searchResult = useAppSelector<SearchResult | null>(state => {
         if (!state.search.forOpenCommissions.currentPage
@@ -60,8 +68,9 @@ export default function SearchOpenCommissionsResult({onFetchData, ...props}: Pro
             hasMore={true}
             loader={<div>Loading</div>}
             dataLength={searchResult?.openCommissions.length ?? 0}
+            className={classes.root}
         >
-            <Grid container spacing={2}>
+            <Grid container spacing={2} className={classes.container}>
                 {
                     searchResult?.openCommissions.map(oc => {
                         return (
