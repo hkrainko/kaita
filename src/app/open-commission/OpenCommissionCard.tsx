@@ -32,7 +32,6 @@ import {
 } from "@material-ui/icons";
 import {OpenCommission} from "../../domain/open-commission/model/open-commission";
 import React, {useState} from "react";
-import openCommissionSlice from "./usecase/openCommissionSlice";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -172,15 +171,19 @@ export default function OpenCommissionCard({openCommission, onMainAction, onEdit
                 </CardContent>
             </CardActionArea>
             <CardActions>
-                <Box display={"flex"} flexGrow={1} px={1}>
-                    <Typography variant={"subtitle2"}>@{openCommission.artistId}</Typography>
-                </Box>
-                <IconButton onClick={() => onEdit && onEdit(openCommission)}>
-                    <Edit/>
-                </IconButton>
-                <IconButton onClick={() => onDelete && onDelete(openCommission)}>
-                    <Delete/>
-                </IconButton>
+                <Box display={"flex"} flexGrow={1}/>
+                {
+                    onEdit &&
+                    <IconButton onClick={() => onEdit && onEdit(openCommission)}>
+                        <Edit/>
+                    </IconButton>
+                }
+                {
+                    onDelete &&
+                    <IconButton onClick={() => onDelete && onDelete(openCommission)}>
+                        <Delete/>
+                    </IconButton>
+                }
                 <IconButton
                     className={`${expanded ? classes.expandOpen : classes.expand}`}
                     onClick={() => setExpanded(!expanded)}
@@ -190,6 +193,9 @@ export default function OpenCommissionCard({openCommission, onMainAction, onEdit
                     <ExpandMoreOutlined/>
                 </IconButton>
             </CardActions>
+            <Box display={"flex"} px={1} paddingBottom={1}>
+                <Typography variant={"body2"} color={"textSecondary"}>{openCommission.id}</Typography>
+            </Box>
         </Card>
     )
 
