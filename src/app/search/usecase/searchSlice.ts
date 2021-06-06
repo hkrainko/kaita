@@ -104,6 +104,8 @@ export const searchSlice = createSlice({
                         filter: action.meta.arg.filter,
                         sorter: action.meta.arg.sorter
                     }
+                } else {
+                    state.forOpenCommissions.currentPage = action.meta.arg.currentPage
                 }
             })
             .addCase(searchOpenCommissions.fulfilled, (state, action) => {

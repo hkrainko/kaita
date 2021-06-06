@@ -88,13 +88,17 @@ export default function Search(props: Props) {
                         priceTo: undefined,
                         type: SearchType.OpenCommissions
                     }, currentPage,
-                    pageSize: 10
+                    pageSize: 9
                 }))
                 break
             default:
                 break
         }
     }, [dispatch, searchText])
+
+    useEffect(() => {
+        setPage(1)
+    }, [searchType, searchText])
 
     useEffect(() => {
         if (!searchType) {

@@ -1,4 +1,4 @@
-import {createStyles, Grid, makeStyles, StandardProps, Theme} from "@material-ui/core";
+import {CircularProgress, createStyles, Grid, makeStyles, StandardProps, Theme, Typography} from "@material-ui/core";
 import InfiniteScroll from "react-infinite-scroll-component";
 import React, {useCallback} from "react";
 import {useAppSelector} from "../hooks";
@@ -6,6 +6,7 @@ import {OpenCommission} from "../../domain/open-commission/model/open-commission
 import {OpenCommissionsSearchFilter} from "../../domain/search/model/search-filter";
 import {OpenCommissionsSearchSorter} from "../../domain/search/model/search-sorter";
 import OpenCommissionCard from "../open-commission/OpenCommissionCard";
+import {MoreHorizOutlined} from "@material-ui/icons";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -65,7 +66,7 @@ export default function SearchOpenCommissionsResult({onLoadMore, ...props}: Prop
 
     if (!searchResult) {
         return (
-            <div>No result</div>
+            <Typography>(無資料)</Typography>
         )
     }
 
@@ -73,7 +74,10 @@ export default function SearchOpenCommissionsResult({onLoadMore, ...props}: Prop
         <InfiniteScroll
             next={onLoadMore}
             hasMore={searchResult.currentPage < searchResult.totalPage}
-            loader={<div>Loading</div>}
+            loader={<Typography>載入中...</Typography>}
+            endMessage={
+                <Typography>{`共 ${searchResult.openCommissions.length} 項`}</Typography>
+            }
             dataLength={searchResult.openCommissions.length}
             className={classes.root}
         >
