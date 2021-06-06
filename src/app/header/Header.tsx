@@ -43,56 +43,9 @@ const useStyles = makeStyles((theme: Theme) =>
             },
         },
         search: {
-            position: 'relative',
-            borderRadius: theme.shape.borderRadius,
-            backgroundColor: fade(theme.palette.common.white, 0.15),
-            '&:hover': {
-                backgroundColor: fade(theme.palette.common.white, 0.25),
-            },
-            marginLeft: 0,
-            width: '100%',
-            [theme.breakpoints.up('sm')]: {
-                marginLeft: theme.spacing(3),
-                width: 'auto',
-            },
-        },
-        searchIcon: {
-            padding: theme.spacing(0, 2),
-            height: '100%',
             position: 'absolute',
-            pointerEvents: 'none',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-        },
-        autocomplete: {
-            width: '300px',
-        },
-        inputRoot: {
-            color: 'white',
-        },
-        inputNotchedOutline: {
-            // color: 'white',
-            borderWidth: 0
-        },
-        inputAdornedEnd: {
-            color: 'white'
-        },
-        inputFocused: {
-            color: 'white'
-        },
-        inputInput: {
-            padding: theme.spacing(1, 1, 1, 0),
-            // vertical padding + font size from searchIcon
-            paddingLeft: `calc(1em + ${theme.spacing(4)}px)`,
-            transition: theme.transitions.create('width'),
-            width: '100%',
-            [theme.breakpoints.up('sm')]: {
-                width: '40ch',
-                // '&:focus': {
-                //     width: '20ch',
-                // },
-            },
+            left: '36%',
+            right: '36%'
         },
         searchBox: {
             padding: '0px 4px',
@@ -134,6 +87,7 @@ export default function Header() {
     const auth = useAppSelector((state) => state.auth)
     const [searchText, setSearchText] = useState<string>('')
     const [searchType, setSearchType] = useState<SearchType>(SearchType.OpenCommissions)
+    const [showSearchType, setShowSearchType] = useState<boolean>(false)
 
     const onClickSubmittedCommission = useCallback(() => {
         if (!auth.authUser) {
@@ -200,27 +154,32 @@ export default function Header() {
                     <div className={classes.halfGrow}/>
                     <div className={classes.search}>
                         <Paper component="form" className={classes.searchBox}>
-                            <Select
-                                native
-                                value={searchType}
-                                disableUnderline
-                                onChange={event => setSearchType(event.target.value as SearchType)}
-                                classes={{
-                                    root: classes.selectRoot,
-                                    select: classes.selectSelect
-                                }}
-                            >
-                                {/*<option value={SearchType.All}>全部</option>*/}
-                                <option value={SearchType.OpenCommissions}>開放委托</option>
-                                <option value={SearchType.Artists}>繪師</option>
-                                <option value={SearchType.Artworks}>作品</option>
-                            </Select>
-                            <Divider className={classes.divider} orientation="vertical" />
+                            {
+                                showSearchType &&
+                                    <React.Fragment>
+                                        <Select
+                                            native
+                                            value={searchType}
+                                            disableUnderline
+                                            onChange={event => setSearchType(event.target.value as SearchType)}
+                                            classes={{
+                                                root: classes.selectRoot,
+                                                select: classes.selectSelect
+                                            }}
+                                        >
+                                            <option value={SearchType.OpenCommissions}>開放委托</option>
+                                            <option value={SearchType.Artists}>繪師</option>
+                                            <option value={SearchType.Artworks}>作品</option>
+                                        </Select>
+                                        <Divider className={classes.divider} orientation="vertical" />
+                                    </React.Fragment>
+                            }
                             <InputBase
                                 className={classes.input}
                                 placeholder=""
                                 onChange={onSearchInputChange}
                                 onKeyDown={onSearchKeyDown}
+                                onFocus={() => setShowSearchType(true)}
                             />
                             <IconButton
                                 className={classes.iconButton}
