@@ -10,6 +10,8 @@ import {CommissionRepo} from "../domain/commission/commission.repo";
 import {HttpCommissionRepo} from "./commission/repo/http-commission/http.commission.repo";
 import {ArtworkRepo} from "../domain/artwork/artwork.repo";
 import {HttpArtworkRepo} from "./artwork/repo/http-artwork/http.artwork.repo";
+import {SearchRepo} from "../domain/search/search.repo";
+import {HttpSearchRepo} from "./search/repo/http/http.search.repo";
 
 export default class AppDependency {
 
@@ -19,6 +21,7 @@ export default class AppDependency {
     openCommRepo: OpenCommissionRepo
     commRepo: CommissionRepo
     artworkRepo: ArtworkRepo
+    searchRepo: SearchRepo
 
     constructor() {
         this.authRepo = new HttpAuthRepo()
@@ -27,5 +30,6 @@ export default class AppDependency {
         this.openCommRepo = new HttpOpenCommissionRepo()
         this.commRepo = new HttpCommissionRepo()
         this.artworkRepo = new HttpArtworkRepo()
+        this.searchRepo = new HttpSearchRepo()
     }
 }

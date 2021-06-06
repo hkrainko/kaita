@@ -105,8 +105,7 @@ export const openCommissionSlice = createSlice({
                 }
             })
             .addCase(getOpenCommissions.fulfilled, (state, action) => {
-                if (state.forArtist.requestId !== action.meta.requestId
-                ) {
+                if (state.forArtist.requestId !== action.meta.requestId) {
                     action.payload.openCommissions.forEach(oc => {
                         state.byId[oc.id] = oc
                     })

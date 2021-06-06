@@ -21,6 +21,7 @@ export class HttpSearchRepo implements SearchRepo {
 
         const params = {
             s: text,
+            t: SearchType.OpenCommissions,
             'price.from': filter.priceFromRange?.from,
             'price.to': filter.priceFromRange?.from,
             currency: filter.currency,

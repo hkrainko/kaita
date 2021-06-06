@@ -14,11 +14,16 @@ import {
     Typography
 } from "@material-ui/core";
 import {Controller, useForm} from "react-hook-form";
-import React, {useCallback} from "react";
+import React, {useCallback, useEffect} from "react";
 import {useInjection} from "../../iocReact";
 import {TYPES} from "../../types";
 import {SearchUseCase} from "../../domain/search/search.usecase";
 import SearchOpenCommissionsResult from "./SearchOpenCommissionsResult";
+import {SearchType} from "../../domain/search/model/search-type";
+import {useAppDispatch} from "../hooks";
+import {searchOpenCommissions} from "./usecase/searchSlice";
+import {useLocation} from "react-router-dom";
+import {SortOrder} from "../../domain/search/model/search-sorter";
 
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -45,11 +50,55 @@ export default function Search(props: Props) {
     const classes = useStyles()
 
     const searchUseCase = useInjection<SearchUseCase>(TYPES.SearchUseCase)
+    const location = useLocation()
+    const query = new URLSearchParams(location.search)
+    const searchType = query.get('t')
+    const searchText = query.get('s')
+    const dispatch = useAppDispatch()
     const {handleSubmit, control, watch, formState: {errors}} = useForm<Inputs>();
 
     const valueText = useCallback((value: number) => {
         return `${value} TWD`
     }, [])
+
+    const fetchDataByType = useCallback((searchType: SearchType) => {
+        if (!searchText) {
+            return
+        }
+        switch (searchType) {
+            case SearchType.OpenCommissions:
+                dispatch(searchOpenCommissions({filter: {
+                        allowAnonymous: undefined,
+                        allowBePrivate: undefined,
+                        currency: undefined,
+                        currentPage: 1,
+                        dayNeed: undefined,
+                        isR18: undefined,
+                        pageSize: 5,
+                        priceFromRange: undefined,
+                        priceToRange: undefined
+                    }, sorter: {
+                        artistId: undefined,
+                        createTime: undefined,
+                        dayNeedFrom: undefined,
+                        dayNeedTo: undefined,
+                        lastUpdatedTime: SortOrder.Descending,
+                        priceFrom: undefined,
+                        priceTo: undefined,
+                        type: SearchType.OpenCommissions
+                    }, text: searchText}))
+                break
+            default:
+                break
+        }
+    }, [dispatch, searchText])
+
+    useEffect(() => {
+        if (!searchType) {
+            return
+        }
+        fetchDataByType(searchType as SearchType)
+    }, [fetchDataByType, searchType])
 
     return (
         <Container className={classes.root}>
@@ -159,7 +208,7 @@ export default function Search(props: Props) {
                     </Accordion>
                 </Grid>
                 <Grid item md={9}>
-                    <SearchOpenCommissionsResult/>
+                    <SearchOpenCommissionsResult onFetchData={() => fetchDataByType(SearchType.OpenCommissions)}/>
                 </Grid>
             </Grid>
         </Container>
