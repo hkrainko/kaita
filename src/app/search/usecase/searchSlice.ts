@@ -71,12 +71,12 @@ const initialState: SearchState = {
 }
 
 export const searchOpenCommissions = createAsyncThunk<OpenCommissionsSearchResult,
-    { text: string, filter: OpenCommissionsSearchFilter, sorter: OpenCommissionsSearchSorter },
+    { text: string, filter: OpenCommissionsSearchFilter, sorter: OpenCommissionsSearchSorter, currentPage: number, pageSize: number },
     { state: RootState, extra: AppDependency }>(
     'search/searchOpenCommissions',
-    async ({text, filter, sorter}, thunkAPI) => {
+    async ({text, filter, sorter, currentPage, pageSize}, thunkAPI) => {
         const ad = thunkAPI.extra as AppDependency
-        return await ad.searchRepo.searchOpenCommissions(text, filter, sorter)
+        return await ad.searchRepo.searchOpenCommissions(text, filter, sorter, currentPage, pageSize)
     }
 )
 
@@ -89,9 +89,31 @@ export const searchSlice = createSlice({
             .addCase(searchOpenCommissions.pending, (state, action) => {
                 state.requestState = RequestState.Loading
                 state.requestId = action.meta.requestId
+                console.log(`AAA: remove before`)
                 if (state.forOpenCommissions.text !== action.meta.arg.text
                     || JSON.stringify(state.forOpenCommissions.filter) !== JSON.stringify(action.meta.arg.filter)
                     || JSON.stringify(state.forOpenCommissions.sorter) !== JSON.stringify(action.meta.arg.sorter)) {
+                    console.log(`AAA: remove`)
+                    state.forOpenCommissions = {
+                        byId: {},
+                        ids: [],
+                        size: action.meta.arg.pageSize,
+                        currentPage: action.meta.arg.currentPage,
+                        totalPage: undefined,
+                        text: action.meta.arg.text,
+                        filter: action.meta.arg.filter,
+                        sorter: action.meta.arg.sorter
+                    }
+                }
+            })
+            .addCase(searchOpenCommissions.fulfilled, (state, action) => {
+                if (state.requestId !== action.meta.requestId) {
+                    return
+                }
+                if (state.forOpenCommissions.text !== action.meta.arg.text
+                    || JSON.stringify(state.forOpenCommissions.filter) !== JSON.stringify(action.meta.arg.filter)
+                    || JSON.stringify(state.forOpenCommissions.sorter) !== JSON.stringify(action.meta.arg.sorter)) {
+                    console.log(`AAA: remove in`)
                     state.forOpenCommissions = {
                         byId: {},
                         ids: [],
@@ -103,13 +125,10 @@ export const searchSlice = createSlice({
                         sorter: undefined
                     }
                 }
-            })
-            .addCase(searchOpenCommissions.fulfilled, (state, action) => {
-                if (state.requestId !== action.meta.requestId) {
-                    return
-                }
-                let byId: { [id: string]: OpenCommission } = {}
-                let ids: string[] = []
+
+
+                let byId: { [id: string]: OpenCommission } = state.forOpenCommissions.byId
+                let ids: string[] = state.forOpenCommissions.ids
                 action.payload.openCommissions.forEach(oc => {
                     byId[oc.id] = oc
                     ids.push(oc.id)

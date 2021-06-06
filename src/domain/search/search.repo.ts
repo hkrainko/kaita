@@ -3,5 +3,5 @@ import {OpenCommissionsSearchSorter} from "./model/search-sorter";
 import {OpenCommissionsSearchResult} from "./model/search-result";
 
 export interface SearchRepo {
-    searchOpenCommissions(text: string, filter: OpenCommissionsSearchFilter, sorter: OpenCommissionsSearchSorter): Promise<OpenCommissionsSearchResult>
+    searchOpenCommissions(text: string, filter: OpenCommissionsSearchFilter, sorter: OpenCommissionsSearchSorter, currentPage: number, pageSize: number): Promise<OpenCommissionsSearchResult>
 }

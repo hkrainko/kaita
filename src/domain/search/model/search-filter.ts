@@ -1,11 +1,6 @@
 import {Currency} from "../../price/price";
 
-export interface SearchFilter {
-    currentPage: number
-    pageSize: number
-}
-
-export interface OpenCommissionsSearchFilter extends SearchFilter {
+export interface OpenCommissionsSearchFilter {
     priceFromRange?: NumberRange
     priceToRange?: NumberRange
     currency?: Currency

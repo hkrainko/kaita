@@ -10,10 +10,10 @@ import OpenCommissionCard from "../open-commission/OpenCommissionCard";
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         root: {
-
         },
         container: {
             width: '100%',
+            margin: theme.spacing(0),
         }
     }),
 );
@@ -27,10 +27,10 @@ interface SearchResult {
 }
 
 interface Props extends StandardProps<any, any> {
-    onFetchData: () => void
+    onLoadMore: () => void
 }
 
-export default function SearchOpenCommissionsResult({onFetchData, ...props}: Props) {
+export default function SearchOpenCommissionsResult({onLoadMore, ...props}: Props) {
     const classes = useStyles(props.className)
 
     const searchResult = useAppSelector<SearchResult | null>(state => {
@@ -48,6 +48,7 @@ export default function SearchOpenCommissionsResult({onFetchData, ...props}: Pro
                 openCommissions.push(state.search.forOpenCommissions.byId[id])
             }
         })
+        console.log(`AAA: openCommissions count:${openCommissions.length}`)
 
         return {
             openCommissions,
@@ -62,19 +63,25 @@ export default function SearchOpenCommissionsResult({onFetchData, ...props}: Pro
 
     }, [])
 
+    if (!searchResult) {
+        return (
+            <div>No result</div>
+        )
+    }
+
     return (
         <InfiniteScroll
-            next={onFetchData}
-            hasMore={true}
+            next={onLoadMore}
+            hasMore={searchResult.currentPage < searchResult.totalPage}
             loader={<div>Loading</div>}
-            dataLength={searchResult?.openCommissions.length ?? 0}
+            dataLength={searchResult.openCommissions.length}
             className={classes.root}
         >
             <Grid container spacing={2} className={classes.container}>
                 {
                     searchResult?.openCommissions.map(oc => {
                         return (
-                            <Grid item xs={6} md={4} key={oc.id}>
+                            <Grid item xs={12} md={4} key={oc.id}>
                                 <OpenCommissionCard openCommission={oc} onMainAction={onOpenCommissionMainAction}/>
                             </Grid>
                         )

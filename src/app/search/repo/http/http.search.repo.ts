@@ -17,7 +17,7 @@ export class HttpSearchRepo implements SearchRepo {
 
     searchOpenCommissionsRepoModelMapper = new SearchOpenCommissionsRepoModelMapper()
 
-    searchOpenCommissions(text: string, filter: OpenCommissionsSearchFilter, sorter: OpenCommissionsSearchSorter): Promise<OpenCommissionsSearchResult> {
+    searchOpenCommissions(text: string, filter: OpenCommissionsSearchFilter, sorter: OpenCommissionsSearchSorter, currentPage: number, pageSize: number): Promise<OpenCommissionsSearchResult> {
 
         const params = {
             s: text,
@@ -29,8 +29,8 @@ export class HttpSearchRepo implements SearchRepo {
             'is-r18': filter.isR18,
             'allow-be-private': filter.allowBePrivate,
             'allow-anonymous': filter.allowAnonymous,
-            'page.current': filter.currentPage,
-            'page.size': filter.pageSize,
+            'page.current': currentPage,
+            'page.size': pageSize,
             'sort': this.getSorterStr(sorter)
         }
 
