@@ -1,4 +1,4 @@
-import {createStyles, Grid, IconButton, makeStyles, StandardProps, Theme, Typography} from "@material-ui/core";
+import {createStyles, Fab, Grid, IconButton, makeStyles, StandardProps, Theme, Typography} from "@material-ui/core";
 import InfiniteScroll from "react-infinite-scroll-component";
 import React, {useCallback, useEffect, useState} from "react";
 import {useAppSelector} from "../hooks";
@@ -119,13 +119,9 @@ export default function SearchOpenCommissionsResult({onLoadMore, ...props}: Prop
                 </Grid>
                 {
                     showBackToTop &&
-                    <IconButton
-                        onClick={onClickBackToTop}
-                        aria-label="top"
-                        className={classes.backToTopButton}
-                    >
+                    <Fab color="default" size="medium" onClick={onClickBackToTop} className={classes.backToTopButton}>
                         <PublishRounded fontSize={"large"}/>
-                    </IconButton>
+                    </Fab>
                 }
             </InfiniteScroll>
         </React.Fragment>
