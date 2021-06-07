@@ -1,4 +1,4 @@
-import {createStyles, Fab, Grid, IconButton, makeStyles, StandardProps, Theme, Typography} from "@material-ui/core";
+import {createStyles, Fab, Grid, makeStyles, StandardProps, Theme, Typography} from "@material-ui/core";
 import InfiniteScroll from "react-infinite-scroll-component";
 import React, {useCallback, useEffect, useState} from "react";
 import {useAppSelector} from "../hooks";
@@ -6,7 +6,7 @@ import {OpenCommission} from "../../domain/open-commission/model/open-commission
 import {OpenCommissionsSearchFilter} from "../../domain/search/model/search-filter";
 import {OpenCommissionsSearchSorter} from "../../domain/search/model/search-sorter";
 import OpenCommissionCard from "../open-commission/OpenCommissionCard";
-import {ExpandMoreOutlined, Publish, PublishOutlined, PublishRounded} from "@material-ui/icons";
+import {PublishRounded} from "@material-ui/icons";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({

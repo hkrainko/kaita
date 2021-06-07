@@ -1,20 +1,48 @@
 import {SearchUseCase} from "../../../domain/search/search.usecase";
 import {injectable} from "inversify";
-import {NumberRange} from "../../../domain/search/model/search-filter";
+import {DateRange, NumberRange} from "../../../domain/search/model/search-filter";
+import {SearchType} from "../../../domain/search/model/search-type";
+import {symlink} from "fs";
+import Type = module
 
 @injectable()
 export class DefaultSearchUseCase implements SearchUseCase {
 
 
-    getOpenCommissionSearchFilter(): string[] {
-        return []
+    getSearchFilterSelections(type: SearchType): SearchFilterSelection {
+        let selection: SearchFilterSelection = {
+            type: SearchType.OpenCommissions,
+            groups: [
+                {
+                    title: "ss",
+                    multipleSelection: false,
+                    filters: [
+                        {
+                            name: '',
+                        }
+                    ]
+                }
+            ]
+        }
+        return
     }
 
 
 }
 
+interface SearchFilterSelection {
+    type: SearchType
+    groups: {
+        title: string
+        multipleSelection: boolean
+        filters: {
+            name: string
+        }[]
+    }[]
+}
+
 interface OpenCommissionsSearchFilter {
-    type: string
+    type: SearchType.OpenCommissions
     prices: {
         title: string,
         fields: { text: string, value: NumberRange }[]
@@ -31,8 +59,24 @@ interface OpenCommissionsSearchFilter {
     }
 }
 
+export interface ArtistsSearchFilter {
+    type: SearchType.Artists
+    regTime: {
+        title: string
+        fields: { text: string, value: DateRange }[]
+    }
+    paymentMethods: {
+        title: string,
+        fields: { text: string, value: string }[]
+    }
+    lastRequestTime: {
+        title: string,
+        fields: { text: string, value: DateRange }[]
+    }
+}
+
 interface ArtworksSearchFilter {
-    type: string
+    type: SearchType.Artworks
     prices: {
         title: string,
         fields: { text: string, value: NumberRange }[]

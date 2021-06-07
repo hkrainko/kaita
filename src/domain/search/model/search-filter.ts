@@ -1,6 +1,8 @@
 import {Currency} from "../../price/price";
 import {SearchType} from "./search-type";
 
+export type SearchFilter = OpenCommissionsSearchFilter | ArtistsSearchFilter | ArtworksSearchFilter
+
 export interface OpenCommissionsSearchFilter {
     type: SearchType.OpenCommissions
     priceFromRange?: NumberRange

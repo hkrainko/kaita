@@ -1,6 +1,6 @@
 import {SearchType} from "./search-type";
 
-export type SearchSorter = OpenCommissionsSearchSorter
+export type SearchSorter = OpenCommissionsSearchSorter | ArtistsSearchSorter | ArtworksSearchSorter
 
 export interface OpenCommissionsSearchSorter {
     type: SearchType.OpenCommissions
