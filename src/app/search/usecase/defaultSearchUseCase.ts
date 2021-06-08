@@ -173,45 +173,13 @@ export class DefaultSearchUseCase implements SearchUseCase {
 
     getFilterFromSelection(type: SearchType, selection: boolean[][]): SearchFilter {
         return {
-            type: SearchType.OpenCommissions,
-            allowAnonymous: false,
-            allowBePrivate: false,
-            anonymous: false,
-            completedTime: undefined,
-            currency: undefined,
-            dayNeed: undefined,
-            dayUsed: undefined,
-            isR18: false,
-            lastRequestTime: undefined,
-            paymentMethods: [],
-            priceFromRange: undefined,
-            priceToRange: undefined,
-            regTime: undefined,
+
         }
     }
 
     getSorterFromSelection(type: SearchType, selection: boolean[][]): SearchSorter {
         return {
-            type: SearchType.OpenCommissions,
-            artistId: undefined,
-            avgRatings: undefined,
-            commissionAcceptCount: undefined,
-            commissionRequestCount: undefined,
-            commissionSuccessCount: undefined,
-            completedTime: undefined,
-            createTime: undefined,
-            dayNeedFrom: undefined,
-            dayNeedTo: undefined,
-            dayUsed: undefined,
-            favorCount: undefined,
-            lastRequestTime: undefined,
-            lastUpdatedTime: undefined,
-            priceFrom: undefined,
-            priceTo: undefined,
-            rating: undefined,
-            regTime: undefined,
-            userName: undefined,
-            views: undefined
+            
         }
     }
 
