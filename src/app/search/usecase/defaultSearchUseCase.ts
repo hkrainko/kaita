@@ -1,94 +1,75 @@
-import {SearchUseCase} from "../../../domain/search/search.usecase";
+import {SearchSelection, SearchUseCase} from "../../../domain/search/search.usecase";
 import {injectable} from "inversify";
-import {DateRange, NumberRange} from "../../../domain/search/model/search-filter";
 import {SearchType} from "../../../domain/search/model/search-type";
-import {symlink} from "fs";
-import Type = module
 
 @injectable()
 export class DefaultSearchUseCase implements SearchUseCase {
 
+    getSearchTypeName(type: SearchType): string {
+        switch (type) {
+            case SearchType.ALL:
+                return "全部"
+            case SearchType.OpenCommissions:
+                return "開放委托"
+            case SearchType.Artists:
+                return "繪師"
+            case SearchType.Artworks:
+                return "作品"
+        }
+    }
 
-    getSearchFilterSelections(type: SearchType): SearchFilterSelection {
-        let selection: SearchFilterSelection = {
-            type: SearchType.OpenCommissions,
-            groups: [
-                {
-                    title: "ss",
-                    multipleSelection: false,
-                    filters: [
+    getSearchSelection(type: SearchType): SearchSelection | null {
+        switch (type) {
+            case SearchType.OpenCommissions:
+                return {
+                    type: SearchType.OpenCommissions,
+                    groups: [
                         {
-                            name: '',
+                            title: "價錢",
+                            multipleSelection: false,
+                            options: [
+                                {name: '0-50'},
+                                {name: '50-200'},
+                                {name: '200-500'},
+                                {name: '500-1000'},
+                                {name: '>1000'}
+                            ]
+                        },
+                        {
+                            title: "需時",
+                            multipleSelection: false,
+                            options: [
+                                {name: '0-1日'},
+                                {name: '2-4日'},
+                                {name: '4-7日'},
+                                {name: '7-14日'},
+                                {name: '>14日'}
+                            ]
+                        },
+                        {
+                            title: "其它",
+                            multipleSelection: true,
+                            options: [
+                                {name: 'R18'},
+                                {name: '不公開完成品'},
+                                {name: '匿名委托'},
+                            ]
+                        },
+                        {
+                            title: "排序",
+                            multipleSelection: false,
+                            options: [
+                                {name: '最低價錢'},
+                                {name: '完成日數'},
+                                {name: '新增日期'},
+                            ]
                         }
                     ]
                 }
-            ]
+            default:
+                return null
         }
-        return
     }
 
 
-}
-
-interface SearchFilterSelection {
-    type: SearchType
-    groups: {
-        title: string
-        multipleSelection: boolean
-        filters: {
-            name: string
-        }[]
-    }[]
-}
-
-interface OpenCommissionsSearchFilter {
-    type: SearchType.OpenCommissions
-    prices: {
-        title: string,
-        fields: { text: string, value: NumberRange }[]
-    },
-    dayNeed: {
-        title: string
-        fields: { text: string, value: NumberRange }[]
-    }
-    others: {
-        title: string
-        isR18: { text: string, selected: boolean }
-        allowBePrivate: { text: string, selected: boolean }
-        allowAnonymous: { text: string, selected: boolean }
-    }
-}
-
-export interface ArtistsSearchFilter {
-    type: SearchType.Artists
-    regTime: {
-        title: string
-        fields: { text: string, value: DateRange }[]
-    }
-    paymentMethods: {
-        title: string,
-        fields: { text: string, value: string }[]
-    }
-    lastRequestTime: {
-        title: string,
-        fields: { text: string, value: DateRange }[]
-    }
-}
-
-interface ArtworksSearchFilter {
-    type: SearchType.Artworks
-    prices: {
-        title: string,
-        fields: { text: string, value: NumberRange }[]
-    },
-    dayNeed: {
-        title: string
-        fields: { text: string, value: NumberRange }[]
-    }
-    others: {
-        title: string
-        isR18: { text: string, selected: boolean }
-        allowBePrivate: { text: string, selected: boolean }
-        allowAnonymous: { text: string, selected: boolean }
-    }
 }

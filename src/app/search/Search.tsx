@@ -1,17 +1,4 @@
-import {
-    Accordion, AccordionActions, AccordionDetails, AccordionSummary,
-    Box,
-    Button,
-    Chip,
-    Container,
-    createStyles, Divider,
-    Grid, Link, List, ListItem,
-    makeStyles,
-    MenuItem, MenuList,
-    Select,
-    StandardProps,
-    Theme, Typography
-} from "@material-ui/core";
+import {Container, createStyles, makeStyles, StandardProps, Theme} from "@material-ui/core";
 import React, {useCallback, useEffect, useState} from "react";
 import SearchOpenCommissionsResult from "./SearchOpenCommissionsResult";
 import {SearchType} from "../../domain/search/model/search-type";
@@ -19,8 +6,10 @@ import {useAppDispatch} from "../hooks";
 import {searchOpenCommissions} from "./usecase/searchSlice";
 import {useLocation} from "react-router-dom";
 import {SortOrder} from "../../domain/search/model/search-sorter";
-import {FilterList, Sort, TuneRounded} from "@material-ui/icons";
-import SearchFilter from "./SearchFilter";
+import SearchSelector from "./SearchSelector";
+import {useInjection} from "../../iocReact";
+import {TYPES} from "../../types";
+import {SearchUseCase} from "../../domain/search/search.usecase";
 
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -52,6 +41,7 @@ export default function Search(props: Props) {
 
     const location = useLocation()
     const query = new URLSearchParams(location.search)
+    const searchUseCase = useInjection<SearchUseCase>(TYPES.SearchUseCase)
     const searchType = query.get('t')
     const searchText = query.get('s')
     const dispatch = useAppDispatch()
@@ -66,6 +56,7 @@ export default function Search(props: Props) {
                 dispatch(searchOpenCommissions({
                     text: searchText,
                     filter: {
+                        type: SearchType.OpenCommissions,
                         allowAnonymous: undefined,
                         allowBePrivate: undefined,
                         currency: undefined,
@@ -108,7 +99,7 @@ export default function Search(props: Props) {
 
     return (
         <Container className={classes.root}>
-            <SearchFilter/>
+            <SearchSelector searchSelection={searchUseCase.getSearchSelection(SearchType.OpenCommissions)!}/>
             <SearchOpenCommissionsResult onLoadMore={() => setPage(page + 1)}/>
         </Container>
     )
