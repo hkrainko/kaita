@@ -15,7 +15,6 @@ export interface OpenCommissionsSearchSorter {
 
 export interface ArtistsSearchSorter {
     type: SearchType.Artists
-    artistId?: SortOrder
     userName?: SortOrder
     regTime?: SortOrder
     commissionRequestCount?: SortOrder

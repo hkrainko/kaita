@@ -40,6 +40,7 @@ export default function Search(props: Props) {
     const classes = useStyles()
 
     const location = useLocation()
+    const [filterSelection, setFilterSelection] = useState<boolean[][]>([[]])
     const query = new URLSearchParams(location.search)
     const searchUseCase = useInjection<SearchUseCase>(TYPES.SearchUseCase)
     const searchType = query.get('t')
@@ -93,8 +94,8 @@ export default function Search(props: Props) {
         fetchDataByType(searchType as SearchType, page)
     }, [fetchDataByType, page, searchType])
 
-    const onConfirmSelection = useCallback((result: boolean[][]) => {
-
+    const onConfirmSelection = useCallback((selection: boolean[][]) => {
+        setFilterSelection(selection)
     }, [])
 
     return (

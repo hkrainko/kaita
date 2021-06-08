@@ -40,7 +40,7 @@ const getInitValue = (searchSelection: SearchSelection) => {
 
 interface Props extends StandardProps<any, any> {
     searchSelection: SearchSelection
-    onConfirm: (result: boolean[][]) => void
+    onConfirm: (selection: boolean[][]) => void
 }
 
 
