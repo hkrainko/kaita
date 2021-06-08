@@ -11,7 +11,7 @@ import {
     Theme, Typography
 } from "@material-ui/core";
 import {FilterList, Sort, TuneRounded} from "@material-ui/icons";
-import React from "react";
+import React, {useCallback, useEffect, useState} from "react";
 import {SearchSelection, SearchUseCase} from "../../domain/search/search.usecase";
 import {useInjection} from "../../iocReact";
 import {TYPES} from "../../types";
@@ -26,15 +26,67 @@ const useStyles = makeStyles((theme: Theme) =>
     }),
 );
 
-interface Props extends StandardProps<any, any> {
-    searchSelection: SearchSelection
+const getInitValue = (searchSelection: SearchSelection) => {
+    let result: boolean[][] = [[]]
+    searchSelection.groups.forEach((gp, i) => {
+        let tempCols: boolean[] = []
+        gp.options.forEach((_, j) => {
+            tempCols[j] = false
+        })
+        result[i] = tempCols
+    })
+    return result
 }
 
-export default function SearchSelector({searchSelection, ...props}: Props) {
+interface Props extends StandardProps<any, any> {
+    searchSelection: SearchSelection
+    onConfirm: (result: boolean[][]) => void
+}
+
+
+export default function SearchSelector({searchSelection, onConfirm, ...props}: Props) {
     const classes = useStyles(props.className)
+    const [selections, setSelections] = useState<boolean[][]>([[]])
 
     const searchUseCase = useInjection<SearchUseCase>(TYPES.SearchUseCase)
 
+    useEffect(() => {
+        setSelections(getInitValue(searchSelection))
+    }, [searchSelection])
+
+    const onClickListItem = useCallback((i: number, j: number) => {
+        console.log(`onSelectListItem ${i}, ${j}`)
+        let copiedSelections: boolean[][] = [[]]
+        selections.forEach((row, i) => {
+            let tempCols: boolean[] = []
+            row.forEach((selected, j) => {
+                tempCols[j] = selected
+            })
+            copiedSelections[i] = tempCols
+        })
+
+        if (searchSelection.groups[i].multipleSelection) {
+            copiedSelections[i][j] = !copiedSelections[i][j]
+        } else {
+            if (copiedSelections[i][j]) {
+                // if selected
+                copiedSelections[i][j] = false
+            } else {
+                copiedSelections[i].forEach((_, index) => {
+                    copiedSelections[i][index] = false
+                })
+                copiedSelections[i][j] = true
+            }
+        }
+        console.log(`copiedSelections:${JSON.stringify(copiedSelections)}`)
+        setSelections(copiedSelections)
+    }, [searchSelection.groups, selections])
+
+    const onClickReset = useCallback(() => {
+        setSelections(getInitValue(searchSelection))
+    }, [searchSelection])
+
+    console.log('xxx')
 
     return (
         <React.Fragment>
@@ -49,16 +101,23 @@ export default function SearchSelector({searchSelection, ...props}: Props) {
                 <AccordionDetails>
                     <Grid container spacing={2}>
                         {
-                            searchSelection.groups.map(gp => {
+                            searchSelection.groups.map((gp, i) => {
                                 return (
                                     <Grid item xs={3}>
                                         <Typography>{gp.title}</Typography>
                                         <Divider/>
                                         <List>
                                             {
-                                                gp.options.map(opt => {
+                                                gp.options.map((opt, j) => {
                                                     return (
-                                                        <ListItem button>{opt.name}</ListItem>
+                                                        <ListItem
+                                                            button
+                                                            selected={
+                                                                selections.length > i &&
+                                                                selections[i].length > j &&
+                                                                selections[i][j]
+                                                            }
+                                                            onClick={() => onClickListItem(i, j)}>{opt.name}</ListItem>
                                                     )
                                                 })
                                             }
@@ -71,17 +130,20 @@ export default function SearchSelector({searchSelection, ...props}: Props) {
                 </AccordionDetails>
                 <Divider/>
                 <AccordionActions>
-                    <Button size="medium">取消</Button>
-                    <Button size="medium" color="primary">
+                    <Button size="medium" onClick={onClickReset}>
+                        清除
+                    </Button>
+                    <Button size="medium" color="primary" onClick={() => onConfirm(selections)}>
                         套用
                     </Button>
                 </AccordionActions>
             </Accordion>
             <Box display="flex" my={2}>
                 <Chip
-                    icon={<FilterList />}
+                    icon={<FilterList/>}
                     label="日期 > 50"
-                    onDelete={() => {}}
+                    onDelete={() => {
+                    }}
                     color="default"
                 />
                 <Chip

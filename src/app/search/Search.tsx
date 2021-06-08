@@ -93,13 +93,16 @@ export default function Search(props: Props) {
         fetchDataByType(searchType as SearchType, page)
     }, [fetchDataByType, page, searchType])
 
-    const onChangeFilter = useCallback((event: object) => {
+    const onConfirmSelection = useCallback((result: boolean[][]) => {
 
     }, [])
 
     return (
         <Container className={classes.root}>
-            <SearchSelector searchSelection={searchUseCase.getSearchSelection(SearchType.OpenCommissions)!}/>
+            <SearchSelector
+                searchSelection={searchUseCase.getSearchSelection(SearchType.OpenCommissions)!}
+                onConfirm={onConfirmSelection}
+            />
             <SearchOpenCommissionsResult onLoadMore={() => setPage(page + 1)}/>
         </Container>
     )
