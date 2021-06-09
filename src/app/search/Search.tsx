@@ -5,11 +5,12 @@ import {SearchType} from "../../domain/search/model/search-type";
 import {useAppDispatch} from "../hooks";
 import {searchOpenCommissions} from "./usecase/searchSlice";
 import {useLocation} from "react-router-dom";
-import {SortOrder} from "../../domain/search/model/search-sorter";
+import {SearchSorter, SortOrder} from "../../domain/search/model/search-sorter";
 import SearchSelector from "./SearchSelector";
 import {useInjection} from "../../iocReact";
 import {TYPES} from "../../types";
-import {SearchUseCase} from "../../domain/search/search.usecase";
+import {SearchSelection, SearchUseCase} from "../../domain/search/search.usecase";
+import {SearchFilter} from "../../domain/search/model/search-filter";
 
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -94,16 +95,24 @@ export default function Search(props: Props) {
         fetchDataByType(searchType as SearchType, page)
     }, [fetchDataByType, page, searchType])
 
+    const getSelector = (): React.ReactNode => {
+        switch (searchType) {
+            case SearchType.OpenCommissions:
+                return <SearchSelector searchSelection={searchUseCase.openCommissionSearchSelection} onConfirm={onConfirmSelection}/>
+            case SearchType.Artists:
+                return <SearchSelector searchSelection={searchUseCase.artistsSearchSelection} onConfirm={onConfirmSelection}/>
+            case SearchType.Artworks:
+                return <SearchSelector searchSelection={searchUseCase.artworksSearchSelection} onConfirm={onConfirmSelection}/>
+        }
+    }
+
     const onConfirmSelection = useCallback((selection: boolean[][]) => {
         setFilterSelection(selection)
     }, [])
 
     return (
         <Container className={classes.root}>
-            <SearchSelector
-                searchSelection={searchUseCase.getSearchSelection(SearchType.OpenCommissions)!}
-                onConfirm={onConfirmSelection}
-            />
+            {getSelector()}
             <SearchOpenCommissionsResult onLoadMore={() => setPage(page + 1)}/>
         </Container>
     )

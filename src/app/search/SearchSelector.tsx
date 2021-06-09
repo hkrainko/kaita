@@ -15,6 +15,8 @@ import React, {useCallback, useEffect, useState} from "react";
 import {SearchSelection, SearchUseCase} from "../../domain/search/search.usecase";
 import {useInjection} from "../../iocReact";
 import {TYPES} from "../../types";
+import {SearchFilter} from "../../domain/search/model/search-filter";
+import {SearchSorter} from "../../domain/search/model/search-sorter";
 
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -26,7 +28,7 @@ const useStyles = makeStyles((theme: Theme) =>
     }),
 );
 
-const getInitValue = (searchSelection: SearchSelection) => {
+const getInitValue = <T extends SearchFilter, U extends SearchSorter>(searchSelection: SearchSelection<T, U>) => {
     let result: boolean[][] = [[]]
     searchSelection.groups.forEach((gp, i) => {
         let tempCols: boolean[] = []
@@ -38,13 +40,13 @@ const getInitValue = (searchSelection: SearchSelection) => {
     return result
 }
 
-interface Props extends StandardProps<any, any> {
-    searchSelection: SearchSelection
+interface Props<T extends SearchFilter, U extends SearchSorter> extends StandardProps<any, any> {
+    searchSelection: SearchSelection<T, U>
     onConfirm: (selection: boolean[][]) => void
 }
 
 
-export default function SearchSelector({searchSelection, onConfirm, ...props}: Props) {
+export default function SearchSelector<T extends SearchFilter, U extends SearchSorter>({searchSelection, onConfirm, ...props}: Props<T, U>) {
     const classes = useStyles(props.className)
     const [selections, setSelections] = useState<boolean[][]>([[]])
 
@@ -85,8 +87,6 @@ export default function SearchSelector({searchSelection, onConfirm, ...props}: P
     const onClickReset = useCallback(() => {
         setSelections(getInitValue(searchSelection))
     }, [searchSelection])
-
-    console.log('xxx')
 
     return (
         <React.Fragment>
