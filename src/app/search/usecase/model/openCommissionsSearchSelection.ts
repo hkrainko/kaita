@@ -22,14 +22,14 @@ export class OpenCommissionsSearchSelection implements SearchSelection<OpenCommi
             ]
         },
         {
-            title: "需時",
+            title: "最長需時",
             multipleSelection: false,
             options: [
                 {name: '0-1日'},
                 {name: '2-4日'},
-                {name: '4-7日'},
+                {name: '5-7日'},
                 {name: '8-14日'},
-                {name: '>14日'}
+                {name: '15-30日'}
             ]
         },
         {
@@ -91,13 +91,13 @@ export class OpenCommissionsSearchSelection implements SearchSelection<OpenCommi
                 filter.dayNeed = {from: 2, to: 4};
                 break
             case 2:
-                filter.dayNeed = {from: 4, to: 7};
+                filter.dayNeed = {from: 5, to: 7};
                 break
             case 3:
                 filter.dayNeed = {from: 8, to: 14};
                 break
             case 4:
-                filter.dayNeed = {from: 14, to: 1000};
+                filter.dayNeed = {from: 15, to: 30};
                 break
             default:
                 break
