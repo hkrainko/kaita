@@ -2,6 +2,7 @@ import {SearchSelection} from "../../../../domain/search/search.usecase";
 import {SearchType} from "../../../../domain/search/model/search-type";
 import {OpenCommissionsSearchFilter} from "../../../../domain/search/model/search-filter";
 import {OpenCommissionsSearchSorter, SortOrder} from "../../../../domain/search/model/search-sorter";
+import {Currency} from "../../../../domain/price/price";
 
 
 export class OpenCommissionsSearchSelection implements SearchSelection<OpenCommissionsSearchFilter, OpenCommissionsSearchSorter> {
@@ -60,18 +61,23 @@ export class OpenCommissionsSearchSelection implements SearchSelection<OpenCommi
         switch (selection[0].findIndex(l => l)) {
             case 0:
                 filter.priceFromRange = {from: 0, to: 50};
+                filter.currency = Currency.HKD
                 break
             case 1:
                 filter.priceFromRange = {from: 50, to: 200};
+                filter.currency = Currency.HKD
                 break
             case 2:
                 filter.priceFromRange = {from: 200, to: 500};
+                filter.currency = Currency.HKD
                 break
             case 3:
                 filter.priceFromRange = {from: 500, to: 1000};
+                filter.currency = Currency.HKD
                 break
             case 4:
                 filter.priceFromRange = {from: 1000, to: 9999999};
+                filter.currency = Currency.HKD
                 break
             default:
                 break
