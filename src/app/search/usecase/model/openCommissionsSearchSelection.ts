@@ -97,15 +97,15 @@ export class OpenCommissionsSearchSelection implements SearchSelection<OpenCommi
                 break
         }
         // 其它
-        filter.isR18 = selection[2].length > 0 ? selection[2][0] : false
-        filter.allowBePrivate = selection[2].length > 1 ? selection[2][1] : false
-        filter.allowAnonymous = selection[2].length > 2 ? selection[2][2] : false
+        filter.isR18 = (selection[2].length > 0 && selection[2][0]) ? true : undefined
+        filter.allowBePrivate = (selection[2].length > 1 && selection[2][1]) ? true : undefined
+        filter.allowAnonymous = (selection[2].length > 2 && selection[2][2]) ? true : undefined
         return filter
     }
 
     getSorter = (selection: boolean[][]): OpenCommissionsSearchSorter => {
         let sorter: OpenCommissionsSearchSorter = {type: SearchType.OpenCommissions}
-        if (selection.length <= 4) {
+        if (selection.length < 4) {
             return sorter
         }
         switch (selection[3].findIndex(l => l)) {

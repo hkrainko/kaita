@@ -129,14 +129,14 @@ export class ArtworksSearchSelection implements SearchSelection<ArtworksSearchFi
                 break
         }
         // 其它
-        filter.isR18 = selection[2].length > 0 ? selection[2][0] : false
-        filter.anonymous = selection[2].length > 1 ? selection[2][1] : false
+        filter.isR18 = (selection[2].length > 0 && selection[2][0]) ? true : undefined
+        filter.anonymous = (selection[2].length > 1 && selection[2][1]) ? true : undefined
         return filter
     }
 
     getSorter(selection: boolean[][]): ArtworksSearchSorter {
         let sorter: ArtworksSearchSorter = {type: SearchType.Artworks}
-        if (selection.length <= 4) {
+        if (selection.length < 4) {
             return sorter
         }
         switch (selection[3].findIndex(l => l)) {

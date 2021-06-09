@@ -34,6 +34,6 @@ export interface ArtworksSearchSorter {
 }
 
 export enum SortOrder {
-    Ascending,
-    Descending
+    Ascending = 'asc',
+    Descending = 'desc'
 }

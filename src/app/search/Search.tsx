@@ -28,21 +28,20 @@ const useStyles = makeStyles((theme: Theme) =>
     }),
 );
 
-interface Props extends StandardProps<any, any> {
-
+interface FilterSorter {
+    filter: SearchFilter,
+    sorter: SearchSorter
 }
 
-type Inputs = {
-    price: number[],
-    dayNeed: number[],
+interface Props extends StandardProps<any, any> {
+
 }
 
 export default function Search(props: Props) {
     const classes = useStyles()
 
     const location = useLocation()
-    const [filter, setFilter] = useState<SearchFilter | null>(null)
-    const [sorter, setSorter] = useState<SearchSorter | null>(null)
+    const [filterSorter, setFilterSorter] = useState<FilterSorter | null>(null)
     const query = new URLSearchParams(location.search)
     const searchUseCase = useInjection<SearchUseCase>(TYPES.SearchUseCase)
     const searchType = query.get('t')
@@ -58,8 +57,8 @@ export default function Search(props: Props) {
             case SearchType.OpenCommissions:
                 dispatch(searchOpenCommissions({
                     text: searchText,
-                    filter: filter?.type === SearchType.OpenCommissions ? filter : {type: SearchType.OpenCommissions},
-                    sorter: sorter?.type === SearchType.OpenCommissions ? sorter : {
+                    filter: filterSorter?.filter.type === SearchType.OpenCommissions ? filterSorter.filter : {type: SearchType.OpenCommissions},
+                    sorter: filterSorter?.sorter.type === SearchType.OpenCommissions ? filterSorter.sorter : {
                         lastUpdatedTime: SortOrder.Descending,
                         type: SearchType.OpenCommissions
                     }, currentPage,
@@ -69,7 +68,7 @@ export default function Search(props: Props) {
             default:
                 break
         }
-    }, [dispatch, searchText])
+    }, [dispatch, filterSorter?.filter, filterSorter?.sorter, searchText])
 
     useEffect(() => {
         setPage(1)
@@ -85,17 +84,22 @@ export default function Search(props: Props) {
     const getSelector = (): React.ReactNode => {
         switch (searchType) {
             case SearchType.OpenCommissions:
-                return <SearchSelector searchSelection={searchUseCase.getOpenCommissionsSearchSelection()} onConfirm={onConfirmSelection}/>
+                return <SearchSelector searchSelection={searchUseCase.getOpenCommissionsSearchSelection()}
+                                       onConfirm={onConfirmSelection}/>
             case SearchType.Artists:
-                return <SearchSelector searchSelection={searchUseCase.getArtistsSearchSelection()} onConfirm={onConfirmSelection}/>
+                return <SearchSelector searchSelection={searchUseCase.getArtistsSearchSelection()}
+                                       onConfirm={onConfirmSelection}/>
             case SearchType.Artworks:
-                return <SearchSelector searchSelection={searchUseCase.getArtworksSearchSelection()} onConfirm={onConfirmSelection}/>
+                return <SearchSelector searchSelection={searchUseCase.getArtworksSearchSelection()}
+                                       onConfirm={onConfirmSelection}/>
         }
     }
 
     const onConfirmSelection = useCallback(<T extends SearchFilter, U extends SearchSorter>(filter: T, sorter: U) => {
-        fetchDataByType(searchType as SearchType, page)
-        // setFilterSelection(selection)
+        setFilterSorter({
+            filter, sorter
+        })
+        console.log(`filter: ${JSON.stringify(filter)}, sorter: ${JSON.stringify(sorter)}`)
     }, [])
 
     return (

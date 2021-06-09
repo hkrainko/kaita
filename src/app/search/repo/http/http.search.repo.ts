@@ -1,13 +1,27 @@
 import {SearchRepo} from "../../../../domain/search/search.repo";
 import {injectable} from "inversify";
-import {OpenCommissionsSearchFilter} from "../../../../domain/search/model/search-filter";
-import {OpenCommissionsSearchSorter, SearchSorter, SortOrder} from "../../../../domain/search/model/search-sorter";
+import {
+    ArtistsSearchFilter,
+    ArtworksSearchFilter,
+    OpenCommissionsSearchFilter
+} from "../../../../domain/search/model/search-filter";
+import {
+    ArtistsSearchSorter,
+    ArtworksSearchSorter,
+    OpenCommissionsSearchSorter,
+    SearchSorter,
+    SortOrder
+} from "../../../../domain/search/model/search-sorter";
 import {
     SearchOpenCommissionsRepoModel,
     SearchOpenCommissionsRepoModelMapper
 } from "./model/search-open-commissions.repo.model";
 import axios from "axios";
-import {OpenCommissionsSearchResult} from "../../../../domain/search/model/search-result";
+import {
+    ArtistsSearchResult,
+    ArtworksSearchResult,
+    OpenCommissionsSearchResult
+} from "../../../../domain/search/model/search-result";
 import {SearchType} from "../../../../domain/search/model/search-type";
 
 @injectable()
@@ -23,9 +37,10 @@ export class HttpSearchRepo implements SearchRepo {
             s: text,
             t: SearchType.OpenCommissions,
             'price.from': filter.priceFromRange?.from,
-            'price.to': filter.priceFromRange?.from,
+            'price.to': filter.priceFromRange?.to,
             currency: filter.currency,
-            'day-need.from': filter.dayNeed,
+            'day-need.from': filter.dayNeed?.from,
+            'day-need.to': filter.dayNeed?.to,
             'is-r18': filter.isR18,
             'allow-be-private': filter.allowBePrivate,
             'allow-anonymous': filter.allowAnonymous,
@@ -69,6 +84,14 @@ export class HttpSearchRepo implements SearchRepo {
                 }
         }
         return undefined
+    }
+
+    searchArtists(text: string, filter: ArtistsSearchFilter, sorter: ArtistsSearchSorter, currentPage: number, pageSize: number): Promise<ArtistsSearchResult> {
+        throw new Error()
+    }
+
+    searchArtworks(text: string, filter: ArtworksSearchFilter, sorter: ArtworksSearchSorter, currentPage: number, pageSize: number): Promise<ArtworksSearchResult> {
+        throw new Error()
     }
 
 }

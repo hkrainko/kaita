@@ -3,9 +3,21 @@ import {OpenCommission} from "../../../domain/open-commission/model/open-commiss
 import {RequestState} from "../../../domain/common/request-state";
 import {RootState} from "../../store";
 import AppDependency from "../../di";
-import {OpenCommissionsSearchResult} from "../../../domain/search/model/search-result";
-import {OpenCommissionsSearchFilter} from "../../../domain/search/model/search-filter";
-import {OpenCommissionsSearchSorter} from "../../../domain/search/model/search-sorter";
+import {
+    ArtistsSearchResult,
+    ArtworksSearchResult,
+    OpenCommissionsSearchResult
+} from "../../../domain/search/model/search-result";
+import {
+    ArtistsSearchFilter,
+    ArtworksSearchFilter,
+    OpenCommissionsSearchFilter
+} from "../../../domain/search/model/search-filter";
+import {
+    ArtistsSearchSorter,
+    ArtworksSearchSorter,
+    OpenCommissionsSearchSorter
+} from "../../../domain/search/model/search-sorter";
 import {SearchType} from "../../../domain/search/model/search-type";
 import {Artwork} from "../../../domain/artwork/artwork";
 import {Artist} from "../../../domain/artist/model/artist";
@@ -27,6 +39,9 @@ export interface SearchState {
         size?: number
         currentPage?: number
         totalPage?: number
+        text?: string
+        filter?: ArtistsSearchFilter
+        sorter?: ArtistsSearchSorter
     },
     forArtworks: {
         byId: { [id: string]: Artwork }
@@ -34,6 +49,9 @@ export interface SearchState {
         size?: number
         currentPage?: number
         totalPage?: number
+        text?: string
+        filter?: ArtworksSearchFilter
+        sorter?: ArtworksSearchSorter
     },
     searchType?: SearchType
     requestState: RequestState
@@ -77,6 +95,26 @@ export const searchOpenCommissions = createAsyncThunk<OpenCommissionsSearchResul
     async ({text, filter, sorter, currentPage, pageSize}, thunkAPI) => {
         const ad = thunkAPI.extra as AppDependency
         return await ad.searchRepo.searchOpenCommissions(text, filter, sorter, currentPage, pageSize)
+    }
+)
+
+export const searchArtists = createAsyncThunk<ArtistsSearchResult,
+    { text: string, filter: ArtistsSearchFilter, sorter: ArtistsSearchSorter, currentPage: number, pageSize: number },
+    { state: RootState, extra: AppDependency }>(
+    'search/searchArtists',
+    async ({text, filter, sorter, currentPage, pageSize}, thunkAPI) => {
+        const ad = thunkAPI.extra as AppDependency
+        return await ad.searchRepo.searchArtists(text, filter, sorter, currentPage, pageSize)
+    }
+)
+
+export const searchArtworks = createAsyncThunk<ArtworksSearchResult,
+    { text: string, filter: ArtworksSearchFilter, sorter: ArtworksSearchSorter, currentPage: number, pageSize: number },
+    { state: RootState, extra: AppDependency }>(
+    'search/searchArtworks',
+    async ({text, filter, sorter, currentPage, pageSize}, thunkAPI) => {
+        const ad = thunkAPI.extra as AppDependency
+        return await ad.searchRepo.searchArtworks(text, filter, sorter, currentPage, pageSize)
     }
 )
 

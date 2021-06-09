@@ -60,7 +60,7 @@ export class ArtistsSearchSelection implements SearchSelection<ArtistsSearchFilt
 
     getFilter(selection: boolean[][]): ArtistsSearchFilter {
         let filter: ArtistsSearchFilter = {type: SearchType.Artists}
-        if (selection.length <= 3) {
+        if (selection.length < 3) {
             return filter
         }
         // 註冊時間

@@ -56,8 +56,6 @@ export default function SearchSelector<T extends SearchFilter, U extends SearchS
     const classes = useStyles(props.className)
     const [selections, setSelections] = useState<boolean[][]>([[]])
 
-    const searchUseCase = useInjection<SearchUseCase>(TYPES.SearchUseCase)
-
     useEffect(() => {
         setSelections(getInitValue(searchSelection))
     }, [searchSelection])
@@ -91,6 +89,7 @@ export default function SearchSelector<T extends SearchFilter, U extends SearchS
     }, [searchSelection.groups, selections])
 
     const onClickConfirm = useCallback(() => {
+        console.log(`selections:${JSON.stringify(selections)}`)
         onConfirm(searchSelection.getFilter(selections), searchSelection.getSorter(selections))
     }, [onConfirm, searchSelection, selections])
 
