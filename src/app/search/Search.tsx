@@ -9,7 +9,7 @@ import {SearchSorter, SortOrder} from "../../domain/search/model/search-sorter";
 import SearchSelector from "./SearchSelector";
 import {useInjection} from "../../iocReact";
 import {TYPES} from "../../types";
-import {SearchSelection, SearchUseCase} from "../../domain/search/search.usecase";
+import {SearchUseCase} from "../../domain/search/search.usecase";
 import {SearchFilter} from "../../domain/search/model/search-filter";
 
 
@@ -41,7 +41,8 @@ export default function Search(props: Props) {
     const classes = useStyles()
 
     const location = useLocation()
-    const [filterSelection, setFilterSelection] = useState<boolean[][]>([[]])
+    const [filter, setFilter] = useState<SearchFilter | null>(null)
+    const [sorter, setSorter] = useState<SearchSorter | null>(null)
     const query = new URLSearchParams(location.search)
     const searchUseCase = useInjection<SearchUseCase>(TYPES.SearchUseCase)
     const searchType = query.get('t')
@@ -57,23 +58,9 @@ export default function Search(props: Props) {
             case SearchType.OpenCommissions:
                 dispatch(searchOpenCommissions({
                     text: searchText,
-                    filter: {
-                        type: SearchType.OpenCommissions,
-                        allowAnonymous: undefined,
-                        allowBePrivate: undefined,
-                        currency: undefined,
-                        dayNeed: undefined,
-                        isR18: undefined,
-                        priceFromRange: undefined,
-                        priceToRange: undefined
-                    }, sorter: {
-                        artistId: undefined,
-                        createTime: undefined,
-                        dayNeedFrom: undefined,
-                        dayNeedTo: undefined,
+                    filter: filter?.type === SearchType.OpenCommissions ? filter : {type: SearchType.OpenCommissions},
+                    sorter: sorter?.type === SearchType.OpenCommissions ? sorter : {
                         lastUpdatedTime: SortOrder.Descending,
-                        priceFrom: undefined,
-                        priceTo: undefined,
                         type: SearchType.OpenCommissions
                     }, currentPage,
                     pageSize: 9
@@ -98,16 +85,17 @@ export default function Search(props: Props) {
     const getSelector = (): React.ReactNode => {
         switch (searchType) {
             case SearchType.OpenCommissions:
-                return <SearchSelector searchSelection={searchUseCase.openCommissionSearchSelection} onConfirm={onConfirmSelection}/>
+                return <SearchSelector searchSelection={searchUseCase.getOpenCommissionsSearchSelection()} onConfirm={onConfirmSelection}/>
             case SearchType.Artists:
-                return <SearchSelector searchSelection={searchUseCase.artistsSearchSelection} onConfirm={onConfirmSelection}/>
+                return <SearchSelector searchSelection={searchUseCase.getArtistsSearchSelection()} onConfirm={onConfirmSelection}/>
             case SearchType.Artworks:
-                return <SearchSelector searchSelection={searchUseCase.artworksSearchSelection} onConfirm={onConfirmSelection}/>
+                return <SearchSelector searchSelection={searchUseCase.getArtworksSearchSelection()} onConfirm={onConfirmSelection}/>
         }
     }
 
-    const onConfirmSelection = useCallback((selection: boolean[][]) => {
-        setFilterSelection(selection)
+    const onConfirmSelection = useCallback(<T extends SearchFilter, U extends SearchSorter>(filter: T, sorter: U) => {
+        fetchDataByType(searchType as SearchType, page)
+        // setFilterSelection(selection)
     }, [])
 
     return (

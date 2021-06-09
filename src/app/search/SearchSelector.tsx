@@ -4,11 +4,17 @@ import {
     AccordionDetails,
     AccordionSummary,
     Box,
-    Button, Chip,
-    createStyles, Divider, Grid, List, ListItem,
+    Button,
+    Chip,
+    createStyles,
+    Divider,
+    Grid,
+    List,
+    ListItem,
     makeStyles,
     StandardProps,
-    Theme, Typography
+    Theme,
+    Typography
 } from "@material-ui/core";
 import {FilterList, Sort, TuneRounded} from "@material-ui/icons";
 import React, {useCallback, useEffect, useState} from "react";
@@ -86,7 +92,7 @@ export default function SearchSelector<T extends SearchFilter, U extends SearchS
 
     const onClickConfirm = useCallback(() => {
         onConfirm(searchSelection.getFilter(selections), searchSelection.getSorter(selections))
-    }, [])
+    }, [onConfirm, searchSelection, selections])
 
     const onClickReset = useCallback(() => {
         setSelections(getInitValue(searchSelection))
