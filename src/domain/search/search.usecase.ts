@@ -26,6 +26,8 @@ export interface SearchUseCase {
 export interface SearchSelection<T extends SearchFilter, U extends SearchSorter> {
     type: SearchType
     groups: (SearchSelectionFilterGroup<T> | SearchSelectionSorterGroup<U>)[]
+    getFilter: (selection: boolean[][]) => T
+    getSorter: (selection: boolean[][]) => U
 }
 
 export interface SearchSelectionFilterGroup<T extends SearchFilter> {
@@ -34,7 +36,6 @@ export interface SearchSelectionFilterGroup<T extends SearchFilter> {
     options: {
         name: string
     }[]
-    compose: (filter: T, selection: boolean[]) => T
 }
 
 export interface SearchSelectionSorterGroup<T extends SearchSorter> {
@@ -43,5 +44,4 @@ export interface SearchSelectionSorterGroup<T extends SearchSorter> {
     options: {
         name: string
     }[]
-    compose: (sorter: T, selection: boolean[]) => T
 }

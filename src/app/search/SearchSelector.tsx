@@ -42,7 +42,7 @@ const getInitValue = <T extends SearchFilter, U extends SearchSorter>(searchSele
 
 interface Props<T extends SearchFilter, U extends SearchSorter> extends StandardProps<any, any> {
     searchSelection: SearchSelection<T, U>
-    onConfirm: (selection: boolean[][]) => void
+    onConfirm: (filter: T, sorter: U) => void
 }
 
 
@@ -83,6 +83,10 @@ export default function SearchSelector<T extends SearchFilter, U extends SearchS
         console.log(`copiedSelections:${JSON.stringify(copiedSelections)}`)
         setSelections(copiedSelections)
     }, [searchSelection.groups, selections])
+
+    const onClickConfirm = useCallback(() => {
+        onConfirm(searchSelection.getFilter(selections), searchSelection.getSorter(selections))
+    }, [])
 
     const onClickReset = useCallback(() => {
         setSelections(getInitValue(searchSelection))
@@ -133,7 +137,7 @@ export default function SearchSelector<T extends SearchFilter, U extends SearchS
                     <Button size="medium" onClick={onClickReset}>
                         清除
                     </Button>
-                    <Button size="medium" color="primary" onClick={() => onConfirm(selections)}>
+                    <Button size="medium" color="primary" onClick={onClickConfirm}>
                         套用
                     </Button>
                 </AccordionActions>

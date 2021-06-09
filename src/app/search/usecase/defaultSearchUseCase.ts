@@ -4,14 +4,12 @@ import {SearchType} from "../../../domain/search/model/search-type";
 import {
     ArtistsSearchFilter,
     ArtworksSearchFilter,
-    OpenCommissionsSearchFilter,
-    SearchFilter
+    OpenCommissionsSearchFilter
 } from "../../../domain/search/model/search-filter";
 import {
     ArtistsSearchSorter,
     ArtworksSearchSorter,
     OpenCommissionsSearchSorter,
-    SearchSorter,
     SortOrder
 } from "../../../domain/search/model/search-sorter";
 import moment from "moment";
@@ -148,7 +146,14 @@ export class DefaultSearchUseCase implements SearchUseCase {
                     }
                 }
             }
-        ]
+        ],
+        getFilter: (selection): OpenCommissionsSearchFilter => {
+            let filter: OpenCommissionsSearchFilter = {type: SearchType.OpenCommissions}
+
+        },
+        getSorter: (selection): OpenCommissionsSearchSorter => {
+
+        }
     }
 
     artistsSearchSelection: SearchSelection<ArtistsSearchFilter, ArtistsSearchSorter> = {
