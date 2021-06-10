@@ -28,7 +28,7 @@ interface Props extends StandardProps<any, any> {
     onLoadMore: () => void
 }
 
-export default function SearchOpenCommissionsResult({searchType, onLoadMore, ...props}: Props) {
+export default function SearchResultList({searchType, onLoadMore, ...props}: Props) {
     const classes = useStyles(props.className)
 
     const [showBackToTop, setShowBackToTop] = useState(false)
@@ -49,7 +49,6 @@ export default function SearchOpenCommissionsResult({searchType, onLoadMore, ...
                         openCommissions.push(state.search.forOpenCommissions.byId[id])
                     }
                 })
-                // return null
                 return {
                     type: SearchType.OpenCommissions,
                     records: openCommissions,

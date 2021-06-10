@@ -1,6 +1,6 @@
 import {Container, createStyles, makeStyles, StandardProps, Theme} from "@material-ui/core";
 import React, {useCallback, useEffect, useState} from "react";
-import SearchOpenCommissionsResult from "./SearchOpenCommissionsResult";
+import SearchResultList from "./SearchResultList";
 import {SearchType} from "../../domain/search/model/search-type";
 import {useAppDispatch} from "../hooks";
 import {searchOpenCommissions} from "./usecase/searchSlice";
@@ -105,7 +105,7 @@ export default function Search(props: Props) {
     return (
         <Container className={classes.root}>
             {getSelector()}
-            <SearchOpenCommissionsResult searchType={SearchType.OpenCommissions} onLoadMore={() => setPage(page + 1)}/>
+            <SearchResultList searchType={SearchType.OpenCommissions} onLoadMore={() => setPage(page + 1)}/>
         </Container>
     )
 }
