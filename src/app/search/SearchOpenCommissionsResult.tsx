@@ -5,8 +5,6 @@ import {useAppSelector} from "../hooks";
 import {OpenCommission} from "../../domain/open-commission/model/open-commission";
 import OpenCommissionCard from "../open-commission/OpenCommissionCard";
 import {PublishRounded} from "@material-ui/icons";
-import {Artist} from "../../domain/artist/model/artist";
-import {Artwork} from "../../domain/artwork/artwork";
 import {SearchResult} from "../../domain/search/model/search-result";
 import {SearchType} from "../../domain/search/model/search-type";
 
@@ -25,14 +23,6 @@ const useStyles = makeStyles((theme: Theme) =>
     }),
 );
 
-// interface SearchResult {
-//     records: OpenCommission[] | Artist[] | Artwork[]
-//     currentPage: number
-//     totalPage: number
-//     filter: SearchFilter
-//     sorter: SearchSorter
-// }
-
 interface Props extends StandardProps<any, any> {
     searchType: SearchType
     onLoadMore: () => void
@@ -43,7 +33,7 @@ export default function SearchOpenCommissionsResult({searchType, onLoadMore, ...
 
     const [showBackToTop, setShowBackToTop] = useState(false)
 
-    const searchResult = useAppSelector<SearchResult | null>(state => {
+    const searchResult = useAppSelector<SearchResult | null>((state) => {
         switch (searchType) {
             case SearchType.OpenCommissions:
                 if (!state.search.forOpenCommissions.currentPage
@@ -59,11 +49,15 @@ export default function SearchOpenCommissionsResult({searchType, onLoadMore, ...
                         openCommissions.push(state.search.forOpenCommissions.byId[id])
                     }
                 })
+                // return null
                 return {
                     type: SearchType.OpenCommissions,
                     records: openCommissions,
                     page: {
-                        current: state.search.forOpenCommissions.
+                        current: state.search.forOpenCommissions.currentPage,
+                        totalPage: state.search.forOpenCommissions.totalPage,
+                        totalResult: state.search.forOpenCommissions.ids.length,
+                        size: state.search.forOpenCommissions.size
                     },
                     filter: state.search.forOpenCommissions.filter,
                     sorter: state.search.forOpenCommissions.sorter,
@@ -99,18 +93,21 @@ export default function SearchOpenCommissionsResult({searchType, onLoadMore, ...
 
     }, [])
 
-    const getRecordView = (records: OpenCommission[] | Artist[] | Artwork[]) => {
-        switch (typeof records) {
-            case
+    const getRecordView = (searchResult: SearchResult) => {
+        switch (searchResult.type) {
+            case SearchType.OpenCommissions:
+                return (
+                    searchResult?.records.map(record => {
+                        return (
+                            <Grid item xs={12} md={3} key={record.id}>
+                                <OpenCommissionCard openCommission={record} onMainAction={onOpenCommissionMainAction}/>
+                            </Grid>
+                        )
+                    })
+                )
+            default:
+                return null
         }
-
-        searchResult?.records.map(record => {
-            return (
-                <Grid item xs={12} md={3} key={oc.id}>
-                    <OpenCommissionCard openCommission={oc} onMainAction={onOpenCommissionMainAction}/>
-                </Grid>
-            )
-        })
     }
 
     if (!searchResult) {
@@ -123,7 +120,7 @@ export default function SearchOpenCommissionsResult({searchType, onLoadMore, ...
         <React.Fragment>
             <InfiniteScroll
                 next={onLoadMore}
-                hasMore={searchResult.currentPage < searchResult.totalPage}
+                hasMore={searchResult.page.current < searchResult.page.totalPage}
                 loader={<Typography>載入中...</Typography>}
                 endMessage={
                     <Typography>{`共 ${searchResult.records.length} 項`}</Typography>
@@ -133,13 +130,7 @@ export default function SearchOpenCommissionsResult({searchType, onLoadMore, ...
             >
                 <Grid container spacing={2} className={classes.container}>
                     {
-                        searchResult?.records.map(record => {
-                            return (
-                                <Grid item xs={12} md={3} key={oc.id}>
-                                    <OpenCommissionCard openCommission={oc} onMainAction={onOpenCommissionMainAction}/>
-                                </Grid>
-                            )
-                        })
+                        getRecordView(searchResult)
                     }
                 </Grid>
                 {

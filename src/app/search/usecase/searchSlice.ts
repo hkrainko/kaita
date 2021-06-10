@@ -26,7 +26,7 @@ export interface SearchState {
     forOpenCommissions: {
         byId: { [id: string]: OpenCommission }
         ids: string[]
-        size?: number
+        size: number
         currentPage?: number
         totalPage?: number
         text?: string
@@ -36,7 +36,7 @@ export interface SearchState {
     forArtists: {
         byId: { [id: string]: Artist }
         ids: string[]
-        size?: number
+        size: number
         currentPage?: number
         totalPage?: number
         text?: string
@@ -46,7 +46,7 @@ export interface SearchState {
     forArtworks: {
         byId: { [id: string]: Artwork }
         ids: string[]
-        size?: number
+        size: number
         currentPage?: number
         totalPage?: number
         text?: string
@@ -62,7 +62,7 @@ const initialState: SearchState = {
     forOpenCommissions: {
         byId: {},
         ids: [],
-        size: undefined,
+        size: 0,
         currentPage: undefined,
         totalPage: undefined,
         text: undefined,
@@ -72,14 +72,14 @@ const initialState: SearchState = {
     forArtists: {
         byId: {},
         ids: [],
-        size: undefined,
+        size: 0,
         currentPage: undefined,
         totalPage: undefined,
     },
     forArtworks: {
         byId: {},
         ids: [],
-        size: undefined,
+        size: 0,
         currentPage: undefined,
         totalPage: undefined,
     },
@@ -157,7 +157,7 @@ export const searchSlice = createSlice({
                     state.forOpenCommissions = {
                         byId: {},
                         ids: [],
-                        size: undefined,
+                        size: 0,
                         currentPage: undefined,
                         totalPage: undefined,
                         text: undefined,

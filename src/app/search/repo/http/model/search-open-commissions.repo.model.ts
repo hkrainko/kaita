@@ -14,14 +14,14 @@ export class SearchOpenCommissionsRepoModelMapper extends Mapper<SearchOpenCommi
         return {
             type: SearchType.OpenCommissions,
             page: param.page,
-            openCommissions: param.openCommissions
+            records: param.openCommissions
         };
     }
 
     mapTo(param: OpenCommissionsSearchResult): SearchOpenCommissionsRepoModel {
         return {
             page: param.page,
-            openCommissions: param.openCommissions
+            openCommissions: param.records
         };
     }
 

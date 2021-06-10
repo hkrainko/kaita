@@ -105,7 +105,7 @@ export default function Search(props: Props) {
     return (
         <Container className={classes.root}>
             {getSelector()}
-            <SearchOpenCommissionsResult onLoadMore={() => setPage(page + 1)}/>
+            <SearchOpenCommissionsResult searchType={SearchType.OpenCommissions} onLoadMore={() => setPage(page + 1)}/>
         </Container>
     )
 }
