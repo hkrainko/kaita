@@ -3,10 +3,12 @@ import InfiniteScroll from "react-infinite-scroll-component";
 import React, {useCallback, useEffect, useState} from "react";
 import {useAppSelector} from "../hooks";
 import {OpenCommission} from "../../domain/open-commission/model/open-commission";
-import {OpenCommissionsSearchFilter} from "../../domain/search/model/search-filter";
-import {OpenCommissionsSearchSorter} from "../../domain/search/model/search-sorter";
 import OpenCommissionCard from "../open-commission/OpenCommissionCard";
 import {PublishRounded} from "@material-ui/icons";
+import {Artist} from "../../domain/artist/model/artist";
+import {Artwork} from "../../domain/artwork/artwork";
+import {SearchResult} from "../../domain/search/model/search-result";
+import {SearchType} from "../../domain/search/model/search-type";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -23,46 +25,55 @@ const useStyles = makeStyles((theme: Theme) =>
     }),
 );
 
-interface SearchResult {
-    openCommissions: OpenCommission[]
-    currentPage: number
-    totalPage: number
-    filter: OpenCommissionsSearchFilter
-    sorter: OpenCommissionsSearchSorter
-}
+// interface SearchResult {
+//     records: OpenCommission[] | Artist[] | Artwork[]
+//     currentPage: number
+//     totalPage: number
+//     filter: SearchFilter
+//     sorter: SearchSorter
+// }
 
 interface Props extends StandardProps<any, any> {
+    searchType: SearchType
     onLoadMore: () => void
 }
 
-export default function SearchOpenCommissionsResult({onLoadMore, ...props}: Props) {
+export default function SearchOpenCommissionsResult({searchType, onLoadMore, ...props}: Props) {
     const classes = useStyles(props.className)
 
     const [showBackToTop, setShowBackToTop] = useState(false)
 
     const searchResult = useAppSelector<SearchResult | null>(state => {
-        if (!state.search.forOpenCommissions.currentPage
-            || !state.search.forOpenCommissions.totalPage
-            || !state.search.forOpenCommissions.filter
-            || !state.search.forOpenCommissions.sorter
-        ) {
-            return null
-        }
-
-        let openCommissions: OpenCommission[] = []
-        state.search.forOpenCommissions.ids.forEach(id => {
-            if (state.search.forOpenCommissions.byId[id]) {
-                openCommissions.push(state.search.forOpenCommissions.byId[id])
-            }
-        })
-        console.log(`AAA: openCommissions count:${openCommissions.length}`)
-
-        return {
-            openCommissions,
-            currentPage: state.search.forOpenCommissions.currentPage,
-            totalPage: state.search.forOpenCommissions.totalPage,
-            filter: state.search.forOpenCommissions.filter,
-            sorter: state.search.forOpenCommissions.sorter,
+        switch (searchType) {
+            case SearchType.OpenCommissions:
+                if (!state.search.forOpenCommissions.currentPage
+                    || !state.search.forOpenCommissions.totalPage
+                    || !state.search.forOpenCommissions.filter
+                    || !state.search.forOpenCommissions.sorter
+                ) {
+                    return null
+                }
+                let openCommissions: OpenCommission[] = []
+                state.search.forOpenCommissions.ids.forEach(id => {
+                    if (state.search.forOpenCommissions.byId[id]) {
+                        openCommissions.push(state.search.forOpenCommissions.byId[id])
+                    }
+                })
+                return {
+                    type: SearchType.OpenCommissions,
+                    records: openCommissions,
+                    page: {
+                        current: state.search.forOpenCommissions.
+                    },
+                    filter: state.search.forOpenCommissions.filter,
+                    sorter: state.search.forOpenCommissions.sorter,
+                }
+            case SearchType.Artists:
+                return null
+            case SearchType.Artworks:
+                return null
+            default:
+                return null
         }
     })
 
@@ -88,6 +99,20 @@ export default function SearchOpenCommissionsResult({onLoadMore, ...props}: Prop
 
     }, [])
 
+    const getRecordView = (records: OpenCommission[] | Artist[] | Artwork[]) => {
+        switch (typeof records) {
+            case
+        }
+
+        searchResult?.records.map(record => {
+            return (
+                <Grid item xs={12} md={3} key={oc.id}>
+                    <OpenCommissionCard openCommission={oc} onMainAction={onOpenCommissionMainAction}/>
+                </Grid>
+            )
+        })
+    }
+
     if (!searchResult) {
         return (
             <Typography>(無資料)</Typography>
@@ -101,14 +126,14 @@ export default function SearchOpenCommissionsResult({onLoadMore, ...props}: Prop
                 hasMore={searchResult.currentPage < searchResult.totalPage}
                 loader={<Typography>載入中...</Typography>}
                 endMessage={
-                    <Typography>{`共 ${searchResult.openCommissions.length} 項`}</Typography>
+                    <Typography>{`共 ${searchResult.records.length} 項`}</Typography>
                 }
-                dataLength={searchResult.openCommissions.length}
+                dataLength={searchResult.records.length}
                 className={classes.root}
             >
                 <Grid container spacing={2} className={classes.container}>
                     {
-                        searchResult?.openCommissions.map(oc => {
+                        searchResult?.records.map(record => {
                             return (
                                 <Grid item xs={12} md={3} key={oc.id}>
                                     <OpenCommissionCard openCommission={oc} onMainAction={onOpenCommissionMainAction}/>

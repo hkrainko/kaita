@@ -169,7 +169,7 @@ export const searchSlice = createSlice({
 
                 let byId: { [id: string]: OpenCommission } = state.forOpenCommissions.byId
                 let ids: string[] = state.forOpenCommissions.ids
-                action.payload.openCommissions.forEach(oc => {
+                action.payload.records.forEach(oc => {
                     byId[oc.id] = oc
                     ids.push(oc.id)
                 })
