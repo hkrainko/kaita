@@ -44,7 +44,8 @@ const getInitFilterSorter = (type: SearchType): FilterSorter => {
                     type: SearchType.OpenCommissions
                 },
                 sorter: {
-                    type: SearchType.OpenCommissions
+                    type: SearchType.OpenCommissions,
+                    createTime: SortOrder.Descending
                 },
                 currentPage: 1
             }
@@ -55,7 +56,8 @@ const getInitFilterSorter = (type: SearchType): FilterSorter => {
                     type: SearchType.Artists
                 },
                 sorter: {
-                    type: SearchType.Artists
+                    type: SearchType.Artists,
+                    regTime: SortOrder.Descending
                 },
                 currentPage: 1
             }
@@ -66,7 +68,8 @@ const getInitFilterSorter = (type: SearchType): FilterSorter => {
                     type: SearchType.Artworks
                 },
                 sorter: {
-                    type: SearchType.Artworks
+                    type: SearchType.Artworks,
+                    completedTime: SortOrder.Descending
                 },
                 currentPage: 1
             }
