@@ -81,6 +81,13 @@ export default function Search(props: Props) {
         fetchDataByType(searchType as SearchType, page)
     }, [fetchDataByType, page, searchType])
 
+    const onConfirmSelection = useCallback(<T extends SearchFilter, U extends SearchSorter>(filter: T, sorter: U) => {
+        setFilterSorter({
+            filter, sorter
+        })
+        console.log(`filter: ${JSON.stringify(filter)}, sorter: ${JSON.stringify(sorter)}`)
+    }, [])
+
     const getSelector = (): React.ReactNode => {
         switch (searchType) {
             case SearchType.OpenCommissions:
@@ -94,13 +101,6 @@ export default function Search(props: Props) {
                                        onConfirm={onConfirmSelection}/>
         }
     }
-
-    const onConfirmSelection = useCallback(<T extends SearchFilter, U extends SearchSorter>(filter: T, sorter: U) => {
-        setFilterSorter({
-            filter, sorter
-        })
-        console.log(`filter: ${JSON.stringify(filter)}, sorter: ${JSON.stringify(sorter)}`)
-    }, [])
 
     return (
         <Container className={classes.root}>

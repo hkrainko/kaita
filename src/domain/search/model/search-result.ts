@@ -2,8 +2,6 @@ import {SearchType} from "./search-type";
 import {OpenCommission} from "../../open-commission/model/open-commission";
 import {Artist} from "../../artist/model/artist";
 import {Artwork} from "../../artwork/artwork";
-import {ArtistsSearchFilter, ArtworksSearchFilter, OpenCommissionsSearchFilter} from "./search-filter";
-import {ArtistsSearchSorter, ArtworksSearchSorter, OpenCommissionsSearchSorter} from "./search-sorter";
 
 
 export type SearchResult = OpenCommissionsSearchResult | ArtistsSearchResult | ArtworksSearchResult

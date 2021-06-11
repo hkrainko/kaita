@@ -18,9 +18,7 @@ import {
 } from "@material-ui/core";
 import {FilterList, Sort, TuneRounded} from "@material-ui/icons";
 import React, {useCallback, useEffect, useState} from "react";
-import {SearchSelection, SearchUseCase} from "../../domain/search/search.usecase";
-import {useInjection} from "../../iocReact";
-import {TYPES} from "../../types";
+import {SearchSelection} from "../../domain/search/search.usecase";
 import {SearchFilter} from "../../domain/search/model/search-filter";
 import {SearchSorter} from "../../domain/search/model/search-sorter";
 
@@ -34,7 +32,7 @@ const useStyles = makeStyles((theme: Theme) =>
     }),
 );
 
-const getInitValue = <T extends SearchFilter, U extends SearchSorter>(searchSelection: SearchSelection<T, U>) => {
+const getInitSelections = <T extends SearchFilter, U extends SearchSorter>(searchSelection: SearchSelection<T, U>) => {
     let result: boolean[][] = [[]]
     searchSelection.groups.forEach((gp, i) => {
         let tempCols: boolean[] = []
@@ -54,11 +52,7 @@ interface Props<T extends SearchFilter, U extends SearchSorter> extends Standard
 
 export default function SearchSelector<T extends SearchFilter, U extends SearchSorter>({searchSelection, onConfirm, ...props}: Props<T, U>) {
     const classes = useStyles(props.className)
-    const [selections, setSelections] = useState<boolean[][]>([[]])
-
-    useEffect(() => {
-        setSelections(getInitValue(searchSelection))
-    }, [searchSelection])
+    const [selections, setSelections] = useState<boolean[][]>(getInitSelections(searchSelection))
 
     const onClickListItem = useCallback((i: number, j: number) => {
         console.log(`onSelectListItem ${i}, ${j}`)
@@ -94,7 +88,7 @@ export default function SearchSelector<T extends SearchFilter, U extends SearchS
     }, [onConfirm, searchSelection, selections])
 
     const onClickReset = useCallback(() => {
-        setSelections(getInitValue(searchSelection))
+        setSelections(getInitSelections(searchSelection))
     }, [searchSelection])
 
     return (
