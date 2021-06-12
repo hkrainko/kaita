@@ -22,7 +22,7 @@ export class OpenCommissionsSearchSelection implements SearchSelection<OpenCommi
             ]
         },
         {
-            title: "最長需時",
+            title: "最快需時",
             multipleSelection: false,
             options: [
                 {name: '0-1日'},

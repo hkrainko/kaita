@@ -127,11 +127,9 @@ export const searchSlice = createSlice({
             .addCase(searchOpenCommissions.pending, (state, action) => {
                 state.requestState = RequestState.Loading
                 state.requestId = action.meta.requestId
-                console.log(`AAA: remove before`)
                 if (state.forOpenCommissions.text !== action.meta.arg.text
                     || JSON.stringify(state.forOpenCommissions.filter) !== JSON.stringify(action.meta.arg.filter)
                     || JSON.stringify(state.forOpenCommissions.sorter) !== JSON.stringify(action.meta.arg.sorter)) {
-                    console.log(`AAA: remove`)
                     state.forOpenCommissions = {
                         byId: {},
                         ids: [],
@@ -146,6 +144,46 @@ export const searchSlice = createSlice({
                     state.forOpenCommissions.currentPage = action.meta.arg.currentPage
                 }
             })
+            .addCase(searchArtists.pending, (state, action) => {
+                state.requestState = RequestState.Loading
+                state.requestId = action.meta.requestId
+                if (state.forArtists.text !== action.meta.arg.text
+                    || JSON.stringify(state.forArtists.filter) !== JSON.stringify(action.meta.arg.filter)
+                    || JSON.stringify(state.forArtists.sorter) !== JSON.stringify(action.meta.arg.sorter)) {
+                    state.forArtists = {
+                        byId: {},
+                        ids: [],
+                        size: action.meta.arg.pageSize,
+                        currentPage: action.meta.arg.currentPage,
+                        totalPage: undefined,
+                        text: action.meta.arg.text,
+                        filter: action.meta.arg.filter,
+                        sorter: action.meta.arg.sorter
+                    }
+                } else {
+                    state.forArtists.currentPage = action.meta.arg.currentPage
+                }
+            })
+            .addCase(searchArtworks.pending, (state, action) => {
+                state.requestState = RequestState.Loading
+                state.requestId = action.meta.requestId
+                if (state.forArtworks.text !== action.meta.arg.text
+                    || JSON.stringify(state.forArtworks.filter) !== JSON.stringify(action.meta.arg.filter)
+                    || JSON.stringify(state.forArtworks.sorter) !== JSON.stringify(action.meta.arg.sorter)) {
+                    state.forArtworks = {
+                        byId: {},
+                        ids: [],
+                        size: action.meta.arg.pageSize,
+                        currentPage: action.meta.arg.currentPage,
+                        totalPage: undefined,
+                        text: action.meta.arg.text,
+                        filter: action.meta.arg.filter,
+                        sorter: action.meta.arg.sorter
+                    }
+                } else {
+                    state.forArtworks.currentPage = action.meta.arg.currentPage
+                }
+            })
             .addCase(searchOpenCommissions.fulfilled, (state, action) => {
                 if (state.requestId !== action.meta.requestId) {
                     return
@@ -153,7 +191,6 @@ export const searchSlice = createSlice({
                 if (state.forOpenCommissions.text !== action.meta.arg.text
                     || JSON.stringify(state.forOpenCommissions.filter) !== JSON.stringify(action.meta.arg.filter)
                     || JSON.stringify(state.forOpenCommissions.sorter) !== JSON.stringify(action.meta.arg.sorter)) {
-                    console.log(`AAA: remove in`)
                     state.forOpenCommissions = {
                         byId: {},
                         ids: [],
@@ -165,8 +202,6 @@ export const searchSlice = createSlice({
                         sorter: undefined
                     }
                 }
-
-
                 let byId: { [id: string]: OpenCommission } = state.forOpenCommissions.byId
                 let ids: string[] = state.forOpenCommissions.ids
                 action.payload.records.forEach(oc => {
@@ -184,7 +219,92 @@ export const searchSlice = createSlice({
                     sorter: action.meta.arg.sorter,
                 }
             })
+            .addCase(searchArtists.fulfilled, (state, action) => {
+                if (state.requestId !== action.meta.requestId) {
+                    return
+                }
+                if (state.forArtists.text !== action.meta.arg.text
+                    || JSON.stringify(state.forArtists.filter) !== JSON.stringify(action.meta.arg.filter)
+                    || JSON.stringify(state.forArtists.sorter) !== JSON.stringify(action.meta.arg.sorter)) {
+                    state.forArtists = {
+                        byId: {},
+                        ids: [],
+                        size: 0,
+                        currentPage: undefined,
+                        totalPage: undefined,
+                        text: undefined,
+                        filter: undefined,
+                        sorter: undefined
+                    }
+                }
+                let byId: { [id: string]: Artist } = state.forArtists.byId
+                let ids: string[] = state.forArtists.ids
+                action.payload.records.forEach(artist => {
+                    byId[artist.artistId] = artist
+                    ids.push(artist.artistId)
+                })
+                state.forArtists = {
+                    byId,
+                    ids,
+                    size: action.payload.page.size,
+                    currentPage: action.payload.page.current,
+                    totalPage: action.payload.page.totalPage,
+                    text: action.meta.arg.text,
+                    filter: action.meta.arg.filter,
+                    sorter: action.meta.arg.sorter,
+                }
+            })
+            .addCase(searchArtworks.fulfilled, (state, action) => {
+                if (state.requestId !== action.meta.requestId) {
+                    return
+                }
+                if (state.forArtworks.text !== action.meta.arg.text
+                    || JSON.stringify(state.forArtworks.filter) !== JSON.stringify(action.meta.arg.filter)
+                    || JSON.stringify(state.forArtworks.sorter) !== JSON.stringify(action.meta.arg.sorter)) {
+                    console.log(`AAA: remove in`)
+                    state.forArtworks = {
+                        byId: {},
+                        ids: [],
+                        size: 0,
+                        currentPage: undefined,
+                        totalPage: undefined,
+                        text: undefined,
+                        filter: undefined,
+                        sorter: undefined
+                    }
+                }
+                let byId: { [id: string]: Artwork } = state.forArtworks.byId
+                let ids: string[] = state.forArtworks.ids
+                action.payload.records.forEach(artwork => {
+                    byId[artwork.id] = artwork
+                    ids.push(artwork.id)
+                })
+                state.forArtworks = {
+                    byId,
+                    ids,
+                    size: action.payload.page.size,
+                    currentPage: action.payload.page.current,
+                    totalPage: action.payload.page.totalPage,
+                    text: action.meta.arg.text,
+                    filter: action.meta.arg.filter,
+                    sorter: action.meta.arg.sorter,
+                }
+            })
             .addCase(searchOpenCommissions.rejected, (state, action) => {
+                if (state.requestId !== action.meta.requestId
+                ) {
+                    return
+                }
+                state.requestState = RequestState.Failed
+            })
+            .addCase(searchArtists.rejected, (state, action) => {
+                if (state.requestId !== action.meta.requestId
+                ) {
+                    return
+                }
+                state.requestState = RequestState.Failed
+            })
+            .addCase(searchArtworks.rejected, (state, action) => {
                 if (state.requestId !== action.meta.requestId
                 ) {
                     return

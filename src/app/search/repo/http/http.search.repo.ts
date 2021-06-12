@@ -23,6 +23,8 @@ import {
     OpenCommissionsSearchResult
 } from "../../../../domain/search/model/search-result";
 import {SearchType} from "../../../../domain/search/model/search-type";
+import {SearchArtistsRepoModel, SearchArtistsRepoModelMapper} from "./model/search-artists.repo.model";
+import {SearchArtworksRepoModel, SearchArtworksRepoModelMapper} from "./model/search-artworks.repo.model";
 
 @injectable()
 export class HttpSearchRepo implements SearchRepo {
@@ -30,6 +32,8 @@ export class HttpSearchRepo implements SearchRepo {
     apiPath = 'http://192.168.64.12:31398/api';
 
     searchOpenCommissionsRepoModelMapper = new SearchOpenCommissionsRepoModelMapper()
+    searchArtistsRepoModelMapper = new SearchArtistsRepoModelMapper()
+    searchArtworksRepoModelMapper = new SearchArtworksRepoModelMapper()
 
     searchOpenCommissions(text: string, filter: OpenCommissionsSearchFilter, sorter: OpenCommissionsSearchSorter, currentPage: number, pageSize: number): Promise<OpenCommissionsSearchResult> {
 
@@ -46,19 +50,63 @@ export class HttpSearchRepo implements SearchRepo {
             'allow-anonymous': filter.allowAnonymous,
             'page.current': currentPage,
             'page.size': pageSize,
-            'sort': this.getSorterStr(sorter)
+            'sort': HttpSearchRepo.getSorterStr(sorter)
         }
 
         return axios
             .get<SearchOpenCommissionsRepoModel>(`${this.apiPath}/search`,
-            {params}
+                {params}
             )
             .then(resp => {
                 return this.searchOpenCommissionsRepoModelMapper.mapFrom(resp.data)
             })
     }
 
-    private getSorterStr(sorter: SearchSorter): string | undefined {
+    searchArtists(text: string, filter: ArtistsSearchFilter, sorter: ArtistsSearchSorter, currentPage: number, pageSize: number): Promise<ArtistsSearchResult> {
+
+        const params = {
+            s: text,
+            t: SearchType.Artists,
+            'reg-time.from': filter.regTime?.from,
+            'reg-time.to': filter.regTime?.to,
+            'payment-methods': filter.paymentMethods?.join(','),
+            'last-request-time.from': filter.lastRequestTime?.from,
+            'last-request-time.to': filter.lastRequestTime?.to,
+            'sort': HttpSearchRepo.getSorterStr(sorter)
+        }
+
+        return axios
+            .get<SearchArtistsRepoModel>(`${this.apiPath}/search`,
+                {params}
+            )
+            .then(resp => {
+                return this.searchArtistsRepoModelMapper.mapFrom(resp.data)
+            })
+    }
+
+    searchArtworks(text: string, filter: ArtworksSearchFilter, sorter: ArtworksSearchSorter, currentPage: number, pageSize: number): Promise<ArtworksSearchResult> {
+        const params = {
+            s: text,
+            t: SearchType.Artworks,
+            'day-used.from': filter.dayUsed?.from,
+            'day-used.to': filter.dayUsed?.to,
+            'is-r18': filter.isR18,
+            'anonymous': filter.anonymous,
+            'completed-time.from': filter.completedTime?.from,
+            'completed-time.to': filter.completedTime?.to,
+            'sort': HttpSearchRepo.getSorterStr(sorter)
+        }
+
+        return axios
+            .get<SearchArtworksRepoModel>(`${this.apiPath}/search`,
+                {params}
+            )
+            .then(resp => {
+                return this.searchArtworksRepoModelMapper.mapFrom(resp.data)
+            })
+    }
+
+    private static getSorterStr(sorter: SearchSorter): string | undefined {
         switch (sorter.type) {
             case SearchType.OpenCommissions:
                 if (sorter.artistId) {
@@ -82,16 +130,50 @@ export class HttpSearchRepo implements SearchRepo {
                 if (sorter.lastUpdatedTime) {
                     return sorter.lastUpdatedTime === SortOrder.Descending ? '-last-updated-time' : 'last-updated-time'
                 }
+                return undefined
+            case SearchType.Artists:
+                if (sorter.userName) {
+                    return sorter.userName === SortOrder.Descending ? '-user-name' : 'user-name'
+                }
+                if (sorter.regTime) {
+                    return sorter.regTime === SortOrder.Descending ? '-reg-time' : 'reg-time'
+                }
+                if (sorter.commissionRequestCount) {
+                    return sorter.commissionRequestCount === SortOrder.Descending ? '-commission-request-count' : 'commission-request-count'
+                }
+                if (sorter.commissionAcceptCount) {
+                    return sorter.commissionAcceptCount === SortOrder.Descending ? '-commission-accept-count' : 'commission-accept-count'
+                }
+                if (sorter.commissionSuccessCount) {
+                    return sorter.commissionSuccessCount === SortOrder.Descending ? '-commission-success-count' : 'commission-success-count'
+                }
+                if (sorter.avgRatings) {
+                    return sorter.avgRatings === SortOrder.Descending ? '-avg-ratings' : 'avg-ratings'
+                }
+                if (sorter.lastRequestTime) {
+                    return sorter.lastRequestTime === SortOrder.Descending ? '-last-request-time' : 'last-request-time'
+                }
+                return undefined
+            case SearchType.Artworks:
+                if (sorter.dayUsed) {
+                    return sorter.dayUsed === SortOrder.Descending ? '-day-used' : 'day-used'
+                }
+                if (sorter.rating) {
+                    return sorter.rating === SortOrder.Descending ? '-rating' : 'rating'
+                }
+                if (sorter.views) {
+                    return sorter.views === SortOrder.Descending ? '-views' : 'views'
+                }
+                if (sorter.favorCount) {
+                    return sorter.favorCount === SortOrder.Descending ? '-favor-count' : 'favor-count'
+                }
+                if (sorter.completedTime) {
+                    return sorter.completedTime === SortOrder.Descending ? '-completed-time' : 'completed-time'
+                }
+                return undefined
+            default:
+                break
         }
         return undefined
     }
-
-    searchArtists(text: string, filter: ArtistsSearchFilter, sorter: ArtistsSearchSorter, currentPage: number, pageSize: number): Promise<ArtistsSearchResult> {
-        throw new Error()
-    }
-
-    searchArtworks(text: string, filter: ArtworksSearchFilter, sorter: ArtworksSearchSorter, currentPage: number, pageSize: number): Promise<ArtworksSearchResult> {
-        throw new Error()
-    }
-
 }
