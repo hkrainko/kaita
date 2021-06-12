@@ -69,9 +69,11 @@ export class HttpSearchRepo implements SearchRepo {
             t: SearchType.Artists,
             'reg-time.from': filter.regTime?.from,
             'reg-time.to': filter.regTime?.to,
-            'payment-methods': filter.paymentMethods?.join(','),
+            'payment-methods': filter.paymentMethods && filter.paymentMethods.length > 0 ? filter.paymentMethods.join(',') : undefined,
             'last-request-time.from': filter.lastRequestTime?.from,
             'last-request-time.to': filter.lastRequestTime?.to,
+            'page.current': currentPage,
+            'page.size': pageSize,
             'sort': HttpSearchRepo.getSorterStr(sorter)
         }
 
@@ -94,6 +96,8 @@ export class HttpSearchRepo implements SearchRepo {
             'anonymous': filter.anonymous,
             'completed-time.from': filter.completedTime?.from,
             'completed-time.to': filter.completedTime?.to,
+            'page.current': currentPage,
+            'page.size': pageSize,
             'sort': HttpSearchRepo.getSorterStr(sorter)
         }
 
