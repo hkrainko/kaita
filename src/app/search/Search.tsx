@@ -9,7 +9,7 @@ import {SearchSorter, SortOrder} from "../../domain/search/model/search-sorter";
 import SearchSelector from "./SearchSelector";
 import {useInjection} from "../../iocReact";
 import {TYPES} from "../../types";
-import {SearchSelection, SearchUseCase} from "../../domain/search/search.usecase";
+import {SearchUseCase} from "../../domain/search/search.usecase";
 import {SearchFilter} from "../../domain/search/model/search-filter";
 
 
@@ -35,42 +35,30 @@ interface FilterSorter {
     currentPage: number
 }
 
-const getInitFilterSorter = (type: SearchType): FilterSorter => {
+const getInitFilterSorter = (useCase: SearchUseCase, type: SearchType): FilterSorter => {
     switch (type) {
         case SearchType.OpenCommissions:
+            const openCommissionsSearchSelection = useCase.getOpenCommissionsSearchSelection()
             return {
                 type: SearchType.OpenCommissions,
-                filter: {
-                    type: SearchType.OpenCommissions
-                },
-                sorter: {
-                    type: SearchType.OpenCommissions,
-                    createTime: SortOrder.Descending // 3, 2
-                },
+                filter: openCommissionsSearchSelection.getFilter(openCommissionsSearchSelection.getInitSelection()),
+                sorter: openCommissionsSearchSelection.getSorter(openCommissionsSearchSelection.getInitSelection()),
                 currentPage: 1
             }
         case SearchType.Artists:
+            const artistsSearchSelection = useCase.getArtistsSearchSelection()
             return {
                 type: SearchType.Artists,
-                filter: {
-                    type: SearchType.Artists
-                },
-                sorter: {
-                    type: SearchType.Artists,
-                    regTime: SortOrder.Descending // 3, 2
-                },
+                filter: artistsSearchSelection.getFilter(artistsSearchSelection.getInitSelection()),
+                sorter: artistsSearchSelection.getSorter(artistsSearchSelection.getInitSelection()),
                 currentPage: 1
             }
         case SearchType.Artworks:
+            const artworksSearchSelection = useCase.getArtworksSearchSelection()
             return {
                 type: SearchType.Artworks,
-                filter: {
-                    type: SearchType.Artworks
-                },
-                sorter: {
-                    type: SearchType.Artworks,
-                    completedTime: SortOrder.Descending // 3, 4
-                },
+                filter: artworksSearchSelection.getFilter(artworksSearchSelection.getInitSelection()),
+                sorter: artworksSearchSelection.getSorter(artworksSearchSelection.getInitSelection()),
                 currentPage: 1
             }
     }
@@ -84,13 +72,12 @@ export default function Search(props: Props) {
     const classes = useStyles()
 
     const location = useLocation()
-    const [filterSorter, setFilterSorter] = useState<FilterSorter>(getInitFilterSorter(SearchType.OpenCommissions))
     const query = new URLSearchParams(location.search)
     const searchUseCase = useInjection<SearchUseCase>(TYPES.SearchUseCase)
+    const [filterSorter, setFilterSorter] = useState<FilterSorter>(getInitFilterSorter(searchUseCase, SearchType.OpenCommissions))
     const searchType = query.get('t')
     const searchText = query.get('s')
     const dispatch = useAppDispatch()
-    // const [page, setPage] = useState<number>(1)
 
     const fetchDataByType = useCallback((filterSorter: FilterSorter) => {
         if (!searchText) {
