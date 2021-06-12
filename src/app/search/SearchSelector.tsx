@@ -17,7 +17,7 @@ import {
     Typography
 } from "@material-ui/core";
 import {FilterList, Sort, TuneRounded} from "@material-ui/icons";
-import React, {useCallback, useEffect, useState} from "react";
+import React, {useCallback, useState} from "react";
 import {SearchSelection} from "../../domain/search/search.usecase";
 import {SearchFilter} from "../../domain/search/model/search-filter";
 import {SearchSorter} from "../../domain/search/model/search-sorter";
@@ -32,27 +32,15 @@ const useStyles = makeStyles((theme: Theme) =>
     }),
 );
 
-const getInitSelections = <T extends SearchFilter, U extends SearchSorter>(searchSelection: SearchSelection<T, U>) => {
-    let result: boolean[][] = [[]]
-    searchSelection.groups.forEach((gp, i) => {
-        let tempCols: boolean[] = []
-        gp.options.forEach((_, j) => {
-            tempCols[j] = false
-        })
-        result[i] = tempCols
-    })
-    return result
-}
-
 interface Props<T extends SearchFilter, U extends SearchSorter> extends StandardProps<any, any> {
     searchSelection: SearchSelection<T, U>
     onConfirm: (filter: T, sorter: U) => void
 }
 
 
-export default function SearchSelector<T extends SearchFilter, U extends SearchSorter>({searchSelection, onConfirm, ...props}: Props<T, U>) {
+export default function SearchSelector<T extends SearchFilter, U extends SearchSorter>({searchSelection, initSelection, onConfirm, ...props}: Props<T, U>) {
     const classes = useStyles(props.className)
-    const [selections, setSelections] = useState<boolean[][]>(getInitSelections(searchSelection))
+    const [selections, setSelections] = useState<boolean[][]>(searchSelection.getInitSelection)
 
     const onClickListItem = useCallback((i: number, j: number) => {
         console.log(`onSelectListItem ${i}, ${j}`)
@@ -88,7 +76,7 @@ export default function SearchSelector<T extends SearchFilter, U extends SearchS
     }, [onConfirm, searchSelection, selections])
 
     const onClickReset = useCallback(() => {
-        setSelections(getInitSelections(searchSelection))
+        setSelections(searchSelection.getInitSelection)
     }, [searchSelection])
 
     return (

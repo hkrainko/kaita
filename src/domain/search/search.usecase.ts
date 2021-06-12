@@ -17,6 +17,7 @@ export interface SearchUseCase {
 export interface SearchSelection<T extends SearchFilter, U extends SearchSorter> {
     type: SearchType
     groups: (SearchSelectionFilterGroup | SearchSelectionSorterGroup)[]
+    getInitSelection: () => boolean[][]
     getFilter: (selection: boolean[][]) => T
     getSorter: (selection: boolean[][]) => U
 }

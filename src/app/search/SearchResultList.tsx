@@ -96,9 +96,9 @@ export default function SearchResultList({searchType, onLoadMore, ...props}: Pro
         switch (searchResult.type) {
             case SearchType.OpenCommissions:
                 return (
-                    searchResult?.records.map(record => {
+                    searchResult?.records.map((record, i) => {
                         return (
-                            <Grid item xs={12} md={3} key={record.id}>
+                            <Grid item xs={12} md={3} key={i}>
                                 <OpenCommissionCard openCommission={record} onMainAction={onOpenCommissionMainAction}/>
                             </Grid>
                         )

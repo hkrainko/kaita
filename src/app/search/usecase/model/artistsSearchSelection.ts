@@ -8,7 +8,7 @@ export class ArtistsSearchSelection implements SearchSelection<ArtistsSearchFilt
 
     type = SearchType.Artists
 
-    groups = [
+    readonly groups = [
         {
             title: "註冊時間",
             multipleSelection: false,
@@ -57,6 +57,18 @@ export class ArtistsSearchSelection implements SearchSelection<ArtistsSearchFilt
             ],
         }
     ]
+
+    getInitSelection = (): boolean[][] => {
+        let result: boolean[][] = [[]]
+        this.groups.forEach((gp, i) => {
+            let tempCols: boolean[] = []
+            gp.options.forEach((_, j) => {
+                tempCols[j] = (i === 3 && j === 2)
+            })
+            result[i] = tempCols
+        })
+        return result
+    }
 
     getFilter(selection: boolean[][]): ArtistsSearchFilter {
         let filter: ArtistsSearchFilter = {type: SearchType.Artists}

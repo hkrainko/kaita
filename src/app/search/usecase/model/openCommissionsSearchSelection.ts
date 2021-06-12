@@ -9,7 +9,7 @@ export class OpenCommissionsSearchSelection implements SearchSelection<OpenCommi
 
     type = SearchType.OpenCommissions
 
-    groups = [
+    readonly groups = [
         {
             title: "價錢",
             multipleSelection: false,
@@ -51,6 +51,18 @@ export class OpenCommissionsSearchSelection implements SearchSelection<OpenCommi
             ],
         }
     ]
+
+    getInitSelection = (): boolean[][] => {
+        let result: boolean[][] = [[]]
+        this.groups.forEach((gp, i) => {
+            let tempCols: boolean[] = []
+            gp.options.forEach((_, j) => {
+                tempCols[j] = (i === 3 && j === 2)
+            })
+            result[i] = tempCols
+        })
+        return result
+    }
 
     getFilter = (selection: boolean[][]): OpenCommissionsSearchFilter => {
         let filter: OpenCommissionsSearchFilter = {type: SearchType.OpenCommissions}

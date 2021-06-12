@@ -9,7 +9,7 @@ export class ArtworksSearchSelection implements SearchSelection<ArtworksSearchFi
 
     type = SearchType.Artworks
 
-    groups = [
+    readonly groups = [
         {
             title: "耗時",
             multipleSelection: true,
@@ -52,6 +52,18 @@ export class ArtworksSearchSelection implements SearchSelection<ArtworksSearchFi
             ]
         }
     ]
+
+    getInitSelection = (): boolean[][] => {
+        let result: boolean[][] = [[]]
+        this.groups.forEach((gp, i) => {
+            let tempCols: boolean[] = []
+            gp.options.forEach((_, j) => {
+                tempCols[j] = (i === 3 && j === 4)
+            })
+            result[i] = tempCols
+        })
+        return result
+    }
 
     getFilter(selection: boolean[][]): ArtworksSearchFilter {
         let filter: ArtworksSearchFilter = {type: SearchType.Artworks}

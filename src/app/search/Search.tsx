@@ -9,7 +9,7 @@ import {SearchSorter, SortOrder} from "../../domain/search/model/search-sorter";
 import SearchSelector from "./SearchSelector";
 import {useInjection} from "../../iocReact";
 import {TYPES} from "../../types";
-import {SearchUseCase} from "../../domain/search/search.usecase";
+import {SearchSelection, SearchUseCase} from "../../domain/search/search.usecase";
 import {SearchFilter} from "../../domain/search/model/search-filter";
 
 
@@ -45,7 +45,7 @@ const getInitFilterSorter = (type: SearchType): FilterSorter => {
                 },
                 sorter: {
                     type: SearchType.OpenCommissions,
-                    createTime: SortOrder.Descending
+                    createTime: SortOrder.Descending // 3, 2
                 },
                 currentPage: 1
             }
@@ -57,7 +57,7 @@ const getInitFilterSorter = (type: SearchType): FilterSorter => {
                 },
                 sorter: {
                     type: SearchType.Artists,
-                    regTime: SortOrder.Descending
+                    regTime: SortOrder.Descending // 3, 2
                 },
                 currentPage: 1
             }
@@ -69,7 +69,7 @@ const getInitFilterSorter = (type: SearchType): FilterSorter => {
                 },
                 sorter: {
                     type: SearchType.Artworks,
-                    completedTime: SortOrder.Descending
+                    completedTime: SortOrder.Descending // 3, 4
                 },
                 currentPage: 1
             }
@@ -137,13 +137,16 @@ export default function Search(props: Props) {
     const getSelector = (): React.ReactNode => {
         switch (searchType) {
             case SearchType.OpenCommissions:
-                return <SearchSelector searchSelection={searchUseCase.getOpenCommissionsSearchSelection()}
+                let openCommissionsSearchSelection = searchUseCase.getOpenCommissionsSearchSelection()
+                return <SearchSelector searchSelection={openCommissionsSearchSelection}
                                        onConfirm={onConfirmSelection}/>
             case SearchType.Artists:
-                return <SearchSelector searchSelection={searchUseCase.getArtistsSearchSelection()}
+                let artistsSearchSelection = searchUseCase.getArtistsSearchSelection()
+                return <SearchSelector searchSelection={artistsSearchSelection}
                                        onConfirm={onConfirmSelection}/>
             case SearchType.Artworks:
-                return <SearchSelector searchSelection={searchUseCase.getArtworksSearchSelection()}
+                let artworksSearchSelection = searchUseCase.getArtworksSearchSelection()
+                return <SearchSelector searchSelection={artworksSearchSelection}
                                        onConfirm={onConfirmSelection}/>
         }
     }
