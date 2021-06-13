@@ -31,7 +31,8 @@ import {
     SubjectOutlined
 } from "@material-ui/icons";
 import {OpenCommission} from "../../domain/open-commission/model/open-commission";
-import React, {useState} from "react";
+import React, {SyntheticEvent, useState} from "react";
+import {Skeleton} from "@material-ui/lab";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -84,6 +85,7 @@ export default function OpenCommissionCard({openCommission, onMainAction, onEdit
 
     const classes = useStyles(props.className)
     const [expanded, setExpanded] = useState(false)
+    const [isImageLoaded, setIsImageLoaded] = useState(false)
 
     return (
         <Card>
@@ -100,12 +102,19 @@ export default function OpenCommissionCard({openCommission, onMainAction, onEdit
                         </Box>
                     }
                 />
+                {
+                    isImageLoaded ||
+                    <Skeleton variant="rect" animation={"wave"} height={180}/>
+                }
                 <CardMedia
+                    style={isImageLoaded ? {} : {display: 'none'}}
                     component="img"
                     alt="Contemplative Reptile"
                     height="180"
                     image={`http://192.168.64.12:31398/${openCommission.sampleImagePaths[0]}`}
+                    // image={'https://news.cgtn.com/news/77416a4e3145544d326b544d354d444d3355444f31457a6333566d54/img/37d598e5a04344da81c76621ba273915/37d598e5a04344da81c76621ba273915.jpg'}
                     title="Open Commission Sample Image"
+                    onLoad={(event: SyntheticEvent) => setIsImageLoaded(true)}
                 />
                 <CardContent className={classes.cardContent}>
                     <Box display="flex">
