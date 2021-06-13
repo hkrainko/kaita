@@ -53,12 +53,16 @@ export default function ArtworkCard({artwork, onMainAction, onEdit, onDelete, ..
                     onLoad={(event: SyntheticEvent) => setIsImageLoaded(true)}
                 />
                 <CardContent>
-                    <Typography gutterBottom variant="h5" component="h2">
-                        {artwork.title}
-                    </Typography>
-                    <Typography variant="body2" color="textSecondary" component="p">
-                        {artwork.id}
-                    </Typography>
+                    <Box display="flex">
+                        <Typography gutterBottom variant="h6" component="h2" color={"textPrimary"}>
+                            {artwork.title || "(沒有標題)"}
+                        </Typography>
+                    </Box>
+                    <Box display="flex">
+                        <Typography gutterBottom variant="subtitle2" component="h2" color={"textSecondary"}>
+                            {`${artwork.rating} (${artwork.views})`}
+                        </Typography>
+                    </Box>
                 </CardContent>
             </CardActionArea>
             <CardActions>
@@ -76,7 +80,11 @@ export default function ArtworkCard({artwork, onMainAction, onEdit, onDelete, ..
                 }
             </CardActions>
             <Box display={"flex"} px={1} paddingBottom={1}>
-                <Typography variant={"body2"} color={"textSecondary"}>{artwork.artistId}</Typography>
+                <div>
+                    <Typography>{artwork.artistName}</Typography>
+                    <Typography>@{'artist_rk'}</Typography>
+                </div>
+                <Typography variant={"body2"} color={"textSecondary"}>{artwork.completedTime}</Typography>
             </Box>
         </Card>
     )
