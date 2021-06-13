@@ -7,6 +7,9 @@ import OpenCommissionCard from "../open-commission/OpenCommissionCard";
 import {PublishRounded} from "@material-ui/icons";
 import {SearchResult} from "../../domain/search/model/search-result";
 import {SearchType} from "../../domain/search/model/search-type";
+import ArtistCard from "../artist/ArtistCard";
+import {Artist} from "../../domain/artist/model/artist";
+import {Artwork} from "../../domain/artwork/artwork";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -62,7 +65,31 @@ export default function SearchResultList({searchType, onLoadMore, ...props}: Pro
                     sorter: state.search.forOpenCommissions.sorter,
                 }
             case SearchType.Artists:
-                return null
+                if (!state.search.forArtists.currentPage
+                    || !state.search.forArtists.totalPage
+                    || !state.search.forArtists.filter
+                    || !state.search.forArtists.sorter
+                ) {
+                    return null
+                }
+                let artists: Artist[] = []
+                state.search.forArtists.ids.forEach(id => {
+                    if (state.search.forArtists.byId[id]) {
+                        artists.push(state.search.forArtists.byId[id])
+                    }
+                })
+                return {
+                    type: SearchType.Artists,
+                    records: artists,
+                    page: {
+                        current: state.search.forArtists.currentPage,
+                        totalPage: state.search.forArtists.totalPage,
+                        totalResult: state.search.forArtists.ids.length,
+                        size: state.search.forArtists.size
+                    },
+                    filter: state.search.forArtists.filter,
+                    sorter: state.search.forArtists.sorter,
+                }
             case SearchType.Artworks:
                 return null
             default:
@@ -88,7 +115,7 @@ export default function SearchResultList({searchType, onLoadMore, ...props}: Pro
         });
     }, [])
 
-    const onOpenCommissionMainAction = useCallback((openCommission: OpenCommission) => {
+    const onMainAction = useCallback((record: OpenCommission | Artist | Artwork) => {
 
     }, [])
 
@@ -99,7 +126,17 @@ export default function SearchResultList({searchType, onLoadMore, ...props}: Pro
                     searchResult?.records.map((record, i) => {
                         return (
                             <Grid item xs={12} md={3} key={i}>
-                                <OpenCommissionCard openCommission={record} onMainAction={onOpenCommissionMainAction}/>
+                                <OpenCommissionCard openCommission={record} onMainAction={onMainAction}/>
+                            </Grid>
+                        )
+                    })
+                )
+            case SearchType.Artists:
+                return (
+                    searchResult?.records.map((record, i) => {
+                        return (
+                            <Grid item xs={12} md={3} key={i}>
+                                <ArtistCard artist={record} onMainAction={onMainAction}/>
                             </Grid>
                         )
                     })

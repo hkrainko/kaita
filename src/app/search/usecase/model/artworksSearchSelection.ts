@@ -67,7 +67,7 @@ export class ArtworksSearchSelection implements SearchSelection<ArtworksSearchFi
 
     getFilter(selection: boolean[][]): ArtworksSearchFilter {
         let filter: ArtworksSearchFilter = {type: SearchType.Artworks}
-        if (selection.length <= 3) {
+        if (selection.length < 3) {
             return filter
         }
         // 耗時

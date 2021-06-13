@@ -105,7 +105,7 @@ export default function OpenCommissionCard({openCommission, onMainAction, onEdit
                     alt="Contemplative Reptile"
                     height="180"
                     image={`http://192.168.64.12:31398/${openCommission.sampleImagePaths[0]}`}
-                    title="Contemplative Reptile"
+                    title="Open Commission Sample Image"
                 />
                 <CardContent className={classes.cardContent}>
                     <Box display="flex">

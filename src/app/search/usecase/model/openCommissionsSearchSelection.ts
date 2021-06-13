@@ -66,7 +66,7 @@ export class OpenCommissionsSearchSelection implements SearchSelection<OpenCommi
 
     getFilter = (selection: boolean[][]): OpenCommissionsSearchFilter => {
         let filter: OpenCommissionsSearchFilter = {type: SearchType.OpenCommissions}
-        if (selection.length <= 3) {
+        if (selection.length < 3) {
             return filter
         }
         // 價錢

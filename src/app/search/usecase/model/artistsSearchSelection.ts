@@ -172,7 +172,7 @@ export class ArtistsSearchSelection implements SearchSelection<ArtistsSearchFilt
 
     getSorter(selection: boolean[][]): ArtistsSearchSorter {
         let sorter: ArtistsSearchSorter = {type: SearchType.Artists}
-        if (selection.length <= 4) {
+        if (selection.length < 4) {
             return sorter
         }
         switch (selection[3].findIndex(l => l)) {

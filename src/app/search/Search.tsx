@@ -169,7 +169,7 @@ export default function Search(props: Props) {
     return (
         <Container className={classes.root}>
             {getSelector()}
-            <SearchResultList searchType={SearchType.OpenCommissions} onLoadMore={() => setFilterSorter({
+            <SearchResultList searchType={searchType} onLoadMore={() => setFilterSorter({
                 ...filterSorter,
                 currentPage: filterSorter.currentPage + 1
             })}/>
