@@ -10,6 +10,7 @@ import {SearchType} from "../../domain/search/model/search-type";
 import ArtistCard from "../artist/ArtistCard";
 import {Artist} from "../../domain/artist/model/artist";
 import {Artwork} from "../../domain/artwork/artwork";
+import ArtworkCard from "../artwork/ArtworkCard";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -91,7 +92,31 @@ export default function SearchResultList({searchType, onLoadMore, ...props}: Pro
                     sorter: state.search.forArtists.sorter,
                 }
             case SearchType.Artworks:
-                return null
+                if (!state.search.forArtworks.currentPage
+                    || !state.search.forArtworks.totalPage
+                    || !state.search.forArtworks.filter
+                    || !state.search.forArtworks.sorter
+                ) {
+                    return null
+                }
+                let artworks: Artwork[] = []
+                state.search.forArtworks.ids.forEach(id => {
+                    if (state.search.forArtworks.byId[id]) {
+                        artworks.push(state.search.forArtworks.byId[id])
+                    }
+                })
+                return {
+                    type: SearchType.Artworks,
+                    records: artworks,
+                    page: {
+                        current: state.search.forArtworks.currentPage,
+                        totalPage: state.search.forArtworks.totalPage,
+                        totalResult: state.search.forArtworks.ids.length,
+                        size: state.search.forArtworks.size
+                    },
+                    filter: state.search.forArtworks.filter,
+                    sorter: state.search.forArtworks.sorter,
+                }
             default:
                 return null
         }
@@ -137,6 +162,16 @@ export default function SearchResultList({searchType, onLoadMore, ...props}: Pro
                         return (
                             <Grid item xs={12} md={3} key={i}>
                                 <ArtistCard artist={record} onMainAction={onMainAction}/>
+                            </Grid>
+                        )
+                    })
+                )
+            case SearchType.Artworks:
+                return (
+                    searchResult?.records.map((record, i) => {
+                        return (
+                            <Grid item xs={12} md={3} key={i}>
+                                <ArtworkCard artwork={record} onMainAction={onMainAction}/>
                             </Grid>
                         )
                     })

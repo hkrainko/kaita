@@ -46,8 +46,7 @@ export default function ArtistCard({artist, onMainAction, ...props}: Props) {
                     component="img"
                     alt="Artist Card"
                     height="150"
-                    // image={`http://192.168.64.12:31398/${artist.artistBoard.bannerPath}`}
-                    image={`https://picsum.photos/id/${Math.floor(Math.random() * 1000) + 1}/200/300`}
+                    image={`http://192.168.64.12:31398/${artist.artistBoard.bannerPath}`}
                     title="Artist Card"
                     onLoad={(event: SyntheticEvent) => setIsImageLoaded(true)}
                 />
