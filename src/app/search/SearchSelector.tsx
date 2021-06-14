@@ -40,10 +40,10 @@ interface Props<T extends SearchFilter, U extends SearchSorter> extends Standard
 
 export default function SearchSelector<T extends SearchFilter, U extends SearchSorter>({searchSelection, initSelection, onConfirm, ...props}: Props<T, U>) {
     const classes = useStyles(props.className)
+    const [currentSearchType, setCurrentSearchType] = useState(searchSelection.type)
     const [selections, setSelections] = useState<boolean[][]>(searchSelection.getInitSelection)
 
     const onClickListItem = useCallback((i: number, j: number) => {
-        console.log(`onSelectListItem ${i}, ${j}`)
         let copiedSelections: boolean[][] = [[]]
         selections.forEach((row, i) => {
             let tempCols: boolean[] = []
@@ -66,18 +66,21 @@ export default function SearchSelector<T extends SearchFilter, U extends SearchS
                 copiedSelections[i][j] = true
             }
         }
-        console.log(`copiedSelections:${JSON.stringify(copiedSelections)}`)
         setSelections(copiedSelections)
     }, [searchSelection.groups, selections])
 
     const onClickConfirm = useCallback(() => {
-        console.log(`selections:${JSON.stringify(selections)}`)
         onConfirm(searchSelection.getFilter(selections), searchSelection.getSorter(selections))
     }, [onConfirm, searchSelection, selections])
 
     const onClickReset = useCallback(() => {
         setSelections(searchSelection.getInitSelection)
     }, [searchSelection])
+
+    if (currentSearchType !== searchSelection.type) {
+        setCurrentSearchType(searchSelection.type)
+        setSelections(searchSelection.getInitSelection())
+    }
 
     return (
         <React.Fragment>

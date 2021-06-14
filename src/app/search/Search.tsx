@@ -5,7 +5,7 @@ import {SearchType} from "../../domain/search/model/search-type";
 import {useAppDispatch} from "../hooks";
 import {searchArtists, searchArtworks, searchOpenCommissions} from "./usecase/searchSlice";
 import {useLocation} from "react-router-dom";
-import {SearchSorter, SortOrder} from "../../domain/search/model/search-sorter";
+import {SearchSorter} from "../../domain/search/model/search-sorter";
 import SearchSelector from "./SearchSelector";
 import {useInjection} from "../../iocReact";
 import {TYPES} from "../../types";
@@ -29,7 +29,7 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 interface FilterSorter {
-    type: SearchType
+    type: SearchType,
     filter: SearchFilter,
     sorter: SearchSorter,
     currentPage: number
@@ -71,13 +71,12 @@ interface Props extends StandardProps<any, any> {
 export default function Search(props: Props) {
     const classes = useStyles()
 
+    const searchUseCase = useInjection<SearchUseCase>(TYPES.SearchUseCase)
     const location = useLocation()
     const query = new URLSearchParams(location.search)
-    const searchUseCase = useInjection<SearchUseCase>(TYPES.SearchUseCase)
-    const [filterSorter, setFilterSorter] = useState<FilterSorter>(getInitFilterSorter(searchUseCase, SearchType.OpenCommissions))
-    const searchType: SearchType = query.get('t') as SearchType
-
     const searchText = query.get('s')
+    const searchType: SearchType = query.get('t') as SearchType
+    const [filterSorter, setFilterSorter] = useState<FilterSorter>(getInitFilterSorter(searchUseCase, searchType))
     const dispatch = useAppDispatch()
 
     const fetchDataByType = useCallback((filterSorter: FilterSorter) => {
@@ -127,29 +126,20 @@ export default function Search(props: Props) {
     }, [dispatch, searchText, searchType])
 
     useEffect(() => {
-        setFilterSorter(prevState => {
-            return {...prevState, currentPage: 1}
-        })
-    }, [searchType, searchText])
-
-    useEffect(() => {
-        if (!searchType) {
-            return
-        }
         fetchDataByType(filterSorter)
-    }, [fetchDataByType, filterSorter, searchType])
+    }, [fetchDataByType, filterSorter])
 
     const onConfirmSelection = useCallback(<T extends SearchFilter, U extends SearchSorter>(filter: T, sorter: U) => {
         setFilterSorter({
-            type: searchType,
+            type: filterSorter.type,
             filter,
             sorter,
             currentPage: 1
         })
         console.log(`filter: ${JSON.stringify(filter)}, sorter: ${JSON.stringify(sorter)}`)
-    }, [searchType])
+    }, [filterSorter.type])
 
-    const getSelector = (): React.ReactNode => {
+    const getSelector = useCallback((): React.ReactNode => {
         switch (searchType) {
             case SearchType.OpenCommissions:
                 let openCommissionsSearchSelection = searchUseCase.getOpenCommissionsSearchSelection()
@@ -164,6 +154,10 @@ export default function Search(props: Props) {
                 return <SearchSelector searchSelection={artworksSearchSelection}
                                        onConfirm={onConfirmSelection}/>
         }
+    }, [onConfirmSelection, searchType, searchUseCase])
+
+    if (filterSorter.type !== searchType) {
+        setFilterSorter(getInitFilterSorter(searchUseCase, searchType))
     }
 
     return (
