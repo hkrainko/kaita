@@ -135,21 +135,21 @@ export default function SearchSelector<T extends SearchFilter, U extends SearchS
                     </Button>
                 </AccordionActions>
             </Accordion>
-            <Box display="flex" my={2}>
-                <Chip
-                    icon={<FilterList/>}
-                    label="日期 > 50"
-                    onDelete={() => {
-                    }}
-                    color="default"
-                />
-                <Chip
-                    icon={<Sort/>}
-                    label="更新日期"
-                    color="default"
-                    className={classes.sortChip}
-                />
-            </Box>
+            {/*<Box display="flex" my={2}>*/}
+            {/*    <Chip*/}
+            {/*        icon={<FilterList/>}*/}
+            {/*        label="日期 > 50"*/}
+            {/*        onDelete={() => {*/}
+            {/*        }}*/}
+            {/*        color="default"*/}
+            {/*    />*/}
+            {/*    <Chip*/}
+            {/*        icon={<Sort/>}*/}
+            {/*        label="更新日期"*/}
+            {/*        color="default"*/}
+            {/*        className={classes.sortChip}*/}
+            {/*    />*/}
+            {/*</Box>*/}
         </React.Fragment>
     )
 }

@@ -2,7 +2,7 @@ import {
     Box,
     Card,
     CardActionArea, CardContent,
-    CardMedia,
+    CardMedia, Chip,
     createStyles,
     makeStyles,
     StandardProps,
@@ -14,6 +14,8 @@ import {OpenCommission} from "../../domain/open-commission/model/open-commission
 import React, {SyntheticEvent, useState} from "react";
 import UserAvatar from "../component/UserAvatar";
 import {Skeleton} from "@material-ui/lab";
+import UserCard from "../component/UserCard";
+import moment from "moment";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -23,6 +25,14 @@ const useStyles = makeStyles((theme: Theme) =>
         },
     })
 )
+
+const getMark = (requestCount: number, acceptCount: number, successCount: number): string => {
+
+    const acceptPct = requestCount > 0 ? acceptCount/requestCount : '-'
+    const successPct = successCount > 0 ? successCount/requestCount : '-'
+
+    return `${requestCount} / ${acceptPct} / ${successPct}`
+}
 
 interface Props extends StandardProps<any, any> {
     artist: Artist
@@ -54,17 +64,28 @@ export default function ArtistCard({artist, onMainAction, ...props}: Props) {
                     <UserAvatar size={100} path={`http://192.168.64.12:31398/${artist.profilePath}`}/>
                 </Box>
                 <Typography>{artist.userName}</Typography>
-                <Typography>{artist.artistId}</Typography>
+                <Typography>@{artist.artistId}</Typography>
                 <CardContent>
-                    <Typography>{`paymentMethods:${artist.paymentMethods}`}</Typography>
-                    <Typography>{`commissionRequestCount:${artist.commissionDetails.commissionRequestCount}`}</Typography>
-                    <Typography>{`commissionAcceptCount:${artist.commissionDetails.commissionAcceptCount}`}</Typography>
-                    <Typography>{`commissionSuccessCount:${artist.commissionDetails.commissionSuccessCount}`}</Typography>
-                    <Typography>{`avgRatings:${artist.commissionDetails.avgRatings}`}</Typography>
-                    <Typography>{`lastRequestTime:${artist.commissionDetails.lastRequestTime}`}</Typography>
+                    <Typography>{`${artist.commissionDetails.avgRatings ?? "-"}`}</Typography>
+                    <Typography>
+                        {getMark(
+                            artist.commissionDetails.commissionRequestCount,
+                            artist.commissionDetails.commissionAcceptCount,
+                            artist.commissionDetails.commissionSuccessCount
+                        )}
+                    </Typography>
                 </CardContent>
             </CardActionArea>
-
+            <Box display={"flex"} px={2} paddingBottom={2} justifyContent={"space-between"} alignItems={"flex-end"}>
+                {
+                    artist.paymentMethods.map(method =>
+                        <Chip variant="outlined" size="small" label={method}/>
+                    )
+                }
+                <Typography variant={"body2"} color={"textSecondary"}>
+                    {moment().calendar(artist.lastUpdatedTime)}
+                </Typography>
+            </Box>
         </Card>
     )
 }

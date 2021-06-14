@@ -33,6 +33,8 @@ import {
 import {OpenCommission} from "../../domain/open-commission/model/open-commission";
 import React, {SyntheticEvent, useState} from "react";
 import {Skeleton} from "@material-ui/lab";
+import UserCard from "../component/UserCard";
+import moment from "moment";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -202,8 +204,11 @@ export default function OpenCommissionCard({openCommission, onMainAction, onEdit
                     <ExpandMoreOutlined/>
                 </IconButton>
             </CardActions>
-            <Box display={"flex"} px={1} paddingBottom={1}>
-                <Typography variant={"body2"} color={"textSecondary"}>{openCommission.id}</Typography>
+            <Box display={"flex"} px={1} paddingBottom={2} justifyContent={"space-between"} alignItems={"flex-end"}>
+                <Typography variant="subtitle2" color="textSecondary">@{'artist_ss'}</Typography>
+                <Typography variant="body2" color="textSecondary">
+                    {moment().calendar(openCommission.createDate)}
+                </Typography>
             </Box>
         </Card>
     )
