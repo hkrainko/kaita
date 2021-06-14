@@ -64,7 +64,7 @@ export class OpenCommissionsSearchSelection implements SearchSelection<OpenCommi
         return result
     }
 
-    getFilter = (selection: boolean[][]): OpenCommissionsSearchFilter => {
+    getFilter(selection: boolean[][]): OpenCommissionsSearchFilter {
         let filter: OpenCommissionsSearchFilter = {type: SearchType.OpenCommissions}
         if (selection.length < 3) {
             return filter
@@ -121,7 +121,7 @@ export class OpenCommissionsSearchSelection implements SearchSelection<OpenCommi
         return filter
     }
 
-    getSorter = (selection: boolean[][]): OpenCommissionsSearchSorter => {
+    getSorter(selection: boolean[][]): OpenCommissionsSearchSorter {
         let sorter: OpenCommissionsSearchSorter = {type: SearchType.OpenCommissions}
         if (selection.length < 4) {
             return sorter
@@ -140,6 +140,10 @@ export class OpenCommissionsSearchSelection implements SearchSelection<OpenCommi
                 break
         }
         return sorter
+    }
+
+    isAllowUnselectAll(i: number): boolean {
+        return i !== 3
     }
 
 }

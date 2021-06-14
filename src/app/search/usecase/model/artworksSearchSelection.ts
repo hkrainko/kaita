@@ -172,4 +172,7 @@ export class ArtworksSearchSelection implements SearchSelection<ArtworksSearchFi
         }
     }
 
+    isAllowUnselectAll(i: number): boolean {
+        return i !== 3
+    }
 }

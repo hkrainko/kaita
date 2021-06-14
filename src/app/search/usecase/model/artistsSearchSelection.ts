@@ -202,4 +202,7 @@ export class ArtistsSearchSelection implements SearchSelection<ArtistsSearchFilt
         }
     }
 
+    isAllowUnselectAll(i: number): boolean {
+        return i !== 3
+    }
 }

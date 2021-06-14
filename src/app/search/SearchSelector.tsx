@@ -58,8 +58,11 @@ export default function SearchSelector<T extends SearchFilter, U extends SearchS
         } else {
             if (copiedSelections[i][j]) {
                 // if selected
-                copiedSelections[i][j] = false
+                if (searchSelection.isAllowUnselectAll(i)) {
+                    copiedSelections[i][j] = false
+                }
             } else {
+                // if not selected
                 copiedSelections[i].forEach((_, index) => {
                     copiedSelections[i][index] = false
                 })

@@ -18,8 +18,9 @@ export interface SearchSelection<T extends SearchFilter, U extends SearchSorter>
     type: SearchType
     groups: (SearchSelectionFilterGroup | SearchSelectionSorterGroup)[]
     getInitSelection: () => boolean[][]
-    getFilter: (selection: boolean[][]) => T
-    getSorter: (selection: boolean[][]) => U
+    getFilter(selection: boolean[][]): T
+    getSorter(selection: boolean[][]): U
+    isAllowUnselectAll(i: number): boolean
 }
 
 export interface SearchSelectionFilterGroup {
