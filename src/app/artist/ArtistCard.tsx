@@ -23,6 +23,12 @@ const useStyles = makeStyles((theme: Theme) =>
             marginTop: '-50px',
             position: 'relative'
         },
+        artTypeChip: {
+            marginLeft: '4px'
+        },
+        paymentMethodChip: {
+            marginRight: '4px'
+        }
     })
 )
 
@@ -60,12 +66,23 @@ export default function ArtistCard({artist, onMainAction, ...props}: Props) {
                     title="Artist Card"
                     onLoad={(event: SyntheticEvent) => setIsImageLoaded(true)}
                 />
+                {
+                    <Box display="flex" position="absolute" top={8} right={8}>
+                        {
+                            artist.artistIntro.artTypes.map(artType =>
+                                <Chip variant="default" color="primary" size="small" label={artType} className={classes.artTypeChip}/>
+                            )
+                        }
+                    </Box>
+                }
                 <Box display="flex" justifyContent="center" className={classes.userAvatarBox}>
                     <UserAvatar size={100} path={`http://192.168.64.12:31398/${artist.profilePath}`}/>
                 </Box>
-                <Typography>{artist.userName}</Typography>
-                <Typography>@{artist.artistId}</Typography>
-                <CardContent>
+                <Box my={1}>
+                    <Typography>{artist.userName}</Typography>
+                    <Typography>@{artist.artistId}</Typography>
+                </Box>
+                <Box mb={1}>
                     <Typography>{`${artist.commissionDetails.avgRatings ?? "-"}`}</Typography>
                     <Typography>
                         {getMark(
@@ -74,12 +91,12 @@ export default function ArtistCard({artist, onMainAction, ...props}: Props) {
                             artist.commissionDetails.commissionSuccessCount
                         )}
                     </Typography>
-                </CardContent>
+                </Box>
             </CardActionArea>
-            <Box display={"flex"} px={2} paddingBottom={2} justifyContent={"space-between"} alignItems={"flex-end"}>
+            <Box display={"flex"} px={2} paddingBottom={2} justifyContent={"space-between"} alignItems={"center"}>
                 {
                     artist.paymentMethods.map(method =>
-                        <Chip variant="outlined" size="small" label={method}/>
+                        <Chip variant="outlined" size="small" label={method} className={classes.paymentMethodChip}/>
                     )
                 }
                 <Typography variant={"body2"} color={"textSecondary"}>
