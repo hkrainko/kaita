@@ -258,11 +258,9 @@ export const searchSlice = createSlice({
                 if (state.requestId !== action.meta.requestId) {
                     return
                 }
-                console.log("AAA fullfilled")
                 if (state.forArtworks.text !== action.meta.arg.text
                     || JSON.stringify(state.forArtworks.filter) !== JSON.stringify(action.meta.arg.filter)
                     || JSON.stringify(state.forArtworks.sorter) !== JSON.stringify(action.meta.arg.sorter)) {
-                    console.log("AAA 2")
                     state.forArtworks = {
                         byId: {},
                         ids: [],
@@ -274,15 +272,12 @@ export const searchSlice = createSlice({
                         sorter: undefined
                     }
                 }
-                console.log("AAA 3")
                 let byId: { [id: string]: Artwork } = state.forArtworks.byId
                 let ids: string[] = state.forArtworks.ids
                 action.payload.records.forEach(artwork => {
                     byId[artwork.id] = artwork
                     ids.push(artwork.id)
                 })
-                console.log(`AAA action.payload.records.length:${action.payload.records.length}`)
-                console.log(`AAA ids.length:${ids.length}`)
                 state.forArtworks = {
                     byId,
                     ids,

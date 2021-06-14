@@ -165,7 +165,6 @@ export const commissionSlice = createSlice({
             state.chatServiceConnection = 'disconnected'
         },
         commissionServiceReceived(state, action: PayloadAction<Message>) {
-            console.log(`AAA: action:${JSON.stringify(action.payload)}`)
             state.messageByIds[action.payload.id] = action.payload
             state.messageIdsByCommissionId[action.payload.commissionId] = state.messageIdsByCommissionId[action.payload.commissionId].concat(action.payload.id)
             if (state.byId[action.payload.commissionId]) {

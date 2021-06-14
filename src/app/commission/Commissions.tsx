@@ -115,7 +115,6 @@ export default function Commissions(props: Props) {
     };
 
     useEffect(() => {
-        console.log(`AAA api call page:${page},rowsPerPage${rowsPerPage}`)
         dispatch(getCommissions({
             filter: {
                 count: rowsPerPage,
