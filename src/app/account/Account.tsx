@@ -1,9 +1,9 @@
 import {
     Avatar,
     Container,
-    createStyles, Divider,
+    createStyles, Divider, IconButton,
     List,
-    ListItem,
+    ListItem, ListItemSecondaryAction,
     ListItemText,
     makeStyles,
     Paper,
@@ -14,6 +14,7 @@ import {useAppSelector} from "../hooks";
 import {Artwork as DArtwork} from "../../domain/artwork/artwork";
 import {AuthUser} from "../../domain/auth-user/auth-user";
 import UserAvatar from "../component/UserAvatar";
+import {EditOutlined} from "@material-ui/icons";
 
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -46,29 +47,32 @@ export default function Account(props: Props) {
                     <ListItem>
                         <UserAvatar size={120} path={`http://192.168.64.12:31398/${authUser?.profilePath}`}/>
                     </ListItem>
-                    <ListItem>
+                    <ListItem divider>
                         <ListItemText primary="用戶帳號" secondary={authUser?.userId}/>
                     </ListItem>
-                    <ListItem>
-                        <ListItemText primary="用戶名稱" secondary={authUser?.userName} />
+                    <ListItem divider>
+                        <ListItemText primary="用戶名稱" secondary={authUser?.userName}/>
+                        <ListItemSecondaryAction>
+                            <IconButton aria-label="edit"><EditOutlined/></IconButton>
+                        </ListItemSecondaryAction>
                     </ListItem>
-                    <ListItem>
-                        <ListItemText primary="電郵地址" secondary={authUser?.email} />
+                    <ListItem divider>
+                        <ListItemText primary="電郵地址" secondary={authUser?.email}/>
                     </ListItem>
-                    <ListItem>
-                        <ListItemText primary="出生日期" secondary={authUser?.birthday} />
+                    <ListItem divider>
+                        <ListItemText primary="出生日期" secondary={authUser?.birthday}/>
                     </ListItem>
-                    <ListItem>
-                        <ListItemText primary="姓別" secondary={authUser?.gender} />
+                    <ListItem divider>
+                        <ListItemText primary="姓別" secondary={authUser?.gender}/>
                     </ListItem>
-                    <ListItem>
-                        <ListItemText primary="站內繪師" secondary={authUser?.isArtist ? "是" : "否"} />
+                    <ListItem divider>
+                        <ListItemText primary="站內繪師" secondary={authUser?.isArtist ? "是" : "否"}/>
                     </ListItem>
-                    <ListItem>
-                        <ListItemText primary="註冊時間" secondary={authUser?.regTime} />
+                    <ListItem divider>
+                        <ListItemText primary="註冊時間" secondary={authUser?.regTime}/>
                     </ListItem>
-                    <ListItem>
-                        <ListItemText primary="帳號狀態" secondary={authUser?.state} />
+                    <ListItem divider>
+                        <ListItemText primary="帳號狀態" secondary={authUser?.state}/>
                     </ListItem>
                 </List>
             </Paper>
