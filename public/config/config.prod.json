@@ -1,0 +1,15 @@
+{
+  "env": {
+    "name": "#{envName}"
+  },
+  "logging": {
+    "console": true
+  },
+  "apiPath": "#{apiPath}",
+  "wsPath": "#{apiPath}",
+  "imgPath": "#{imgPath}",
+  "filePath": "#{filePath}",
+  "imgSmallSuffix": "#{imgSmallSuffix}",
+  "imgMiddleSuffix": "#{imgMiddleSuffix}",
+  "imgLargeSuffix": "#{imgLargeSuffix}"
+}
