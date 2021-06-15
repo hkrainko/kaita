@@ -17,6 +17,7 @@ import Commission from "./app/commission/Commission";
 import Footer from "./app/footer/Footer";
 import Artwork from "./app/artwork/Artwork";
 import Search from "./app/search/Search";
+import Account from "./app/account/Account";
 
 
 function App() {
@@ -48,6 +49,7 @@ function App() {
                     <Route path="/commissions/:id" component={Commission}/>
                     <Route path="/artworks/:id" component={Artwork}/>
                     <Route path="/search" component={Search}/>
+                    <Route path="/account" component={Account}/>
                     <Route exact path="/" component={Home}/>
                     <Route path="*" component={Home}/>
                 </Switch>

@@ -137,7 +137,7 @@ export class HttpSearchRepo implements SearchRepo {
                 return undefined
             case SearchType.Artists:
                 if (sorter.userName) {
-                    return sorter.userName === SortOrder.Descending ? '-user-name' : 'user-name'
+                    return sorter.userName === SortOrder.Descending ? '-account-name' : 'account-name'
                 }
                 if (sorter.regTime) {
                     return sorter.regTime === SortOrder.Descending ? '-reg-time' : 'reg-time'

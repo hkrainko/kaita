@@ -111,8 +111,8 @@ export default function Header() {
     }, [auth.authUser, history])
 
     const onClickUserProfile = useCallback(() => {
-
-    }, [])
+        history.push(`/account`)
+    }, [history])
 
     const onClickLogout = useCallback(() => {
         dispatch(logout())

@@ -95,7 +95,7 @@ export default function RegisterForm() {
     const regType = query.get('type')
 
     useEffect(() => {
-        if (regType !== 'normal-user' && regType !== 'artist') {
+        if (regType !== 'normal-account' && regType !== 'artist') {
             history.push('')
             return
         }
