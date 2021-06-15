@@ -12,7 +12,7 @@ import {
 } from "@material-ui/core";
 import {useAppSelector} from "../hooks";
 import {Artwork as DArtwork} from "../../domain/artwork/artwork";
-import {AuthUser} from "../../domain/auth-user/auth-user";
+import {AuthUser} from "../../domain/auth-user/model/auth-user";
 import UserAvatar from "../component/UserAvatar";
 import {EditOutlined} from "@material-ui/icons";
 

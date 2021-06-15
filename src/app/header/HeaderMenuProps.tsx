@@ -1,4 +1,4 @@
-import {AuthUser} from "../../domain/auth-user/auth-user";
+import {AuthUser} from "../../domain/auth-user/model/auth-user";
 
 export default interface HeaderMenuProps {
     authUser: AuthUser

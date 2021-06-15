@@ -1,6 +1,6 @@
 import {Gender} from '../../user/gender';
 import {UserState} from '../../user/user';
-import {AuthUser} from '../../auth-user/auth-user';
+import {AuthUser} from '../../auth-user/model/auth-user';
 
 export interface AuthCallback extends AuthUser {
   userId: string;

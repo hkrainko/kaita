@@ -1,6 +1,6 @@
 import {RegisterRepo} from '../../../domain/register/register.repo';
 import {RegisterInfo} from '../../../domain/register/model/register-info';
-import {AuthUser} from '../../../domain/auth-user/auth-user';
+import {AuthUser} from '../../../domain/auth-user/model/auth-user';
 import {AuthUserMapper, AuthUserRepoModel} from './model/auth-user.repo.model';
 import {injectable} from "inversify";
 import axios from "axios";

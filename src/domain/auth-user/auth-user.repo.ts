@@ -1,9 +1,9 @@
-import {AuthUser} from './auth-user';
-import {BehaviorSubject, Observable} from 'rxjs';
+import {AuthUser} from './model/auth-user';
+import {AuthUserUpdater} from "./model/auth-user-updater";
 
 
-export abstract class AuthUserRepo {
-  abstract getAuthUser(): BehaviorSubject<AuthUser>;
-  abstract setAuthUser(authUser?: AuthUser): any;
-  abstract refreshAuthUser(): Observable<AuthUser>;
+export interface AuthUserRepo {
+    getAuthUser(token: string): Promise<AuthUser>;
+
+    updateAuthUser(token: string, updater: AuthUserUpdater): Promise<string>;
 }

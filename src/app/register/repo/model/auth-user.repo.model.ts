@@ -1,6 +1,6 @@
 import {Gender} from '../../../../domain/user/gender';
 import {Mapper} from '../../../../domain/mapper';
-import {AuthUser} from '../../../../domain/auth-user/auth-user';
+import {AuthUser} from '../../../../domain/auth-user/model/auth-user';
 import {UserState} from '../../../../domain/user/user';
 import {AuthType} from "../../../../domain/auth/model/auth-type";
 
