@@ -22,6 +22,8 @@ import {SearchUseCase} from "./domain/search/search.usecase";
 import {DefaultSearchUseCase} from "./app/search/usecase/defaultSearchUseCase";
 import {SearchRepo} from "./domain/search/search.repo";
 import {HttpSearchRepo} from "./app/search/repo/http/http.search.repo";
+import {AuthUserRepo} from "./domain/auth-user/auth-user.repo";
+import {HttpAuthUserRepo} from "./app/auth-user/repo/http.auth-user.repo";
 
 const container = new Container()
 container.bind<AuthRepo>(TYPES.AuthRepo).to(HttpAuthRepo)
@@ -35,6 +37,7 @@ container.bind<ArtworkUseCase>(TYPES.ArtworkUseCase).to(DefaultArtworkUseCase)
 container.bind<ArtworkRepo>(TYPES.ArtworkRepo).to(HttpArtworkRepo)
 container.bind<SearchUseCase>(TYPES.SearchUseCase).to(DefaultSearchUseCase)
 container.bind<SearchRepo>(TYPES.SearchRepo).to(HttpSearchRepo)
+container.bind<AuthUserRepo>(TYPES.AuthUserRepo).to(HttpAuthUserRepo)
 
 
 export {container};

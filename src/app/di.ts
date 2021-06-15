@@ -12,6 +12,8 @@ import {ArtworkRepo} from "../domain/artwork/artwork.repo";
 import {HttpArtworkRepo} from "./artwork/repo/http-artwork/http.artwork.repo";
 import {SearchRepo} from "../domain/search/search.repo";
 import {HttpSearchRepo} from "./search/repo/http/http.search.repo";
+import {AuthUserRepo} from "../domain/auth-user/auth-user.repo";
+import {HttpAuthUserRepo} from "./auth-user/repo/http.auth-user.repo";
 
 export default class AppDependency {
 
@@ -22,6 +24,7 @@ export default class AppDependency {
     commRepo: CommissionRepo
     artworkRepo: ArtworkRepo
     searchRepo: SearchRepo
+    authUserRepo: AuthUserRepo
 
     constructor() {
         this.authRepo = new HttpAuthRepo()
@@ -31,5 +34,6 @@ export default class AppDependency {
         this.commRepo = new HttpCommissionRepo()
         this.artworkRepo = new HttpArtworkRepo()
         this.searchRepo = new HttpSearchRepo()
+        this.authUserRepo = new HttpAuthUserRepo()
     }
 }
