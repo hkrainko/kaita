@@ -20,7 +20,7 @@ export class HttpAuthUserRepo implements AuthUserRepo {
 
         return axios
             .get<GetAuthUserRepoModel>(
-                `${this.apiPath}/user/me`,
+                `${this.apiPath}/users/me`,
                 {headers},
             )
             .then(resp => {
@@ -29,7 +29,7 @@ export class HttpAuthUserRepo implements AuthUserRepo {
     }
 
     updateAuthUser(token: string, updater: AuthUserUpdater): Promise<string> {
-        const url = `${this.apiPath}/user/me`;
+        const url = `${this.apiPath}/users/me`;
         const headers = {
             Authorization: 'Bearer ' + token,
         };

@@ -5,6 +5,7 @@ import {AuthState as AuthStatus} from "../../../domain/auth/model/auth-state";
 import {UserState} from "../../../domain/user/user";
 import {AuthUser} from "../../../domain/auth-user/model/auth-user";
 import {register} from "../../register/usecase/registerSlice";
+import {getAuthUser} from "../../auth-user/usecase/authUserSlice";
 
 export interface AuthState {
     authState: AuthStatus
@@ -60,6 +61,13 @@ export const authSlice = createSlice({
             })
             .addCase(register.fulfilled, (state, action) => {
                 state.authUser = action.payload
+            })
+            .addCase(getAuthUser.fulfilled, (state, action) => {
+                state.authUser = action.payload
+            })
+            .addCase(getAuthUser.rejected, (state, action) => {
+                // TODO, handle inactive case
+                state.authUser = null
             })
     })
 })

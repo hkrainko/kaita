@@ -18,6 +18,7 @@ import Footer from "./app/footer/Footer";
 import Artwork from "./app/artwork/Artwork";
 import Search from "./app/search/Search";
 import Account from "./app/account/Account";
+import {getAuthUser} from "./app/auth-user/usecase/authUserSlice";
 
 
 function App() {
@@ -31,9 +32,12 @@ function App() {
     }
 
     useEffect(() => {
-        console.log(`applyHttpInterceptors()`)
         applyHttpInterceptors()
     }, [])
+
+    useEffect(() => {
+        dispatch(getAuthUser({}))
+    }, [dispatch])
 
     return (
         <div className="App">
