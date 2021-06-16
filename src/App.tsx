@@ -26,6 +26,7 @@ function App() {
     const dispatch = useAppDispatch();
     const errorSelector = useAppSelector((state) => state.error)
     const loadingSelector = useAppSelector((state) => state.loading)
+    const isLoggedIn = useAppSelector((state) => state.auth.authUser !== null)
 
     const handleCloseAlert = () => {
         dispatch(dismissErrorAlert())
@@ -36,8 +37,10 @@ function App() {
     }, [])
 
     useEffect(() => {
-        dispatch(getAuthUser({}))
-    }, [dispatch])
+        if (isLoggedIn) {
+            dispatch(getAuthUser({}))
+        }
+    }, [dispatch, isLoggedIn])
 
     return (
         <div className="App">

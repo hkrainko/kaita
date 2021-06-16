@@ -183,7 +183,7 @@ export default function EditOpenCommissionModal({openCommission, ...props}: Prop
                 if (files.length <= 0) {
                     return
                 }
-                let updater: OpenCommissionUpdater = {
+                const updater: OpenCommissionUpdater = {
                     openCommId: openCommission.id,
                     addSampleImages: sampleImages,
                     allowAnonymous: data.allowAnonymous !== openCommission.allowAnonymous ? data.allowAnonymous : undefined,
@@ -210,7 +210,7 @@ export default function EditOpenCommissionModal({openCommission, ...props}: Prop
                 console.log(`parse file error`)
             })
 
-        }, [dispatch, sampleImages])
+        }, [dispatch, editedRemoteSampleImages, openCommission.allowAnonymous, openCommission.allowBePrivate, openCommission.dayNeed?.from, openCommission.dayNeed?.to, openCommission.depositRule, openCommission.desc, openCommission.id, openCommission.isR18, openCommission.price?.amount, openCommission.price?.currency, openCommission.timesAllowedCompletionToChange, openCommission.timesAllowedDraftToChange, openCommission.title, sampleImages])
 
     return (
         <Dialog

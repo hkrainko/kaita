@@ -3,7 +3,6 @@ import AppDependency from "../../di";
 import {RootState} from "../../store";
 import {UnAuthError} from "../../../domain/error/model/error";
 import {AuthUser} from "../../../domain/auth-user/model/auth-user";
-import {CommissionUpdater} from "../../../domain/commission/model/commission-updater";
 import {AuthUserUpdater} from "../../../domain/auth-user/model/auth-user-updater";
 
 

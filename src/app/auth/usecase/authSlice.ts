@@ -67,7 +67,10 @@ export const authSlice = createSlice({
             })
             .addCase(getAuthUser.rejected, (state, action) => {
                 // TODO, handle inactive case
-                state.authUser = null
+                if (action.error.code === "403") {
+                    // User Account Terminated
+                    state.authUser = null
+                }
             })
     })
 })
