@@ -40,7 +40,7 @@ export class HttpAuthUserRepo implements AuthUserRepo {
             formData.append('userName', updater.userName)
         }
         if (updater.profileFile) {
-            formData.append('profileFile', updater.profileFile)
+            formData.append('profile', updater.profileFile)
         }
 
         return axios

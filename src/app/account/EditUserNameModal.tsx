@@ -21,6 +21,7 @@ import NotFound from "../error/NotFound";
 import {useInjection} from "../../iocReact";
 import {RegisterUseCase} from "../../domain/register/register.usecase";
 import {TYPES} from "../../types";
+import { unwrapResult } from '@reduxjs/toolkit'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -37,9 +38,11 @@ type Inputs = {
 
 interface Props extends StandardProps<any, any> {
     currentUserName: string
+    open: boolean
+    onClose: (success: boolean) => void
 }
 
-export default function EditUserNameModal({currentUserName, ...props}: Props) {
+export default function EditUserNameModal({currentUserName, open, onClose, ...props}: Props) {
     const classes = useStyles();
 
     const registerUseCase = useInjection<RegisterUseCase>(TYPES.RegisterUseCase)
@@ -64,8 +67,17 @@ export default function EditUserNameModal({currentUserName, ...props}: Props) {
             }
 
             dispatch(updateAuthUser({updater}))
+                .then(unwrapResult)
+                .then(originalPromiseResult => {
+                    console.log(`originalPromiseResult:${JSON.stringify(originalPromiseResult)}`)
+                    onClose(true)
+                })
+                .catch(rejectedValueOrSerializedError => {
+                    console.log(`rejectedValueOrSerializedError:${JSON.stringify(rejectedValueOrSerializedError)}`)
+                    onClose(false)
+                })
 
-        }, [dispatch, userId])
+        }, [dispatch, props, userId])
 
     if (!userId) {
         return <NotFound/>
@@ -75,8 +87,8 @@ export default function EditUserNameModal({currentUserName, ...props}: Props) {
         <Dialog
             fullWidth={true}
             maxWidth={"sm"}
-            open={props.open}
-            onClose={props.onClose}
+            open={open}
+            onClose={() => {onClose(false)}}
             aria-labelledby="draggable-dialog-title"
         >
             <DialogTitle style={{cursor: 'move'}} id="draggable-dialog-title">
@@ -84,7 +96,7 @@ export default function EditUserNameModal({currentUserName, ...props}: Props) {
             </DialogTitle>
             <DialogContent>
                 <DialogContentText>
-                    {'ss'}
+                    現在名稱: {currentUserName}
                 </DialogContentText>
                 <form className={classes.form} onSubmit={handleSubmit(onSubmit)}>
                     <Grid container spacing={2}>
@@ -102,7 +114,7 @@ export default function EditUserNameModal({currentUserName, ...props}: Props) {
                                         variant="outlined"
                                         required
                                         fullWidth
-                                        label="用戶名稱"
+                                        label="新名稱"
                                         size="small"
                                         helperText="4-12 字元。"
                                     />

@@ -15,6 +15,9 @@ import {useAppDispatch, useAppSelector} from "../hooks";
 import {getArtist, updateArtistBanner} from "../artist/usecase/artistSlice";
 import AppImageCrop from "../component/AppImageCrop";
 import AppDropzone from "../component/AppDropzone";
+import {AuthUserUpdater} from "../../domain/auth-user/model/auth-user-updater";
+import {updateAuthUser} from "../auth-user/usecase/authUserSlice";
+import {unwrapResult} from "@reduxjs/toolkit";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -35,13 +38,13 @@ const useStyles = makeStyles((theme: Theme) =>
 
 interface Props extends StandardProps<any, any> {
     open: boolean
-    onClose: () => void
+    onClose: (success: boolean) => void
 }
 
-export default function EditProfileModal(props: Props)  {
+export default function EditProfileModal({open, onClose, ...props}: Props)  {
     const classes = useStyles();
     const [file, setFile] = useState<File | null>(null);
-    const [bannerFile, setBannerFile] = useState<File | null>(null);
+    const [profileFile, setProfileFile] = useState<File | null>(null);
     const userId = useAppSelector((state) => state.auth?.authUser?.userId)
     const dispatch = useAppDispatch()
     const filesCallback = useCallback(
@@ -54,33 +57,44 @@ export default function EditProfileModal(props: Props)  {
         (file: File | null) => {
             // console.log(`base64Img:${base64Img?.length}`)
             console.log(`file:${file?.name}`)
-            setBannerFile(file)
+            setProfileFile(file)
         }, [])
 
     const onClickDeleteImage = useCallback(
         () => {
             setFile(null)
-            setBannerFile(null)
+            setProfileFile(null)
         }
         , [])
 
     const onClickedSubmit = useCallback(() => {
-        if (!bannerFile || !userId) {
-            props.onClose()
+        if (!profileFile || !userId) {
+            onClose(false)
             return
         }
-        dispatch(updateArtistBanner({artistId: userId, bannerImage: bannerFile})).then(() => {
-            dispatch(getArtist({artistId: userId}))
-        })
-        props.onClose()
-    }, [bannerFile, dispatch, props, userId])
+        const updater: AuthUserUpdater = {
+            userId,
+            profileFile,
+        }
+
+        dispatch(updateAuthUser({updater}))
+            .then(unwrapResult)
+            .then(originalPromiseResult => {
+                console.log(`originalPromiseResult:${JSON.stringify(originalPromiseResult)}`)
+                onClose(true)
+            })
+            .catch(rejectedValueOrSerializedError => {
+                console.log(`rejectedValueOrSerializedError:${JSON.stringify(rejectedValueOrSerializedError)}`)
+                onClose(false)
+            })
+    }, [profileFile, dispatch, onClose, userId])
 
     return (
         <Dialog
             fullWidth={true}
             maxWidth={"sm"}
-            open={props.open}
-            onClose={props.onClose}
+            open={open}
+            onClose={onClose}
             aria-labelledby="draggable-dialog-title"
         >
             <DialogTitle style={{ cursor: 'move' }} id="draggable-dialog-title">
@@ -102,7 +116,7 @@ export default function EditProfileModal(props: Props)  {
                 }
             </DialogContent>
             <DialogActions>
-                <Button onClick={props.onClose} color="primary">
+                <Button onClick={() => onClose(false)} color="primary">
                     取消
                 </Button>
                 <Button onClick={onClickedSubmit} color="primary">
