@@ -73,7 +73,7 @@ export default function Artwork(props: Props) {
 
     return (
         <Container className={classes.root}>
-            <Grid container spacing={4}>
+            <Grid container spacing={2}>
                 <Grid item xs={12} md={9}>
                     <AuthImage src={`http://192.168.64.12:31398/${artwork.path}`}/>
 

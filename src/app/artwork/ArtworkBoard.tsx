@@ -6,6 +6,7 @@ import React, {useCallback} from "react";
 import {useAppSelector} from "../hooks";
 import {Edit} from "@material-ui/icons";
 import EditArtworkBoardModal from "./EditArtworkBoardModal";
+import UserCard from "../component/UserCard";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -49,23 +50,31 @@ export default function ArtworkBoard({artwork, ...props}: Props) {
                     }
                 </div>
                 <Box textAlign="start" padding={2}>
-                    <Box>{artwork?.artistName}@{artwork?.artistId}</Box>
-                    <Box>{
-                        artwork?.title
-                            ? <Typography variant="h5">{artwork.title}</Typography>
-                            : <Typography variant="h5">(無標題)</Typography>
-                    }</Box>
-                    <Box>{
-                        artwork?.textContent
-                            ? <Typography variant="body1">{artwork.textContent}</Typography>
-                            : <Typography variant="body1">(暫無內容)</Typography>
-                    }</Box>
                     <Box>
-                        <Typography variant="body2">{
-                            artwork?.lastUpdateTime
-                                ? moment(artwork.lastUpdateTime).format("YYYY-MM-DD HH:mm:ss")
-                                : "-"
-                        }</Typography>
+                        {
+                            artwork?.title
+                                ? <Typography variant="h6" color={"textPrimary"}>{artwork.title}</Typography>
+                                : <Typography variant="h6" color={"textPrimary"}>(無標題)</Typography>
+                        }
+                    </Box>
+                    <Box mt={2}>
+                        {
+                            artwork?.textContent
+                                ? <Typography variant="body2" color={"textSecondary"}>{artwork.textContent}</Typography>
+                                : <Typography variant="body2" color={"textSecondary"}>(暫無內容)</Typography>
+                        }
+                    </Box>
+                    <Box mt={2}>
+                        <Typography variant="body2" color={"textSecondary"}>
+                            {
+                                artwork?.lastUpdateTime
+                                    ? moment(artwork.lastUpdateTime).calendar()
+                                    : "-"
+                            }
+                        </Typography>
+                    </Box>
+                    <Box mt={4}>
+                        <UserCard width={30} name={artwork.artistName} id={artwork.artistId}/>
                     </Box>
                 </Box>
             </Paper>
