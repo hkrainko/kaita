@@ -29,10 +29,6 @@ const useStyles = makeStyles((theme: Theme) =>
             maxWidth: '200px',
             flex: '1 1 100px'
         },
-        droppableBox: {
-            display: 'flex',
-            alignItems: 'flex-end'
-        },
     }),
 );
 
@@ -98,7 +94,7 @@ export default function EditProfileModal({open, onClose, ...props}: Props)  {
             aria-labelledby="draggable-dialog-title"
         >
             <DialogTitle style={{ cursor: 'move' }} id="draggable-dialog-title">
-                編輯橫額
+                編輯頭像
             </DialogTitle>
             <DialogContent>
                 <DialogContentText>
@@ -111,8 +107,13 @@ export default function EditProfileModal({open, onClose, ...props}: Props)  {
                         onCroppedImg={onCroppedImg}
                         preCropHeightPercent={50}
                         preCropWidthPercent={50}
+                        circularCrop
+                        aspect={1}
                     />
-                    : <AppDropzone onDrop={filesCallback}/>
+                    : <AppDropzone
+                        onDrop={filesCallback}
+                        classes={{height: '200px'}}
+                    />
                 }
             </DialogContent>
             <DialogActions>

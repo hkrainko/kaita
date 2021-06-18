@@ -1,22 +1,11 @@
 import {DropzoneProps, DropzoneRootProps, useDropzone} from "react-dropzone";
 import {useMemo} from "react";
+import {makeStyles, StandardProps} from "@material-ui/core";
 
-
-const baseStyle = {
-    flex: 1,
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    padding: '20px',
-    borderWidth: 2,
-    borderRadius: 2,
-    borderColor: '#eeeeee',
-    borderStyle: 'dashed',
-    backgroundColor: '#ffffff',
-    color: '#bdbdbd',
-    outline: 'none',
-    transition: 'border .24s ease-in-out'
-};
+const useStyles = makeStyles({
+    root: {},
+    box: {}
+});
 
 const activeStyle = {
     borderColor: '#2196f3'
@@ -30,7 +19,13 @@ const rejectStyle = {
     borderColor: '#ff1744'
 };
 
-export default function AppDropzone(props: DropzoneProps) {
+interface Props extends DropzoneProps, StandardProps<any, any> {
+
+}
+
+export default function AppDropzone(props: Props) {
+
+    const classes = useStyles(props);
 
     const {
         getRootProps,
@@ -40,16 +35,32 @@ export default function AppDropzone(props: DropzoneProps) {
         isDragReject,
     } = useDropzone(props);
 
+    const baseStyle = useMemo(() => {
+        return {
+            flex: 1,
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: '20px',
+            borderWidth: 2,
+            borderRadius: 2,
+            borderColor: '#eeeeee',
+            borderStyle: 'dashed',
+            backgroundColor: '#ffffff',
+            color: '#bdbdbd',
+            outline: 'none',
+            transition: 'border .24s ease-in-out',
+            ...props.classes,
+        }
+    }, [props])
+
     const style: DropzoneRootProps = useMemo(() => ({
         ...baseStyle,
         ...(isDragActive ? activeStyle : {}),
         ...(isDragAccept ? acceptStyle : {}),
         ...(isDragReject ? rejectStyle : {})
-    }), [
-        isDragActive,
-        isDragReject,
-        isDragAccept
-    ]);
+    }), [baseStyle, isDragActive, isDragAccept, isDragReject]);
 
     return (
         <div className="container">
