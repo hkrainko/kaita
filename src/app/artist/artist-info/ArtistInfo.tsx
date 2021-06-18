@@ -5,7 +5,7 @@ import {
     ListItem,
     ListItemIcon,
     ListItemText,
-    makeStyles,
+    makeStyles, Paper,
     StandardProps,
     Theme
 } from "@material-ui/core";
@@ -26,7 +26,9 @@ import moment from "moment";
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         root: {
-            marginTop: theme.spacing(0)
+            [theme.breakpoints.up('md')]: {
+                margin: theme.spacing(2)
+            }
         },
         listItem: {
             paddingTop: 0,
@@ -60,85 +62,87 @@ export default function ArtistInfo(props: Props) {
     }
 
     return (
-        <List className={classes.root}>
-            <ListItem className={classes.listItem}>
-                <ListItemIcon className={classes.listItemIcon}>
-                    <BrushOutlined/>
-                </ListItemIcon>
-                <ListItemText primary="繪齡" secondary={!props.artist?.artistIntro.yearOfDrawing && "-"}/>
-            </ListItem>
-            <ListItem className={classes.listItem}>
-                <ListItemIcon className={classes.listItemIcon}>
-                    <PhotoLibraryOutlined/>
-                </ListItemIcon>
-                <ListItemText primary="作品類型" secondary={
-                    props.artists?.artistIntro.artTypes.length
-                        ? props.artists?.artistIntro.artTypes.map((value: string, index: number) => {
-                            return <Chip size="small" label={value}/>
-                        })
-                        : "-"
-
-                }/>
-            </ListItem>
-            <ListItem className={classes.listItem}>
-                <ListItemIcon className={classes.listItemIcon}>
-                    <PaymentOutlined/>
-                </ListItemIcon>
-                <ListItemText primary="付款方式" secondary={
-                    props.artists?.paymentMethod.length
-                        ? props.artists?.paymentMethod.map((value: string, index: number) => {
-                            return <Chip size="small" label={value}/>
-                        })
-                        : "-"
-                }/>
-            </ListItem>
-            <ListItem className={classes.listItem}>
-                <ListItemIcon className={classes.listItemIcon}>
-                    <RateReviewOutlined/>
-                </ListItemIcon>
-                <ListItemText
-                    primary="委托接受/請求數"
-                    secondary={getCommAcceptRequestText(props.artist?.commissionDetails)}
-                />
-            </ListItem>
-            <ListItem className={classes.listItem}>
-                <ListItemIcon className={classes.listItemIcon}>
-                    <CheckCircleOutline/>
-                </ListItemIcon>
-                <ListItemText
-                    primary="委托成功率"
-                    secondary={getCommSuccessPercentText(props.artist?.commissionDetails)}
-                />
-            </ListItem>
-            <ListItem className={classes.listItem}>
-                <ListItemIcon className={classes.listItemIcon}>
-                    <SentimentSatisfiedAltOutlined/>
-                </ListItemIcon>
-                <ListItemText primary="評價" secondary={!props.artist?.commissionDetails.avgRatings && "-"}/>
-            </ListItem>
-            <ListItem className={classes.listItem}>
-                <ListItemIcon className={classes.listItemIcon}>
-                    <AlarmOnOutlined/>
-                </ListItemIcon>
-                <ListItemText
-                    primary="最後成功委托時間"
-                    secondary={
-                        props.artist?.commissionDetails.lastRequestTime
-                            ? moment(props.artist?.commissionDetails.lastRequestTime).format('YYYY-MM-DD')
+        <Paper variant={"elevation"} className={classes.root}>
+            <List>
+                <ListItem className={classes.listItem}>
+                    <ListItemIcon className={classes.listItemIcon}>
+                        <BrushOutlined/>
+                    </ListItemIcon>
+                    <ListItemText primary="繪齡" secondary={!props.artist?.artistIntro.yearOfDrawing && "-"}/>
+                </ListItem>
+                <ListItem className={classes.listItem}>
+                    <ListItemIcon className={classes.listItemIcon}>
+                        <PhotoLibraryOutlined/>
+                    </ListItemIcon>
+                    <ListItemText primary="作品類型" secondary={
+                        props.artists?.artistIntro.artTypes.length
+                            ? props.artists?.artistIntro.artTypes.map((value: string, index: number) => {
+                                return <Chip size="small" label={value}/>
+                            })
                             : "-"
-                    }
-                />
-            </ListItem>
-            <ListItem className={classes.listItem}>
-                <ListItemIcon className={classes.listItemIcon}>
-                    <QueryBuilderOutlined/>
-                </ListItemIcon>
-                <ListItemText
-                    primary="註冊時間"
-                    secondary={moment(props.artist?.regTime).format('YYYY-MM-DD')}
-                />
-            </ListItem>
-        </List>
+
+                    }/>
+                </ListItem>
+                <ListItem className={classes.listItem}>
+                    <ListItemIcon className={classes.listItemIcon}>
+                        <PaymentOutlined/>
+                    </ListItemIcon>
+                    <ListItemText primary="付款方式" secondary={
+                        props.artists?.paymentMethod.length
+                            ? props.artists?.paymentMethod.map((value: string, index: number) => {
+                                return <Chip size="small" label={value}/>
+                            })
+                            : "-"
+                    }/>
+                </ListItem>
+                <ListItem className={classes.listItem}>
+                    <ListItemIcon className={classes.listItemIcon}>
+                        <RateReviewOutlined/>
+                    </ListItemIcon>
+                    <ListItemText
+                        primary="委托接受/請求數"
+                        secondary={getCommAcceptRequestText(props.artist?.commissionDetails)}
+                    />
+                </ListItem>
+                <ListItem className={classes.listItem}>
+                    <ListItemIcon className={classes.listItemIcon}>
+                        <CheckCircleOutline/>
+                    </ListItemIcon>
+                    <ListItemText
+                        primary="委托成功率"
+                        secondary={getCommSuccessPercentText(props.artist?.commissionDetails)}
+                    />
+                </ListItem>
+                <ListItem className={classes.listItem}>
+                    <ListItemIcon className={classes.listItemIcon}>
+                        <SentimentSatisfiedAltOutlined/>
+                    </ListItemIcon>
+                    <ListItemText primary="評價" secondary={!props.artist?.commissionDetails.avgRatings && "-"}/>
+                </ListItem>
+                <ListItem className={classes.listItem}>
+                    <ListItemIcon className={classes.listItemIcon}>
+                        <AlarmOnOutlined/>
+                    </ListItemIcon>
+                    <ListItemText
+                        primary="最後成功委托時間"
+                        secondary={
+                            props.artist?.commissionDetails.lastRequestTime
+                                ? moment(props.artist?.commissionDetails.lastRequestTime).format('YYYY-MM-DD')
+                                : "-"
+                        }
+                    />
+                </ListItem>
+                <ListItem className={classes.listItem}>
+                    <ListItemIcon className={classes.listItemIcon}>
+                        <QueryBuilderOutlined/>
+                    </ListItemIcon>
+                    <ListItemText
+                        primary="註冊時間"
+                        secondary={moment(props.artist?.regTime).format('YYYY-MM-DD')}
+                    />
+                </ListItem>
+            </List>
+        </Paper>
     )
 
 }

@@ -1,4 +1,15 @@
-import {Box, Container, createStyles, Grid, makeStyles, StandardProps, Tab, Tabs, Theme} from "@material-ui/core";
+import {
+    Box,
+    Container,
+    createStyles,
+    Grid,
+    makeStyles,
+    StandardProps,
+    Tab,
+    Tabs,
+    Theme,
+    Typography
+} from "@material-ui/core";
 import {Link, Route, Switch, useLocation, useParams, useRouteMatch} from "react-router-dom";
 import {useAppDispatch, useAppSelector} from "../hooks";
 import ArtistBanner from "./banner/ArtistBanner";
@@ -17,11 +28,29 @@ const useStyles = makeStyles((theme: Theme) =>
             flexGrow: 1,
         },
         banner: {
-            height: 160,
-            backgroundColor: 'blue',
+            height: 185,
+        },
+        artistDescGrid: {
+            minHeight: '100px',
+            marginTop: theme.spacing(2),
+            [theme.breakpoints.up('md')]: {
+                marginTop: theme.spacing(4)
+            },
         },
         artistNameCardGrid: {
             marginTop: '-50px',
+        },
+        artistInfoGrid: {
+            marginTop: theme.spacing(2),
+            [theme.breakpoints.up('md')]: {
+                marginTop: theme.spacing(6)
+            },
+        },
+        itemsContentGrid: {
+            marginTop: theme.spacing(2),
+            [theme.breakpoints.up('md')]: {
+                marginTop: theme.spacing(0)
+            },
         }
     }),
 );
@@ -56,21 +85,25 @@ export default function Artist(props: Props) {
                     <Grid item xs={12} md={3} className={classes.artistNameCardGrid}>
                         <ArtistNameCard artist={artist}/>
                     </Grid>
-                    <Grid item xs={12} md={9}>
+                    <Grid item xs={12} md={9} className={classes.artistDescGrid}>
                         <Box my={2}>
                             <ArtistDesc desc={artist.artistBoard.desc} editable={isOwner}/>
                         </Box>
                     </Grid>
-                    <Grid item xs={12} md={3}>
+                    <Grid item xs={12} md={3} className={classes.artistInfoGrid}>
                         <ArtistInfo artist={artist}/>
                     </Grid>
-                    <Grid item xs={12} md={9}>
-                        <Tabs value={location.pathname}>
-                            <Tab label="開放委托"
+                    <Grid item xs={12} md={9} className={classes.itemsContentGrid}>
+                        <Tabs value={location.pathname} TabIndicatorProps={{style: {backgroundColor: "black"}}}>
+                            <Tab label={
+                                <Typography variant={"subtitle1"}>開放委托</Typography>
+                            }
                                  value={routeMatch.url}
                                  component={Link}
                                  to={routeMatch.url}/>
-                            <Tab label="過去作品"
+                            <Tab label={
+                                <Typography variant={"subtitle1"}>過去作品</Typography>
+                            }
                                  value={`${routeMatch.url}/artworks`}
                                  component={Link}
                                  to={`${routeMatch.url}/artworks`}/>
