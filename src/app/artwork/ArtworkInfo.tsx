@@ -9,7 +9,16 @@ import {
     StandardProps,
     Theme
 } from "@material-ui/core";
-import {BrushOutlined, PhotoLibraryOutlined} from "@material-ui/icons";
+import {
+    AspectRatio,
+    BrushOutlined,
+    DataUsage,
+    Event,
+    EventAvailable,
+    InsertDriveFile,
+    Person,
+    PhotoLibraryOutlined
+} from "@material-ui/icons";
 import moment from "moment";
 import {Artwork} from "../../domain/artwork/artwork";
 
@@ -45,13 +54,13 @@ export default function ArtworkInfo({artwork, ...props}: Props) {
                 </ListItem>
                 <ListItem className={classes.listItem}>
                     <ListItemIcon className={classes.listItemIcon}>
-                        <BrushOutlined/>
+                        <Person/>
                     </ListItemIcon>
                     <ListItemText primary="委托人" secondary={`${artwork?.requesterName}@${artwork?.requesterId}`}/>
                 </ListItem>
                 <ListItem className={classes.listItem}>
                     <ListItemIcon className={classes.listItemIcon}>
-                        <PhotoLibraryOutlined/>
+                        <Event/>
                     </ListItemIcon>
                     <ListItemText primary="委托日期" secondary={
                         artwork?.startTime
@@ -61,7 +70,7 @@ export default function ArtworkInfo({artwork, ...props}: Props) {
                 </ListItem>
                 <ListItem className={classes.listItem}>
                     <ListItemIcon className={classes.listItemIcon}>
-                        <PhotoLibraryOutlined/>
+                        <EventAvailable/>
                     </ListItemIcon>
                     <ListItemText primary="完成日期" secondary={
                         artwork?.completedTime
@@ -71,7 +80,7 @@ export default function ArtworkInfo({artwork, ...props}: Props) {
                 </ListItem>
                 <ListItem className={classes.listItem}>
                     <ListItemIcon className={classes.listItemIcon}>
-                        <PhotoLibraryOutlined/>
+                        <InsertDriveFile/>
                     </ListItemIcon>
                     <ListItemText primary="檔案類型" secondary={
                         artwork?.contentType
@@ -79,7 +88,7 @@ export default function ArtworkInfo({artwork, ...props}: Props) {
                 </ListItem>
                 <ListItem className={classes.listItem}>
                     <ListItemIcon className={classes.listItemIcon}>
-                        <PhotoLibraryOutlined/>
+                        <DataUsage/>
                     </ListItemIcon>
                     <ListItemText primary="檔案大小" secondary={
                         artwork?.volume
@@ -87,7 +96,7 @@ export default function ArtworkInfo({artwork, ...props}: Props) {
                 </ListItem>
                 <ListItem className={classes.listItem}>
                     <ListItemIcon className={classes.listItemIcon}>
-                        <PhotoLibraryOutlined/>
+                        <AspectRatio/>
                     </ListItemIcon>
                     <ListItemText primary={`寬度 x 高度`} secondary={
                         `${artwork?.size.width} x ${artwork?.size.height} ${artwork?.size.unit}`
