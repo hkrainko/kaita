@@ -2,15 +2,18 @@ import {Box, Button, Container, createStyles, makeStyles, StandardProps, Theme, 
 import UserAvatar from "../component/UserAvatar";
 import {Artist} from "../../domain/artist/model/artist";
 import {Bookmark} from "@material-ui/icons";
+import {SiPlurk} from "react-icons/si";
+import {FaFacebook, FaInstagram, FaTwitter, FaYoutube} from "react-icons/fa";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         root: {
             marginTop: 0
         },
-        userAvatarBox: {
-            marginTop: '-50px',
-            position: 'relative'
+        userAvatar: {
+            borderWidth: '10px',
+            borderColor: 'white',
+            borderStyle: 'solid'
         },
         displayName: {
             marginTop: theme.spacing(1),
@@ -25,7 +28,15 @@ const useStyles = makeStyles((theme: Theme) =>
         bookMark: {
             color: theme.palette.grey.A200,
             marginTop: theme.spacing(2)
-        }
+        },
+        socialMediaIcon: {
+            fontsize: "24px",
+            height: "24px",
+            width: "24px",
+            color: theme.palette.grey.A200,
+            marginLeft: theme.spacing(1),
+            marginRight: theme.spacing(1)
+        },
     }),
 );
 
@@ -39,7 +50,7 @@ export default function ArtistNameCard(props: Props) {
     return (
         <Container className={classes.root}>
             <Box display="flex" justifyContent="center">
-                <UserAvatar size={140} path={props.artist?.profilePath}/>
+                <UserAvatar size={140} showBorder path={props.artist?.profilePath} className={classes.userAvatar}/>
             </Box>
             <Typography variant={"h6"} className={classes.displayName}>{props.artist?.userName}</Typography>
             <Typography className={classes.userId}>@{props.artist?.artistId}</Typography>
@@ -51,6 +62,13 @@ export default function ArtistNameCard(props: Props) {
                 startIcon={<Bookmark/>}>
                 加入書籤
             </Button>
+            <Box display="flex" justifyContent="center" mt={3}>
+                <FaTwitter className={classes.socialMediaIcon} color={"#1C9CEB"}/>
+                <FaFacebook className={classes.socialMediaIcon} color={"#4064AD"}/>
+                <FaInstagram className={classes.socialMediaIcon} color={"#E93F58"}/>
+                <SiPlurk className={classes.socialMediaIcon} color={"#F7544A"}/>
+                <FaYoutube className={classes.socialMediaIcon} color={"#FF0101"}/>
+            </Box>
         </Container>
     )
 }

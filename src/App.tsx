@@ -14,7 +14,6 @@ import RegisterForm from "./app/register/register-form/RegisterForm";
 import applyHttpInterceptors from "./app/error/httpInterceptors";
 import Commissions from "./app/commission/Commissions";
 import Commission from "./app/commission/Commission";
-import Footer from "./app/footer/Footer";
 import Artwork from "./app/artwork/Artwork";
 import Search from "./app/search/Search";
 import Account from "./app/account/Account";

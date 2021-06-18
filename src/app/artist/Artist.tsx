@@ -38,7 +38,7 @@ const useStyles = makeStyles((theme: Theme) =>
             },
         },
         artistNameCardGrid: {
-            marginTop: '-50px',
+            marginTop: '-70px',
         },
         artistInfoGrid: {
             marginTop: theme.spacing(2),
