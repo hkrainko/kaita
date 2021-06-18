@@ -13,6 +13,7 @@ import moment from "moment";
 import {SimpleUser} from "../../../domain/user/simple-user";
 import AuthImage from "../../component/AuthImage";
 import AuthFile from "../../component/AuthFile";
+import config from "../../config";
 
 export enum MessageDirectionType {
     Receive,
@@ -144,14 +145,14 @@ export default function CommissionMessage({user, message, direction, ...props}: 
                         messageDisplay.imagePath &&
                         <Box className={classes.messageImage}>
                             <AuthImage
-                                src={`http://192.168.64.12:31398/${messageDisplay.imagePath}`}
+                                src={`${config.IMG_PATH}${messageDisplay.imagePath}`}
                             />
                         </Box>
                     }
                     {
                         messageDisplay.filePath &&
                         <Box className={classes.messageFile}>
-                            <AuthFile src={`http://192.168.64.12:31398/${messageDisplay.filePath}`}/>
+                            <AuthFile src={`${config.FILE_PATH}${messageDisplay.filePath}`}/>
                         </Box>
                     }
                     {

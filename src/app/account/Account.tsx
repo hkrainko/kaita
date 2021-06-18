@@ -21,6 +21,7 @@ import NotFound from "../error/NotFound";
 import EditProfileModal from "./EditProfileModal";
 import moment from "moment";
 import {getAuthUser} from "../auth-user/usecase/authUserSlice";
+import config from "../config";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -74,7 +75,7 @@ export default function Account(props: Props) {
                         <ListItem>
                             <UserAvatar
                                 size={120}
-                                path={`http://192.168.64.12:31398/${authUser.profilePath}`}
+                                path={`${config.IMG_PATH}${authUser.profilePath}`}
                                 onClick={() => setEditingProfile(true)}
                             />
                         </ListItem>

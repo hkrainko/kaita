@@ -53,6 +53,7 @@ import {
 } from "@material-ui/icons";
 import {CommissionCreator} from "../../../domain/commission/model/commission-creator";
 import {submitCommission} from "../usecase/commissionSlice";
+import config from "../../config";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -234,7 +235,7 @@ export default function NewCommissionModal({openComm, open, onClose, ...Props}: 
                         {openComm.sampleImagePaths.map((path, index) => (
                             <div className={classes.sampleImg}>
                                 <img key={index}
-                                     src={`http://192.168.64.12:31398/${path}`}
+                                     src={`${config.IMG_PATH}${path}`}
                                      alt="範例" className={classes.sampleImg}/>
                             </div>
                         ))}

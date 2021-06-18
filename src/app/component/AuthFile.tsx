@@ -1,7 +1,7 @@
 import {Button, createStyles, makeStyles, StandardProps, Theme} from "@material-ui/core";
-import {useCallback, useEffect, useState} from "react";
+import {useCallback} from "react";
 import {useAppSelector} from "../hooks";
-import axios, {AxiosResponse} from "axios";
+import axios from "axios";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({

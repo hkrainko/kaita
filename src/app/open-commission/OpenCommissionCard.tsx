@@ -35,6 +35,7 @@ import React, {SyntheticEvent, useState} from "react";
 import {Skeleton} from "@material-ui/lab";
 import UserCard from "../component/UserCard";
 import moment from "moment";
+import config from "../config";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -113,8 +114,7 @@ export default function OpenCommissionCard({openCommission, onMainAction, onEdit
                     component="img"
                     alt="Contemplative Reptile"
                     height="180"
-                    image={`http://192.168.64.12:31398/${openCommission.sampleImagePaths[0]}`}
-                    // image={'https://news.cgtn.com/news/77416a4e3145544d326b544d354d444d3355444f31457a6333566d54/img/37d598e5a04344da81c76621ba273915/37d598e5a04344da81c76621ba273915.jpg'}
+                    image={`${config.IMG_PATH}${openCommission.sampleImagePaths[0]}`}
                     title="Open Commission Sample Image"
                     onLoad={(event: SyntheticEvent) => setIsImageLoaded(true)}
                 />

@@ -25,11 +25,12 @@ import {
 import {SearchType} from "../../../../domain/search/model/search-type";
 import {SearchArtistsRepoModel, SearchArtistsRepoModelMapper} from "./model/search-artists.repo.model";
 import {SearchArtworksRepoModel, SearchArtworksRepoModelMapper} from "./model/search-artworks.repo.model";
+import config from "../../../config";
 
 @injectable()
 export class HttpSearchRepo implements SearchRepo {
 
-    apiPath = 'http://192.168.64.12:31398/api';
+    apiPath = config.API_PATH;
 
     searchOpenCommissionsRepoModelMapper = new SearchOpenCommissionsRepoModelMapper()
     searchArtistsRepoModelMapper = new SearchArtistsRepoModelMapper()

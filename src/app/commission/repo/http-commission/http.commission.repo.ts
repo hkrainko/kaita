@@ -18,12 +18,13 @@ import {ImageMessage, Message, MessageType, SystemMessage, TextMessage} from "..
 import axios from "axios";
 import {Currency} from "../../../../domain/price/price";
 import {AppError, UnknownError} from "../../../../domain/error/model/error";
+import config from "../../../config";
 
 
 @injectable()
 export class HttpCommissionRepo implements CommissionRepo {
 
-    private apiPath = 'http://192.168.64.12:31398/api';
+    private apiPath = config.API_PATH;
     private wsPath = 'ws://192.168.64.12:31398/ws';
     private ws?: WebSocket;
     private isWsConnected = false;

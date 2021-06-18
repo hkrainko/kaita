@@ -9,11 +9,12 @@ import GetArtworksResult from "../../../../domain/artwork/model/get-artworks-res
 import axios from "axios";
 import {ArtworkUpdater} from "../../../../domain/artwork/model/artwork-updater";
 import {HttpUpdateArtworkMapper, HttpUpdateArtworkResp} from "./resp/http.update-artwork.resp";
+import config from "../../../config";
 
 @injectable()
 export class HttpArtworkRepo implements ArtworkRepo {
 
-    private apiPath = 'http://192.168.64.12:31398/api'
+    private apiPath = config.API_PATH;
 
     private getArtworkMapper = new HttpGetArtworkMapper()
     private getArtworksMapper = new HttpGetArtworksMapper()

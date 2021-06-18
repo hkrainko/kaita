@@ -16,6 +16,7 @@ import UserAvatar from "../component/UserAvatar";
 import {Skeleton} from "@material-ui/lab";
 import UserCard from "../component/UserCard";
 import moment from "moment";
+import config from "../config";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -62,7 +63,7 @@ export default function ArtistCard({artist, onMainAction, ...props}: Props) {
                     component="img"
                     alt="Artist Card"
                     height="150"
-                    image={`http://192.168.64.12:31398/${artist.artistBoard.bannerPath}`}
+                    image={`${config.IMG_PATH}${artist.artistBoard.bannerPath}`}
                     title="Artist Card"
                     onLoad={(event: SyntheticEvent) => setIsImageLoaded(true)}
                 />
@@ -76,7 +77,7 @@ export default function ArtistCard({artist, onMainAction, ...props}: Props) {
                     </Box>
                 }
                 <Box display="flex" justifyContent="center" className={classes.userAvatarBox}>
-                    <UserAvatar size={100} path={`http://192.168.64.12:31398/${artist.profilePath}`}/>
+                    <UserAvatar size={100} path={`${config.IMG_PATH}${artist.profilePath}`}/>
                 </Box>
                 <Box my={1}>
                     <Typography>{artist.userName}</Typography>

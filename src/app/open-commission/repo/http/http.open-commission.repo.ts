@@ -8,11 +8,12 @@ import axios from "axios";
 import {OpenCommissionCreator} from "../../../../domain/open-commission/model/open-commission-creator";
 import {OpenCommissionUpdater} from "../../../../domain/open-commission/model/open-commission-updater";
 import GetOpenCommissionsResult from "../../../../domain/open-commission/model/get-open-commissions-result";
+import config from "../../../config";
 
 @injectable()
 export class HttpOpenCommissionRepo implements OpenCommissionRepo {
 
-    apiPath = 'http://192.168.64.12:31398/api';
+    apiPath = config.API_PATH;
 
     addOpenCommissionRepoModelMapper = new AddOpenCommissionRepoModelMapper();
     getOpenCommissionsRepoModelMapper = new GetOpenCommissionsRepoModelMapper();

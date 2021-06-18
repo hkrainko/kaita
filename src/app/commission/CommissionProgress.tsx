@@ -23,6 +23,7 @@ import {TYPES} from "../../types";
 import {CommissionUseCase} from "../../domain/commission/commission.usecase";
 import AuthImage from "../component/AuthImage";
 import AuthFile from "../component/AuthFile";
+import config from "../config";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -54,7 +55,7 @@ const getStepElement = (currentStep: CommissionState, comm: Commission): React.R
                         comm.proofCopyImagePaths
                             ? comm.proofCopyImagePaths.map(path => {
                                 return <Box maxWidth="30%">
-                                    <AuthImage src={`http://192.168.64.12:31398/${path}`}/>
+                                    <AuthImage src={`${config.IMG_PATH}${path}`}/>
                                 </Box>
                             })
                             : <></>
@@ -66,7 +67,7 @@ const getStepElement = (currentStep: CommissionState, comm: Commission): React.R
                 <div>
                     {
                         comm.completionFilePath
-                            ? <AuthFile src={`http://192.168.64.12:31398/${comm.completionFilePath}`}/>
+                            ? <AuthFile src={`${config.FILE_PATH}${comm.completionFilePath}`}/>
                             : <></>
                     }
                 </div>

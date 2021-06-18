@@ -36,6 +36,7 @@ import {OpenCommission} from "../../../domain/open-commission/model/open-commiss
 import AppRemoteImage from "../../component/AppRemoteImage";
 import {OpenCommissionUpdater} from "../../../domain/open-commission/model/open-commission-updater";
 import {DragDropContext, DropResult} from "react-beautiful-dnd";
+import config from "../../config";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -453,7 +454,7 @@ export default function EditOpenCommissionModal({openCommission, ...props}: Prop
                                                 key={index}
                                                 className={classes.regImg}
                                                 toBeRemoved={image.remove}
-                                                src={`http://192.168.64.12:31398/${image.path}`}
+                                                src={`${config.IMG_PATH}${image.path}`}
                                                 onClickDelete={() => onClickDeleteRemoteImage(index)}
                                             />
                                         })

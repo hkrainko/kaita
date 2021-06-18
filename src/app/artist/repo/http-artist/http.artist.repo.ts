@@ -5,6 +5,7 @@ import {ArtistUpdater} from '../../../../domain/artist/model/artist-updater';
 import {HttpUpdateArtistMapper} from './resp/http.update-artist.model';
 import {injectable} from "inversify";
 import axios from "axios";
+import config from "../../../config";
 
 
 @injectable()
@@ -13,7 +14,7 @@ export class HttpArtistRepo implements ArtistRepo {
     getArtistMapper = new HttpGetArtistMapper();
     updateArtistMapper = new HttpUpdateArtistMapper();
 
-    apiPath = 'http://192.168.64.12:31398/api';
+    apiPath = config.API_PATH;
 
     getArtist(artistId: string): Promise<Artist> {
         return axios

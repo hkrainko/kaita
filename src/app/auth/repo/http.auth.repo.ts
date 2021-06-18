@@ -5,6 +5,7 @@ import {AuthCallbackMapper, AuthCallbackRepoModel} from './model/auth-callback.r
 import {AuthCallback} from '../../../domain/auth/model/auth-callback';
 import axios from "axios";
 import {injectable} from "inversify";
+import config from "../../config";
 
 @injectable()
 export class HttpAuthRepo implements AuthRepo {
@@ -12,7 +13,7 @@ export class HttpAuthRepo implements AuthRepo {
     getAuthUrlMapper = new GetAuthUrlMapper();
     authCallbackMapper = new AuthCallbackMapper();
 
-    apiPath = 'http://192.168.64.12:31398/api';
+    apiPath = config.API_PATH;
 
     getText(anyStr: string): string {
         return `echo ${anyStr}`

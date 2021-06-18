@@ -4,11 +4,12 @@ import {AuthUserUpdater} from "../../../domain/auth-user/model/auth-user-updater
 import {GetAuthUserModelMapper, GetAuthUserRepoModel} from "./model/get-auth-user.repo.model";
 import axios from "axios";
 import {UpdateAuthUserMapper, UpdateAuthUserRepoModel} from "./model/update-auth-user.repo.model";
+import config from "../../config";
 
 
 export class HttpAuthUserRepo implements AuthUserRepo {
 
-    apiPath = 'http://192.168.64.12:31398/api';
+    apiPath = config.API_PATH;
 
     getAuthUserModelMapper = new GetAuthUserModelMapper()
     updateAuthUserMapper = new UpdateAuthUserMapper()

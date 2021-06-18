@@ -26,6 +26,7 @@ import {
     TelegramShareButton,
     TwitterShareButton
 } from "react-share";
+import config from "../config";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -75,7 +76,7 @@ export default function Artwork(props: Props) {
         <Container className={classes.root}>
             <Grid container spacing={2}>
                 <Grid item xs={12} md={9}>
-                    <AuthImage src={`http://192.168.64.12:31398/${artwork.path}`}/>
+                    <AuthImage src={`${config.IMG_PATH}${artwork.path}`}/>
 
                     <Box display="flex" justifyContent={"flex-end"} mt={1}>
                         <IconButton>

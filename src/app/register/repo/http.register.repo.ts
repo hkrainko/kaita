@@ -4,13 +4,14 @@ import {AuthUser} from '../../../domain/auth-user/model/auth-user';
 import {AuthUserMapper, AuthUserRepoModel} from './model/auth-user.repo.model';
 import {injectable} from "inversify";
 import axios from "axios";
+import config from "../../config";
 
 @injectable()
 export class HttpRegisterRepo implements RegisterRepo {
 
     authUserMapper = new AuthUserMapper();
 
-    apiPath = 'http://192.168.64.12:31398/api';
+    apiPath = config.API_PATH;
 
     register(regInfo: RegisterInfo, regToken: string): Promise<AuthUser> {
 
