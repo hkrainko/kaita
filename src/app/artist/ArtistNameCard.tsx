@@ -4,6 +4,8 @@ import {Artist} from "../../domain/artist/model/artist";
 import {Bookmark} from "@material-ui/icons";
 import {SiPlurk} from "react-icons/si";
 import {FaFacebook, FaInstagram, FaTwitter, FaYoutube} from "react-icons/fa";
+import NotFound from "../error/NotFound";
+import config from "../config";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -44,16 +46,22 @@ interface Props extends StandardProps<any, any> {
     artist?: Artist
 }
 
-export default function ArtistNameCard(props: Props) {
+export default function ArtistNameCard({artist, ...props}: Props) {
     const classes = useStyles()
+
+    if (!artist) {
+        return (
+            <NotFound/>
+        )
+    }
 
     return (
         <Container className={classes.root}>
             <Box display="flex" justifyContent="center">
-                <UserAvatar size={140} showBorder path={props.artist?.profilePath} className={classes.userAvatar}/>
+                <UserAvatar size={140} showBorder path={`${config.IMG_PATH}${artist.profilePath}`} className={classes.userAvatar}/>
             </Box>
-            <Typography variant={"h6"} className={classes.displayName}>{props.artist?.userName}</Typography>
-            <Typography className={classes.userId}>@{props.artist?.artistId}</Typography>
+            <Typography variant={"h6"} className={classes.displayName}>{artist.userName}</Typography>
+            <Typography className={classes.userId}>@{artist.artistId}</Typography>
             <Button
                 variant="contained"
                 color="default"

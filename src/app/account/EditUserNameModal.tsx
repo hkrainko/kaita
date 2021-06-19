@@ -125,7 +125,7 @@ export default function EditUserNameModal({currentUserName, open, onClose, ...pr
                 </form>
             </DialogContent>
             <DialogActions>
-                <Button onClick={props.onClose} variant="contained" fullWidth>
+                <Button onClick={() => onClose(false)} variant="contained" fullWidth>
                     取消
                 </Button>
                 <Button type="submit" variant="contained" color="primary" onClick={handleSubmit(onSubmit)} fullWidth>
