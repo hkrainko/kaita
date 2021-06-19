@@ -4,9 +4,10 @@ const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         root: {
             width: '100%',
-            '& > * + *': {
-                marginTop: theme.spacing(2),
-            },
+            // '& > * + *': {
+            //     marginTop: theme.spacing(2),
+            // },
+            position: 'absolute'
         },
     }),
 );

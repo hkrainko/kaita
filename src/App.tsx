@@ -44,8 +44,8 @@ function App() {
     return (
         <div className="App">
             <BrowserRouter>
-                <Header/>
                 {loadingSelector.loading && <Loading/>}
+                <Header/>
                 <Switch>
                     <Route path="/auth" component={AuthView}/>
                     <Route exact path="/register" component={RegisterView}/>

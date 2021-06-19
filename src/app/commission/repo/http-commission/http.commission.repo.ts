@@ -25,7 +25,7 @@ import config from "../../../config";
 export class HttpCommissionRepo implements CommissionRepo {
 
     private apiPath = config.API_PATH;
-    private wsPath = 'ws://192.168.64.12:31398/ws';
+    private wsPath = config.WS_PATH;
     private ws?: WebSocket;
     private isWsConnected = false;
 
