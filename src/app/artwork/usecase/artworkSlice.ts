@@ -9,6 +9,7 @@ import {ArtworkSorter} from "../../../domain/artwork/model/artwork-sorter";
 import {OpenCommissionUpdater} from "../../../domain/open-commission/model/open-commission-updater";
 import {OpenCommissionErrorUnknown} from "../../../domain/open-commission/model/open-commission-error";
 import {ArtworkUpdater} from "../../../domain/artwork/model/artwork-updater";
+import {getNewArtworks} from "../../home/usecase/homeSlice";
 
 
 export interface ArtworkState {
@@ -122,6 +123,9 @@ export const artworkSlice = createSlice({
             })
             .addCase(getArtwork.fulfilled, (state, action) => {
                 state.byId[action.payload.id] = action.payload
+            })
+            .addCase(getNewArtworks.fulfilled, (state, action) => {
+                action.payload.artworks.forEach(artwork => state.byId[artwork.id] = artwork)
             })
     })
 })

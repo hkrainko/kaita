@@ -74,9 +74,7 @@ export const artistSlice = createSlice({
 
             })
             .addCase(getNewRegisterArtists.fulfilled, (state, action) => {
-                action.payload.artists.forEach(artist => {
-                    state.byId[artist.artistId] = artist
-                })
+                action.payload.artists.forEach(artist => state.byId[artist.artistId] = artist)
             })
     })
 })

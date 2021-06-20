@@ -3,8 +3,9 @@ import Footer from "../footer/Footer";
 import React, {useEffect} from "react";
 import {useAppDispatch, useAppSelector} from "../hooks";
 import ArtistCard from "../artist/ArtistCard";
-import {getNewRegisterArtists} from "./usecase/homeSlice";
+import {getNewArtworks, getNewRegisterArtists} from "./usecase/homeSlice";
 import {useHistory} from "react-router-dom";
+import ArtworkCard from "../artwork/ArtworkCard";
 
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -28,10 +29,13 @@ export default function Home() {
     const newRegArtists = useAppSelector((state) =>
         state.home.newRegisterArtistsIds.map(id => state.artist.byId[id])
     )
+    const newArtworks = useAppSelector((state) =>
+        state.home.newArtworkIds.map(id => state.artwork.byId[id]))
 
 
     useEffect(() => {
         dispatch(getNewRegisterArtists({count: 4}))
+        dispatch(getNewArtworks({count: 4}))
     }, [dispatch])
 
     return (
@@ -55,12 +59,15 @@ export default function Home() {
                     <Grid item xs={12}>
                         <Typography variant={"h6"} align={"left"}>最新作品</Typography>
                     </Grid>
-                    <Grid item xs={3}>
-                        ss
-                    </Grid>
-                    <Grid item xs={3}>ss</Grid>
-                    <Grid item xs={3}>ss</Grid>
-                    <Grid item xs={3}>ss</Grid>
+                    {
+                        newArtworks.map( artwork =>
+                            <Grid item xs={6} md={3} key={artwork.id}>
+                                <ArtworkCard artwork={artwork} onMainAction={artwork => {
+
+                                }}/>
+                            </Grid>
+                        )
+                    }
                 </Grid>
             </Container>
             <Footer/>
