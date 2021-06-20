@@ -3,6 +3,7 @@ import AppDependency from "../../di";
 import {RootState} from "../../store";
 import {ArtistErrorUnknown} from "../../../domain/artist/model/artist-error";
 import {Artist} from "../../../domain/artist/model/artist";
+import {getNewRegisterArtists} from "../../home/usecase/homeSlice";
 
 
 export interface ArtistState {
@@ -71,6 +72,11 @@ export const artistSlice = createSlice({
             })
             .addCase(updateArtistBanner.fulfilled, (state, action) => {
 
+            })
+            .addCase(getNewRegisterArtists.fulfilled, (state, action) => {
+                action.payload.artists.forEach(artist => {
+                    state.byId[artist.artistId] = artist
+                })
             })
     })
 })

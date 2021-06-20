@@ -8,6 +8,7 @@ import openCommissionReducer from './open-commission/usecase/openCommissionSlice
 import commissionReducer, {wsMiddleWare} from './commission/usecase/commissionSlice'
 import artworkReducer from './artwork/usecase/artworkSlice'
 import searchReducer from './search/usecase/searchSlice'
+import homeReducer from './home/usecase/homeSlice'
 import {FLUSH, PAUSE, PERSIST, persistReducer, PURGE, REGISTER, REHYDRATE} from 'redux-persist'
 import storage from 'redux-persist/lib/storage'
 
@@ -19,6 +20,7 @@ const reducers = combineReducers(
         commission: commissionReducer,
         artwork: artworkReducer,
         search: searchReducer,
+        home: homeReducer,
         loading: loadingReducer,
         error: errorReducer
     })

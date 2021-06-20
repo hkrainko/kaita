@@ -55,8 +55,9 @@ export default function ArtistCard({artist, onMainAction, ...props}: Props) {
         <Card>
             <CardActionArea>
                 {
-                    isImageLoaded ||
-                    <Skeleton variant="rect" animation={"wave"} height={150}/>
+                    isImageLoaded
+                        ? null
+                        : <Skeleton variant="rect" animation={"wave"} height={150}/>
                 }
                 <CardMedia
                     style={isImageLoaded ? {} : {display: 'none'}}
@@ -70,8 +71,15 @@ export default function ArtistCard({artist, onMainAction, ...props}: Props) {
                 {
                     <Box display="flex" position="absolute" top={8} right={8}>
                         {
-                            artist.artistIntro.artTypes.map(artType =>
-                                <Chip variant="default" color="primary" size="small" label={artType} className={classes.artTypeChip}/>
+                            artist.artistIntro.artTypes.map((artType, index) =>
+                                <Chip
+                                    key={index}
+                                    variant="default"
+                                    color="primary"
+                                    size="small"
+                                    label={artType}
+                                    className={classes.artTypeChip}
+                                />
                             )
                         }
                     </Box>
@@ -96,7 +104,7 @@ export default function ArtistCard({artist, onMainAction, ...props}: Props) {
             </CardActionArea>
             <Box display={"flex"} px={2} paddingBottom={2} justifyContent={"space-between"} alignItems={"center"}>
                 {
-                    artist.paymentMethods.map(method =>
+                    artist.paymentMethods?.map(method =>
                         <Chip variant="outlined" size="small" label={method} className={classes.paymentMethodChip}/>
                     )
                 }

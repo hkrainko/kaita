@@ -1,5 +1,4 @@
-import {createAsyncThunk} from "@reduxjs/toolkit";
-import {Artist} from "../../../domain/artist/model/artist";
+import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
 import {RootState} from "../../store";
 import AppDependency from "../../di";
 import {ArtistFilter} from "../../../domain/artist/model/artist-filter";
@@ -9,10 +8,12 @@ import {GetArtistsResult} from "../../../domain/artist/model/get-artists-result"
 
 
 export interface HomeState {
-
+    newRegisterArtistsIds: string[]
 }
 
-const initialState: HomeState = {}
+const initialState: HomeState = {
+    newRegisterArtistsIds: []
+}
 
 export const getNewRegisterArtists = createAsyncThunk<GetArtistsResult,
     { count: number },
@@ -30,3 +31,17 @@ export const getNewRegisterArtists = createAsyncThunk<GetArtistsResult,
         return await ad.artistRepo.getArtists(filter, sorter)
     }
 )
+
+export const homeSlice = createSlice({
+    name: 'home',
+    initialState: initialState,
+    reducers: {},
+    extraReducers: (builder => {
+        builder
+            .addCase(getNewRegisterArtists.fulfilled, (state, action) => {
+                state.newRegisterArtistsIds =  action.payload.artists.map(record => record.artistId)
+            })
+    })
+})
+
+export default homeSlice.reducer
