@@ -53,7 +53,7 @@ export default function ArtistCard({artist, onMainAction, ...props}: Props) {
 
     return (
         <Card>
-            <CardActionArea>
+            <CardActionArea onClick={() => onMainAction(artist)}>
                 {
                     isImageLoaded
                         ? null

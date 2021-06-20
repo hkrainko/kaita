@@ -4,6 +4,7 @@ import React, {useEffect} from "react";
 import {useAppDispatch, useAppSelector} from "../hooks";
 import ArtistCard from "../artist/ArtistCard";
 import {getNewRegisterArtists} from "./usecase/homeSlice";
+import {useHistory} from "react-router-dom";
 
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -23,6 +24,7 @@ export default function Home() {
     const classes = useStyles()
 
     const dispatch = useAppDispatch()
+    const history = useHistory();
     const newRegArtists = useAppSelector((state) =>
         state.home.newRegisterArtistsIds.map(id => state.artist.byId[id])
     )
@@ -35,21 +37,23 @@ export default function Home() {
     return (
         <React.Fragment>
             <Container className={classes.root}>
-                <Grid container spacing={4} className={classes.container}>
+                <Grid container spacing={2} className={classes.container}>
                     <Grid item xs={12}>
-                        <Typography align={"left"}>新加入繪師</Typography>
+                        <Typography variant={"h6"} align={"left"}>新加入繪師</Typography>
                     </Grid>
                     {
                         newRegArtists.map( artist =>
-                            <Grid item xs={3} key={artist.artistId}>
-                                <ArtistCard artist={artist} onMainAction={() => {}}/>
+                            <Grid item xs={6} md={3} key={artist.artistId}>
+                                <ArtistCard artist={artist} onMainAction={artist => {
+                                    history.push(`/artists/${artist.artistId}`)
+                                }}/>
                             </Grid>
                         )
                     }
                 </Grid>
                 <Grid container spacing={4} className={classes.container}>
                     <Grid item xs={12}>
-                        <Typography align={"left"}>最新作品</Typography>
+                        <Typography variant={"h6"} align={"left"}>最新作品</Typography>
                     </Grid>
                     <Grid item xs={3}>
                         ss
