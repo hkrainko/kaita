@@ -1,12 +1,9 @@
-import {Box, Container, createStyles, Grid, makeStyles, Theme, Typography} from "@material-ui/core";
+import {Container, createStyles, Grid, makeStyles, Theme, Typography} from "@material-ui/core";
 import Footer from "../footer/Footer";
 import React, {useEffect} from "react";
-import Artwork from "../artwork/Artwork";
-import ArtworkCard from "../artwork/ArtworkCard";
 import {useAppDispatch, useAppSelector} from "../hooks";
 import ArtistCard from "../artist/ArtistCard";
 import {getNewRegisterArtists} from "./usecase/homeSlice";
-
 
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -15,6 +12,9 @@ const useStyles = makeStyles((theme: Theme) =>
             flexGrow: 1,
             marginTop: theme.spacing(12)
         },
+        container: {
+            paddingTop: theme.spacing(4)
+        }
     }),
 );
 
@@ -35,9 +35,9 @@ export default function Home() {
     return (
         <React.Fragment>
             <Container className={classes.root}>
-                <Grid container>
+                <Grid container spacing={4} className={classes.container}>
                     <Grid item xs={12}>
-                        <Typography>新加入繪師</Typography>
+                        <Typography align={"left"}>新加入繪師</Typography>
                     </Grid>
                     {
                         newRegArtists.map( artist =>
@@ -47,9 +47,9 @@ export default function Home() {
                         )
                     }
                 </Grid>
-                <Grid container>
+                <Grid container spacing={4} className={classes.container}>
                     <Grid item xs={12}>
-                        <Typography>最新作品</Typography>
+                        <Typography align={"left"}>最新作品</Typography>
                     </Grid>
                     <Grid item xs={3}>
                         ss
