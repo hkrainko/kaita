@@ -1,4 +1,4 @@
-import {Container, createStyles, Grid, makeStyles, Theme, Typography} from "@material-ui/core";
+import {Container, createStyles, Grid, makeStyles, Paper, Theme, Typography} from "@material-ui/core";
 import Footer from "../footer/Footer";
 import React, {useEffect} from "react";
 import {useAppDispatch, useAppSelector} from "../hooks";
@@ -63,11 +63,21 @@ export default function Home() {
                         newArtworks.map( artwork =>
                             <Grid item xs={6} md={3} key={artwork.id}>
                                 <ArtworkCard artwork={artwork} onMainAction={artwork => {
-
+                                    history.push(`/artworks/${artwork.id}`)
                                 }}/>
                             </Grid>
                         )
                     }
+                </Grid>
+                <Grid container spacing={4} className={classes.container}>
+                    <Grid item xs={12}>
+                        <Typography variant={"h6"} align={"left"}>站內公告</Typography>
+                    </Grid>
+                    <Grid item xs={12}>
+                        <Paper>
+                            fff
+                        </Paper>
+                    </Grid>
                 </Grid>
             </Container>
             <Footer/>
