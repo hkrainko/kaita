@@ -6,6 +6,10 @@ import {HttpUpdateArtistMapper} from './resp/http.update-artist.model';
 import {injectable} from "inversify";
 import axios from "axios";
 import config from "../../../config";
+import {ArtistSorter} from "../../../../domain/artist/model/artist-sorter";
+import {ArtistFilter} from "../../../../domain/artist/model/artist-filter";
+import {GetArtistsResult} from "../../../../domain/artist/model/get-artists-result";
+import {SortOrder} from "../../../../domain/search/model/search-sorter";
 
 
 @injectable()
@@ -22,6 +26,19 @@ export class HttpArtistRepo implements ArtistRepo {
             .then(resp => {
                 return this.getArtistMapper.mapFrom(resp.data)
             })
+    }
+
+    getArtists(filter: ArtistFilter, sorter: ArtistSorter): Promise<GetArtistsResult> {
+
+        let params = {
+            count: filter.count,
+            offset: filter.offset,
+            sort: sorter.regTime ? (sorter.regTime === SortOrder.Descending ? "-reg-time" : "reg-time") : undefined
+        }
+
+        return axios
+            .get<GetArtistsResult>(`${this.apiPath}/artists`, {params})
+            .then(resp => resp.data)
     }
 
     getArtistDetails(artistId: string): Promise<Artist> {
