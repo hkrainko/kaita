@@ -14,10 +14,7 @@ interface Props extends StandardProps<any, any> {
 }
 
 export default function UserCard({name, id, path, ...props}: Props) {
-
     const classes = useStyles({size: props.size})
-
-    console.log(`CCC:${path}`)
 
     return (
         <Box display="flex">

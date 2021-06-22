@@ -31,6 +31,7 @@ export default function OpenCommissions(props: Props) {
     const [newComm, setNewComm] = useState<OpenCommission | null>(null)
     const [editingComm, setEditingComm] = useState<OpenCommission | null>(null)
     const [deletingComm, setDeletingComm] = useState<OpenCommission | null>(null)
+    const userId = useAppSelector((state) => state.auth?.authUser?.userId)
     const getOpenCommissionsResult = useAppSelector(state => {
         if (state.openCommission.forArtist.artistId === id) {
             const openCommissions = state.openCommission.forArtist.ids.map(id => {
@@ -45,6 +46,7 @@ export default function OpenCommissions(props: Props) {
             }
         }
     })
+    const isOwner = getOpenCommissionsResult?.artistId && getOpenCommissionsResult.artistId === userId
 
     const dispatch = useAppDispatch()
 
@@ -59,23 +61,32 @@ export default function OpenCommissions(props: Props) {
     }, [dispatch, id])
 
     const onNewComm = useCallback((openCommission: OpenCommission) => {
+        if (isOwner) {
+            return
+        }
         setNewComm(openCommission)
-    }, [])
+    }, [isOwner])
 
     const onEdit = useCallback((openCommission: OpenCommission) => {
+        if (!isOwner) {
+            return
+        }
         setEditingComm(openCommission)
-    }, [])
+    }, [isOwner])
 
     const onDelete = useCallback((openCommission: OpenCommission) => {
+        if (!isOwner) {
+            return
+        }
         setDeletingComm(openCommission)
-    }, [])
+    }, [isOwner])
 
     const onConfirmDeleteOpenComm = useCallback(() => {
-        if (!deletingComm) {
+        if (!deletingComm || !isOwner) {
             return
         }
         dispatch(deleteOpenCommission({openCommId: deletingComm.id}))
-    }, [deletingComm, dispatch])
+    }, [deletingComm, dispatch, isOwner])
 
     return (
         <Box>
@@ -92,20 +103,23 @@ export default function OpenCommissions(props: Props) {
                 <IconButton color="default" aria-label="load more">
                     <MoreHoriz/>
                 </IconButton>
-                <Button variant="contained"
-                        color="default"
-                        size="small"
-                        onClick={() => setShowNewOpenComm(true)}
-                        className={classes.addButton}
-                        startIcon={<Add/>}>新增</Button>
+                {
+                    isOwner &&
+                    <Button variant="contained"
+                            color="default"
+                            size="small"
+                            onClick={() => setShowNewOpenComm(true)}
+                            className={classes.addButton}
+                            startIcon={<Add/>}>新增</Button>
+                }
             </Box>
             <NewOpenCommissionModal open={showNewOpenComm} onClose={() => setShowNewOpenComm(false)}/>
             {
-                editingComm
+                isOwner && editingComm
                 && <EditOpenCommissionModal openCommission={editingComm} open={true} onClose={() => setEditingComm(null)}/>
             }
             {
-                newComm
+                isOwner && newComm
                 && <NewCommissionModal openComm={newComm} open={true} onClose={() => setNewComm(null)}/>
             }
             <AppDialog
