@@ -1,5 +1,4 @@
-import {Avatar, Box, createStyles, makeStyles, StandardProps, Theme, Typography} from "@material-ui/core";
-import {User} from "../../domain/user/user";
+import {Box, createStyles, makeStyles, StandardProps, Theme, Typography} from "@material-ui/core";
 import React from "react";
 import UserAvatar from "./UserAvatar";
 
@@ -18,10 +17,12 @@ export default function UserCard({name, id, path, ...props}: Props) {
 
     const classes = useStyles({size: props.size})
 
+    console.log(`CCC:${path}`)
+
     return (
         <Box display="flex">
             <UserAvatar
-                src={path}
+                path={path}
                 size={36}/>
             <Box textAlign={"start"} ml={1}>
                 <Typography variant={"subtitle2"} color={"textSecondary"}>{name}</Typography>

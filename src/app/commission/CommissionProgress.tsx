@@ -24,6 +24,7 @@ import {CommissionUseCase} from "../../domain/commission/commission.usecase";
 import AuthImage from "../component/AuthImage";
 import AuthFile from "../component/AuthFile";
 import config from "../config";
+import UserCard from "../component/UserCard";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -122,13 +123,27 @@ export default function CommissionProgress({commission, open, onClose, ...props}
                     <ListItem>
                         <ListItemText
                             primary="繪師"
-                            secondary={`${commission.artistName}@${commission.artistId}`}
+                            secondary={
+                                <UserCard
+                                    width={100}
+                                    name={commission.artistName}
+                                    id={commission.artistId}
+                                    path={`${config.IMG_PATH}${commission.artistProfilePath}`}
+                                />
+                            }
                         />
                     </ListItem>
                     <ListItem>
                         <ListItemText
                             primary="委托人"
-                            secondary={`${commission.requesterName}@${commission.requesterId}`}
+                            secondary={
+                                <UserCard
+                                    width={100}
+                                    name={commission.requesterName}
+                                    id={commission.requesterId}
+                                    path={`${config.IMG_PATH}${commission.requesterProfilePath}`}
+                                />
+                            }
                         />
                     </ListItem>
 

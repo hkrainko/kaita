@@ -82,7 +82,12 @@ export default function ArtworkCard({artwork, onMainAction, onEdit, onDelete, ..
                 }
             </CardActions>
             <Box display={"flex"} px={1} paddingBottom={2} justifyContent={"space-between"} alignItems={"flex-end"}>
-                <UserCard id={"artist_ss"} name={artwork.artistName} width={30}/>
+                <UserCard
+                    width={30}
+                    id={artwork.artistId}
+                    name={artwork.artistName}
+                    path={artwork.artistProfilePath}
+                />
                 <Typography variant={"body2"} color={"textSecondary"}>
                     {moment().calendar(artwork.completedTime)}
                 </Typography>

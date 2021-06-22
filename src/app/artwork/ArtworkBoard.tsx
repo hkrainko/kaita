@@ -74,7 +74,12 @@ export default function ArtworkBoard({artwork, ...props}: Props) {
                         </Typography>
                     </Box>
                     <Box mt={4}>
-                        <UserCard width={30} name={artwork.artistName} id={artwork.artistId}/>
+                        <UserCard
+                            width={30}
+                            name={artwork.artistName}
+                            id={artwork.artistId}
+                            path={artwork.artistProfilePath}
+                        />
                     </Box>
                 </Box>
             </Paper>
