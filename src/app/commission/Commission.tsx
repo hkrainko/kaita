@@ -46,6 +46,8 @@ import CommissionDetail from "./CommissionDetails";
 import CommissionProgress from "./CommissionProgress";
 import CommissionActionPanel from "./CommissionActionPanel";
 import AppRemovableImage from "../component/AppRemovableImage";
+import UserAvatar from "../component/UserAvatar";
+import config from "../config";
 
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -302,10 +304,20 @@ export default function Commission({...props}: Props) {
                                 }}
                                 color="inherit"
                             >
-                                <AccountCircle/>
+                                {
+                                    commission?.anonymous
+                                        ? <AccountCircle/>
+                                        : <UserAvatar size={45}
+                                                      path={`${config.IMG_PATH}${commission?.requesterProfilePath}`}/>
+
+                                }
                             </IconButton>
                             <Typography variant="h6">
-                                Photos
+                                {
+                                    commission?.anonymous
+                                        ? <Typography variant={"h6"}>匿名用戶</Typography>
+                                        : <Typography variant={"h6"}>{commission?.requesterName}@{commission?.requesterId}</Typography>
+                                }
                             </Typography>
                             <div className={classes.grow}/>
                             <IconButton
