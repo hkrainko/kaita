@@ -16,7 +16,7 @@ import {
     Typography
 } from "@material-ui/core";
 import {useAppDispatch, useAppSelector} from "../hooks";
-import {ChangeEvent, useCallback, useEffect, useState} from "react";
+import React, {ChangeEvent, ReactNode, useCallback, useEffect, useState} from "react";
 import {getCommissions} from "./usecase/commissionSlice";
 import {Link, useLocation} from "react-router-dom";
 import {Commission} from "../../domain/commission/model/commission";
@@ -24,6 +24,8 @@ import {useInjection} from "../../iocReact";
 import {TYPES} from "../../types";
 import {CommissionUseCase} from "../../domain/commission/commission.usecase";
 import moment from "moment";
+import UserCard from "../component/UserCard";
+import config from "../config";
 
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -125,24 +127,43 @@ export default function Commissions(props: Props) {
         }))
     }, [dispatch, page, rowsPerPage, type])
 
-    const getCellByColumnType = useCallback((type: ColumnType, commission: Commission): string => {
+    const getCellByColumnType = useCallback((type: ColumnType, commission: Commission): ReactNode => {
         switch (type) {
             case ColumnType.id:
-                return commission.id
+                return (
+                    <Link to={`commissions/${commission.id}`}>
+                        {commission.id}
+                    </Link>
+                )
             case ColumnType.requester:
-                return `${commission.requesterName}@${commission.requesterId}`
+                return (
+                    <UserCard width={100}
+                              name={commission.requesterName}
+                              id={commission.requesterId}
+                              path={`${config.IMG_PATH}${commission.requesterProfilePath}`}/>
+                )
             case ColumnType.message:
-                return commUseCase.getLastMessageText(commission)
+                return (
+                    <Typography variant="subtitle2">{commUseCase.getLastMessageText(commission)}</Typography>
+                )
             case ColumnType.price:
-                return `${commission.price.amount} ${commission.price.currency}`
+                return (
+                    <Typography variant="body2">{`${commission.price.amount} ${commission.price.currency}`}</Typography>
+                )
             case ColumnType.dayNeed:
-                return commission.dayNeed.toString()
+                return (
+                    <Typography variant="body2">{commission.dayNeed.toString()}</Typography>
+                )
             case ColumnType.lastUpdateDate:
-                if (commission.lastMessage) {
-                    return moment(commission.lastMessage.createTime).format("YYYY-MM-DD HH:mm:ss")
-                } else {
-                    return moment(commission.lastUpdateTime).format("YYYY-MM-DD HH:mm:ss")
-                }
+                return (
+                    <Typography variant="body2">
+                        {
+                            commission.lastMessage
+                                ? moment(commission.lastMessage.createTime).format("YYYY-MM-DD HH:mm:ss")
+                                : moment(commission.lastUpdateTime).format("YYYY-MM-DD HH:mm:ss")
+                        }
+                    </Typography>
+                )
             default:
                 return ''
         }
@@ -176,21 +197,11 @@ export default function Commissions(props: Props) {
                                     return (
                                         <TableRow hover role="checkbox" tabIndex={-1} key={comm.id}>
                                             {columns.map((column) => {
-                                                if (column.type === ColumnType.id) {
-                                                    return (
-                                                        <TableCell key={column.type} align={column.align}>
-                                                            <Link to={`commissions/${comm.id}`}>
-                                                                {getCellByColumnType(column.type, comm)}
-                                                            </Link>
-                                                        </TableCell>
-                                                    )
-                                                } else {
-                                                    return (
-                                                        <TableCell key={column.type} align={column.align}>
-                                                            {getCellByColumnType(column.type, comm)}
-                                                        </TableCell>
-                                                    );
-                                                }
+                                                return (
+                                                    <TableCell key={column.type} align={column.align}>
+                                                        {getCellByColumnType(column.type, comm)}
+                                                    </TableCell>
+                                                );
                                             })}
                                         </TableRow>
                                     )

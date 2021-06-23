@@ -23,7 +23,7 @@ export default function UserCard({name, id, path, ...props}: Props) {
                 size={36}/>
             <Box textAlign={"start"} ml={1}>
                 <Typography variant={"subtitle2"} color={"textSecondary"}>{name}</Typography>
-                <Typography variant={"subtitle2"} color={"textSecondary"}>@{id}</Typography>
+                <Typography variant={"body2"} color={"textSecondary"}>@{id}</Typography>
             </Box>
         </Box>
     )
