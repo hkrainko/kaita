@@ -7,7 +7,7 @@ import {
     makeStyles,
     Paper,
     StandardProps,
-    Theme
+    Theme, Typography
 } from "@material-ui/core";
 import {
     AspectRatio,
@@ -21,6 +21,8 @@ import {
 } from "@material-ui/icons";
 import moment from "moment";
 import {Artwork} from "../../domain/artwork/artwork";
+import UserCard from "../component/UserCard";
+import config from "../config";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -37,7 +39,7 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 interface Props extends StandardProps<any, any> {
-    artwork: Artwork | null
+    artwork: Artwork
 }
 
 export default function ArtworkInfo({artwork, ...props}: Props) {
@@ -50,13 +52,31 @@ export default function ArtworkInfo({artwork, ...props}: Props) {
                     <ListItemIcon className={classes.listItemIcon}>
                         <BrushOutlined/>
                     </ListItemIcon>
-                    <ListItemText primary="繪師" secondary={`${artwork?.artistName}@${artwork?.artistId}`}/>
+                    <ListItemText primary="繪師" secondary={
+                        <UserCard
+                            width={100}
+                            name={artwork.artistName}
+                            id={artwork.artistId}
+                            path={`${config.IMG_PATH}${artwork.artistProfilePath}`}
+                        />
+                    }/>
                 </ListItem>
                 <ListItem className={classes.listItem}>
                     <ListItemIcon className={classes.listItemIcon}>
                         <Person/>
                     </ListItemIcon>
-                    <ListItemText primary="委托人" secondary={`${artwork?.requesterName}@${artwork?.requesterId}`}/>
+                    <ListItemText primary="委托人" secondary={
+                        !artwork.anonymous && artwork.requesterId
+                            ? (
+                                <UserCard
+                                    width={100}
+                                    name={artwork.requesterName ?? ""}
+                                    id={artwork.requesterId}
+                                    path={`${config.IMG_PATH}${artwork.requesterProfilePath}`}
+                                />
+                            )
+                            : <Typography>匿名</Typography>
+                    }/>
                 </ListItem>
                 <ListItem className={classes.listItem}>
                     <ListItemIcon className={classes.listItemIcon}>

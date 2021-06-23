@@ -7,6 +7,7 @@ import {useAppSelector} from "../hooks";
 import {Edit} from "@material-ui/icons";
 import EditArtworkBoardModal from "./EditArtworkBoardModal";
 import UserCard from "../component/UserCard";
+import config from "../config";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -78,7 +79,7 @@ export default function ArtworkBoard({artwork, ...props}: Props) {
                             width={30}
                             name={artwork.artistName}
                             id={artwork.artistId}
-                            path={artwork.artistProfilePath}
+                            path={`${config.IMG_PATH}${artwork.artistProfilePath}`}
                         />
                     </Box>
                 </Box>

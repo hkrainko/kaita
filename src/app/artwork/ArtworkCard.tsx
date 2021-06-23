@@ -86,7 +86,7 @@ export default function ArtworkCard({artwork, onMainAction, onEdit, onDelete, ..
                     width={30}
                     id={artwork.artistId}
                     name={artwork.artistName}
-                    path={artwork.artistProfilePath}
+                    path={`${config.IMG_PATH}${artwork.artistProfilePath}`}
                 />
                 <Typography variant={"body2"} color={"textSecondary"}>
                     {moment().calendar(artwork.completedTime)}
