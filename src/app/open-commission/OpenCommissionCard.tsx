@@ -33,9 +33,9 @@ import {
 import {OpenCommission} from "../../domain/open-commission/model/open-commission";
 import React, {SyntheticEvent, useState} from "react";
 import {Skeleton} from "@material-ui/lab";
-import UserCard from "../component/UserCard";
 import moment from "moment";
 import config from "../config";
+import imgBySize, {ImageSize} from "../utils/imageUrl";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -114,7 +114,7 @@ export default function OpenCommissionCard({openCommission, onMainAction, onEdit
                     component="img"
                     alt="Contemplative Reptile"
                     height="180"
-                    image={`${config.IMG_PATH}${openCommission.sampleImagePaths[0]}`}
+                    image={imgBySize(ImageSize.Middle, openCommission.sampleImagePaths[0])}
                     title="Open Commission Sample Image"
                     onLoad={(event: SyntheticEvent) => setIsImageLoaded(true)}
                 />

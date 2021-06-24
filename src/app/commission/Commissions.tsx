@@ -26,6 +26,7 @@ import {CommissionUseCase} from "../../domain/commission/commission.usecase";
 import moment from "moment";
 import UserCard from "../component/UserCard";
 import config from "../config";
+import imgBySize, {ImageSize} from "../utils/imageUrl";
 
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -140,7 +141,7 @@ export default function Commissions(props: Props) {
                     <UserCard width={100}
                               name={commission.requesterName}
                               id={commission.requesterId}
-                              path={`${config.IMG_PATH}${commission.requesterProfilePath}`}/>
+                              path={commission.requesterProfilePath && imgBySize(ImageSize.Middle, commission.requesterProfilePath)}/>
                 )
             case ColumnType.message:
                 return (

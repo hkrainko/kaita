@@ -4,7 +4,7 @@ import {
     Breadcrumbs,
     Container,
     createStyles,
-    IconButton, Input,
+    IconButton,
     InputAdornment,
     ListItem,
     makeStyles,
@@ -48,6 +48,7 @@ import CommissionActionPanel from "./CommissionActionPanel";
 import AppRemovableImage from "../component/AppRemovableImage";
 import UserAvatar from "../component/UserAvatar";
 import config from "../config";
+import imgBySize, {ImageSize} from "../utils/imageUrl";
 
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -305,10 +306,10 @@ export default function Commission({...props}: Props) {
                                 color="inherit"
                             >
                                 {
-                                    commission?.anonymous
+                                    commission?.anonymous || !(commission?.requesterProfilePath)
                                         ? <AccountCircle/>
                                         : <UserAvatar size={45}
-                                                      path={`${config.IMG_PATH}${commission?.requesterProfilePath}`}/>
+                                                      path={imgBySize(ImageSize.Small, commission.requesterProfilePath)}/>
 
                                 }
                             </IconButton>

@@ -19,6 +19,7 @@ import {Skeleton} from "@material-ui/lab";
 import UserCard from "../component/UserCard";
 import moment from "moment";
 import config from "../config";
+import imgBySize, {ImageSize} from "../utils/imageUrl";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -50,7 +51,7 @@ export default function ArtworkCard({artwork, onMainAction, onEdit, onDelete, ..
                     component="img"
                     alt="Contemplative Reptile"
                     height="140"
-                    image={`${config.IMG_PATH}${artwork.path}`}
+                    image={imgBySize(ImageSize.Middle, artwork.path)}
                     title="Contemplative Reptile"
                     onLoad={(event: SyntheticEvent) => setIsImageLoaded(true)}
                 />
@@ -86,7 +87,7 @@ export default function ArtworkCard({artwork, onMainAction, onEdit, onDelete, ..
                     width={30}
                     id={artwork.artistId}
                     name={artwork.artistName}
-                    path={`${config.IMG_PATH}${artwork.artistProfilePath}`}
+                    path={artwork.artistProfilePath && imgBySize(ImageSize.Small, artwork.artistProfilePath)}
                 />
                 <Typography variant={"body2"} color={"textSecondary"}>
                     {moment().calendar(artwork.completedTime)}

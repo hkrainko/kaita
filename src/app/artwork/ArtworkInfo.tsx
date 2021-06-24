@@ -7,7 +7,8 @@ import {
     makeStyles,
     Paper,
     StandardProps,
-    Theme, Typography
+    Theme,
+    Typography
 } from "@material-ui/core";
 import {
     AspectRatio,
@@ -16,13 +17,13 @@ import {
     Event,
     EventAvailable,
     InsertDriveFile,
-    Person,
-    PhotoLibraryOutlined
+    Person
 } from "@material-ui/icons";
 import moment from "moment";
 import {Artwork} from "../../domain/artwork/artwork";
 import UserCard from "../component/UserCard";
 import config from "../config";
+import imgBySize, {ImageSize} from "../utils/imageUrl";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -57,7 +58,7 @@ export default function ArtworkInfo({artwork, ...props}: Props) {
                             width={100}
                             name={artwork.artistName}
                             id={artwork.artistId}
-                            path={`${config.IMG_PATH}${artwork.artistProfilePath}`}
+                            path={artwork.artistProfilePath && imgBySize(ImageSize.Middle, artwork.artistProfilePath)}
                         />
                     }/>
                 </ListItem>
@@ -72,7 +73,7 @@ export default function ArtworkInfo({artwork, ...props}: Props) {
                                     width={100}
                                     name={artwork.requesterName ?? ""}
                                     id={artwork.requesterId}
-                                    path={`${config.IMG_PATH}${artwork.requesterProfilePath}`}
+                                    path={artwork.requesterProfilePath && imgBySize(ImageSize.Middle, artwork.requesterProfilePath)}
                                 />
                             )
                             : <Typography>匿名</Typography>

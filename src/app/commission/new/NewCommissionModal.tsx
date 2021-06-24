@@ -54,6 +54,7 @@ import {
 import {CommissionCreator} from "../../../domain/commission/model/commission-creator";
 import {submitCommission} from "../usecase/commissionSlice";
 import config from "../../config";
+import imgBySize, {ImageSize} from "../../utils/imageUrl";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -235,7 +236,7 @@ export default function NewCommissionModal({openComm, open, onClose, ...Props}: 
                         {openComm.sampleImagePaths.map((path, index) => (
                             <div className={classes.sampleImg}>
                                 <img key={index}
-                                     src={`${config.IMG_PATH}${path}`}
+                                     src={imgBySize(ImageSize.Middle, path)}
                                      alt="範例" className={classes.sampleImg}/>
                             </div>
                         ))}

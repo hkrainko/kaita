@@ -13,7 +13,8 @@ import {
     Step,
     StepLabel,
     Stepper,
-    Theme, Typography
+    Theme,
+    Typography
 } from "@material-ui/core";
 import {Commission, CommissionState} from "../../domain/commission/model/commission";
 import {useAppDispatch} from "../hooks";
@@ -25,6 +26,7 @@ import AuthImage from "../component/AuthImage";
 import AuthFile from "../component/AuthFile";
 import config from "../config";
 import UserCard from "../component/UserCard";
+import imgBySize, {ImageSize} from "../utils/imageUrl";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -56,7 +58,7 @@ const getStepElement = (currentStep: CommissionState, comm: Commission): React.R
                         comm.proofCopyImagePaths
                             ? comm.proofCopyImagePaths.map(path => {
                                 return <Box maxWidth="30%">
-                                    <AuthImage src={`${config.IMG_PATH}${path}`}/>
+                                    <AuthImage src={imgBySize(ImageSize.Middle, path)}/>
                                 </Box>
                             })
                             : <></>
@@ -128,7 +130,7 @@ export default function CommissionProgress({commission, open, onClose, ...props}
                                     width={100}
                                     name={commission.artistName}
                                     id={commission.artistId}
-                                    path={`${config.IMG_PATH}${commission.artistProfilePath}`}
+                                    path={commission.artistProfilePath && imgBySize(ImageSize.Middle, commission.artistProfilePath)}
                                 />
                             }
                         />
@@ -141,7 +143,7 @@ export default function CommissionProgress({commission, open, onClose, ...props}
                                     width={100}
                                     name={commission.requesterName}
                                     id={commission.requesterId}
-                                    path={`${config.IMG_PATH}${commission.requesterProfilePath}`}
+                                    path={commission.requesterProfilePath && imgBySize(ImageSize.Middle, commission.requesterProfilePath)}
                                 />
                             }
                         />

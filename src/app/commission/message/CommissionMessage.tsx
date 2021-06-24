@@ -6,7 +6,9 @@ import {
     MessageType,
     SystemMessage,
     SystemMessageType,
-    TextMessage, UploadProductSystemMessage, UploadProofCopySystemMessage
+    TextMessage,
+    UploadProductSystemMessage,
+    UploadProofCopySystemMessage
 } from "../../../domain/message/model/message";
 import React, {useMemo} from "react";
 import moment from "moment";
@@ -14,6 +16,7 @@ import {SimpleUser} from "../../../domain/user/simple-user";
 import AuthImage from "../../component/AuthImage";
 import AuthFile from "../../component/AuthFile";
 import config from "../../config";
+import imgBySize, {ImageSize} from "../../utils/imageUrl";
 
 export enum MessageDirectionType {
     Receive,
@@ -145,7 +148,7 @@ export default function CommissionMessage({user, message, direction, ...props}: 
                         messageDisplay.imagePath &&
                         <Box className={classes.messageImage}>
                             <AuthImage
-                                src={`${config.IMG_PATH}${messageDisplay.imagePath}`}
+                                src={imgBySize(ImageSize.Middle, messageDisplay.imagePath)}
                             />
                         </Box>
                     }

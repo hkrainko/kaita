@@ -22,6 +22,7 @@ import EditProfileModal from "./EditProfileModal";
 import moment from "moment";
 import {getAuthUser} from "../auth-user/usecase/authUserSlice";
 import config from "../config";
+import imgBySize, {ImageSize} from "../utils/imageUrl";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -75,7 +76,7 @@ export default function Account(props: Props) {
                         <ListItem>
                             <UserAvatar
                                 size={120}
-                                path={`${config.IMG_PATH}${authUser.profilePath}`}
+                                path={authUser.profilePath && imgBySize(ImageSize.Middle, authUser.profilePath)}
                                 onClick={() => setEditingProfile(true)}
                             />
                         </ListItem>

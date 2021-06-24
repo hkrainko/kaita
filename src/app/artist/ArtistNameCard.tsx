@@ -6,6 +6,7 @@ import {SiPlurk} from "react-icons/si";
 import {FaFacebook, FaInstagram, FaTwitter, FaYoutube} from "react-icons/fa";
 import NotFound from "../error/NotFound";
 import config from "../config";
+import imgBySize, {ImageSize} from "../utils/imageUrl";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -58,7 +59,7 @@ export default function ArtistNameCard({artist, ...props}: Props) {
     return (
         <Container className={classes.root}>
             <Box display="flex" justifyContent="center">
-                <UserAvatar size={140} showBorder path={`${config.IMG_PATH}${artist.profilePath}`} className={classes.userAvatar}/>
+                <UserAvatar size={140} showBorder path={artist.profilePath && imgBySize(ImageSize.Middle, artist.profilePath)} className={classes.userAvatar}/>
             </Box>
             <Typography variant={"h6"} className={classes.displayName}>{artist.userName}</Typography>
             <Typography className={classes.userId}>@{artist.artistId}</Typography>

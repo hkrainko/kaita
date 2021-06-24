@@ -6,5 +6,5 @@ window.env = {
     FILE_PATH: "http://192.168.64.12:31398/",
     IMG_SMALL_SUFFIX: "_xs.jpg",
     IMG_MIDDLE_SUFFIX: "_md.jpg",
-    IMG_LARGE_SUFFIX: "_xs.jpg"
+    IMG_LARGE_SUFFIX: "_lg.jpg"
 }

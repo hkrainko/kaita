@@ -19,6 +19,7 @@ import React from "react";
 import AuthImage from "../component/AuthImage";
 import config from "../config";
 import UserCard from "../component/UserCard";
+import imgBySize, {ImageSize} from "../utils/imageUrl";
 
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -76,7 +77,7 @@ export default function CommissionDetail({commission, open, onClose, ...props}: 
                                     width={100}
                                     name={commission.artistName}
                                     id={commission.artistId}
-                                    path={`${config.IMG_PATH}${commission.artistProfilePath}`}
+                                    path={commission.artistProfilePath && imgBySize(ImageSize.Middle, commission.artistProfilePath)}
                                 />
                             }
                         />
@@ -89,7 +90,7 @@ export default function CommissionDetail({commission, open, onClose, ...props}: 
                                     width={100}
                                     name={commission.requesterName}
                                     id={commission.requesterId}
-                                    path={`${config.IMG_PATH}${commission.requesterProfilePath}`}
+                                    path={commission.requesterProfilePath && imgBySize(ImageSize.Middle, commission.requesterProfilePath)}
                                 />
                             }
                         />
@@ -106,7 +107,7 @@ export default function CommissionDetail({commission, open, onClose, ...props}: 
                                               {commission.refImagePaths.map((path, index) => (
                                                   <div className={classes.sampleImg} key={index}>
                                                       <AuthImage
-                                                          src={`${config.IMG_PATH}${path}`}
+                                                          src={imgBySize(ImageSize.Middle, path)}
                                                           alt="範例"/>
                                                   </div>
                                               ))}

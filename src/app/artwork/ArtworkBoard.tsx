@@ -1,13 +1,13 @@
 import {Box, createStyles, IconButton, makeStyles, Paper, StandardProps, Theme, Typography} from "@material-ui/core";
 import {Artwork} from "../../domain/artwork/artwork";
 import moment from "moment";
-import EditBannerModal from "../artist/banner/EditBannerModal";
 import React, {useCallback} from "react";
 import {useAppSelector} from "../hooks";
 import {Edit} from "@material-ui/icons";
 import EditArtworkBoardModal from "./EditArtworkBoardModal";
 import UserCard from "../component/UserCard";
 import config from "../config";
+import imgBySize, {ImageSize} from "../utils/imageUrl";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -79,7 +79,7 @@ export default function ArtworkBoard({artwork, ...props}: Props) {
                             width={30}
                             name={artwork.artistName}
                             id={artwork.artistId}
-                            path={`${config.IMG_PATH}${artwork.artistProfilePath}`}
+                            path={artwork.artistProfilePath && imgBySize(ImageSize.Small, artwork.artistProfilePath)}
                         />
                     </Box>
                 </Box>

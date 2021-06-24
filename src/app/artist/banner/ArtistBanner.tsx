@@ -3,6 +3,7 @@ import React, {useCallback} from "react";
 import {Edit} from "@material-ui/icons";
 import EditBannerModal from "./EditBannerModal";
 import config from "../../config";
+import imgBySize, {ImageSize} from "../../utils/imageUrl";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -50,7 +51,7 @@ export default function ArtistBanner(props: Props)  {
                     </IconButton>
                 }
             </div>
-            <img src={`${config.IMG_PATH}${props.path}`} alt={""} className={classes.banner}/>
+            <img src={props.path && imgBySize(ImageSize.Large, props.path)} alt={""} className={classes.banner}/>
             <EditBannerModal
                 open={editing}
                 onClose={() => setEditing(false)}

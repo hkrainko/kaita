@@ -1,32 +1,31 @@
 import {
-    Box, Button,
+    Box,
+    Button,
     Container,
-    createStyles, Divider,
+    createStyles,
     Grid,
-    IconButton, List, ListItem, ListItemText,
+    IconButton,
+    List,
+    ListItem,
     makeStyles,
     Popover,
     StandardProps,
-    Theme, Typography
+    Theme,
+    Typography
 } from "@material-ui/core";
 import {useAppDispatch, useAppSelector} from "../hooks";
 import {useParams} from "react-router-dom";
-import React, {useCallback, useEffect, useState} from "react";
+import React, {useCallback, useEffect} from "react";
 import {getArtwork} from "./usecase/artworkSlice";
 import {Artwork as DArtwork} from "../../domain/artwork/artwork";
 import AuthImage from "../component/AuthImage";
 import ArtworkInfo from "./ArtworkInfo";
 import ArtworkBoard from "./ArtworkBoard";
 import NotFound from "../error/NotFound";
-import {Facebook, FavoriteBorder, More, MoreVert, Share, Telegram, Twitter} from "@material-ui/icons";
-import {
-    FacebookIcon,
-    FacebookShareButton,
-    InstapaperShareButton,
-    TelegramShareButton,
-    TwitterShareButton
-} from "react-share";
+import {Facebook, FavoriteBorder, MoreVert, Share, Telegram, Twitter} from "@material-ui/icons";
+import {FacebookShareButton, TelegramShareButton, TwitterShareButton} from "react-share";
 import config from "../config";
+import imgBySize, {ImageSize} from "../utils/imageUrl";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -76,7 +75,7 @@ export default function Artwork(props: Props) {
         <Container className={classes.root}>
             <Grid container spacing={2}>
                 <Grid item xs={12} md={9}>
-                    <AuthImage src={`${config.IMG_PATH}${artwork.path}`}/>
+                    <AuthImage src={imgBySize(ImageSize.Large, artwork.path)}/>
 
                     <Box display="flex" justifyContent={"flex-end"} mt={1}>
                         <IconButton>
