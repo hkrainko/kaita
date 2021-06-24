@@ -64,7 +64,7 @@ export default function ArtistCard({artist, onMainAction, ...props}: Props) {
                     component="img"
                     alt="Artist Card"
                     height="150"
-                    image={imgBySize(ImageSize.Middle, artist.artistBoard.bannerPath)}
+                    image={artist.artistBoard.bannerPath && imgBySize(ImageSize.Middle, artist.artistBoard.bannerPath)}
                     title="Artist Card"
                     onLoad={(event: SyntheticEvent) => setIsImageLoaded(true)}
                 />
