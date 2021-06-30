@@ -8,7 +8,7 @@ export type SearchResult = OpenCommissionsSearchResult | ArtistsSearchResult | A
 
 type SearchResultBase = {
     // type: SearchType
-    page: SearchResultPage
+    page: ResultPage
 }
 
 export interface OpenCommissionsSearchResult extends SearchResultBase {
@@ -32,7 +32,7 @@ export interface ArtworksSearchResult extends SearchResultBase {
     // sorter: ArtworksSearchSorter
 }
 
-export interface SearchResultPage {
+export interface ResultPage {
     current: number,
     totalPage: number,
     totalResult: number,

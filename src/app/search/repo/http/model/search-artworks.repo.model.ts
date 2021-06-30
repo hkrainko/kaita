@@ -1,10 +1,10 @@
-import {ArtworksSearchResult, SearchResultPage} from "../../../../../domain/search/model/search-result";
+import {ArtworksSearchResult, ResultPage} from "../../../../../domain/search/model/search-result";
 import {Artwork} from "../../../../../domain/artwork/artwork";
 import {Mapper} from "../../../../../domain/mapper";
 import {SearchType} from "../../../../../domain/search/model/search-type";
 
 export interface SearchArtworksRepoModel {
-    page: SearchResultPage,
+    page: ResultPage,
     artworks: Artwork[]
 }
 

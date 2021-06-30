@@ -10,13 +10,15 @@ import {ArtistSorter} from "../../../../domain/artist/model/artist-sorter";
 import {ArtistFilter} from "../../../../domain/artist/model/artist-filter";
 import {GetArtistsResult} from "../../../../domain/artist/model/get-artists-result";
 import {SortOrder} from "../../../../domain/search/model/search-sorter";
+import {HttpGetArtistBookmarkIdsMapper, HttpGetArtistBookmarkIdsModel} from "./resp/http.get-artist-bookmark-ids.model";
 
 
 @injectable()
 export class HttpArtistRepo implements ArtistRepo {
 
-    getArtistMapper = new HttpGetArtistMapper();
-    updateArtistMapper = new HttpUpdateArtistMapper();
+    getArtistMapper = new HttpGetArtistMapper()
+    updateArtistMapper = new HttpUpdateArtistMapper()
+    getArtistBookmarkIdsMapper = new HttpGetArtistBookmarkIdsMapper()
 
     apiPath = config.API_PATH;
 
@@ -70,6 +72,54 @@ export class HttpArtistRepo implements ArtistRepo {
         }).then(resp => {
             return this.updateArtistMapper.mapFrom(resp.data)
         });
+    }
+
+    getArtistBookmarkIds(token: string): Promise<string[]> {
+        const headers = {
+            Authorization: 'Bearer ' + token,
+        };
+        return axios.get<HttpGetArtistBookmarkIdsModel>(`${this.apiPath}/artist-bookmarks/ids`, {
+            headers
+        }).then(resp => {
+            return this.getArtistBookmarkIdsMapper.mapFrom(resp.data)
+        })
+    }
+
+    getArtistBookmarks(token: string, count: number, offset: number): Promise<GetArtistsResult> {
+        const headers = {
+            Authorization: 'Bearer ' + token,
+        };
+        const params = {
+            offset,
+            count
+        }
+        return axios
+            .get<GetArtistsResult>(`${this.apiPath}`,
+                {headers, params}
+            )
+            .then(resp => resp.data)
+    }
+
+    addBookmark(token: string, artistId: string): Promise<string> {
+        const headers = {
+            Authorization: 'Bearer ' + token,
+        };
+        return axios
+            .post<{ artistId: string }>(`${this.apiPath}/artist-bookmarks/${artistId}`,
+                {headers}
+            )
+            .then(resp => resp.data.artistId)
+    }
+
+    removeBookmark(token: string, artistId: string): Promise<string> {
+        const headers = {
+            Authorization: 'Bearer ' + token,
+        };
+        return axios
+            .delete<{ artistId: string }>(`${this.apiPath}/artist-bookmarks/${artistId}}`,
+                {headers}
+            )
+            .then(resp => resp.data.artistId)
     }
 
 

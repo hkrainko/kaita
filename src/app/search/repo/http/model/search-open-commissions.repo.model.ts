@@ -1,11 +1,11 @@
-import {OpenCommissionsSearchResult, SearchResultPage} from "../../../../../domain/search/model/search-result";
+import {OpenCommissionsSearchResult, ResultPage} from "../../../../../domain/search/model/search-result";
 import {OpenCommission} from "../../../../../domain/open-commission/model/open-commission";
 import {Mapper} from "../../../../../domain/mapper";
 import {SearchType} from "../../../../../domain/search/model/search-type";
 
 
 export interface SearchOpenCommissionsRepoModel {
-    page: SearchResultPage
+    page: ResultPage
     openCommissions: OpenCommission[]
 }
 
