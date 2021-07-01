@@ -106,8 +106,9 @@ export default function OpenCommissionCard({openCommission, onMainAction, onEdit
                     }
                 />
                 {
-                    isImageLoaded ||
-                    <Skeleton variant="rect" animation={"wave"} height={180}/>
+                    isImageLoaded
+                        ? null
+                        : <Skeleton variant="rect" animation={"wave"} height={180}/>
                 }
                 <CardMedia
                     style={isImageLoaded ? {} : {display: 'none'}}

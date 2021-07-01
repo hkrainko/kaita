@@ -48,6 +48,8 @@ export default function OpenCommissions(props: Props) {
     })
     const isOwner = getOpenCommissionsResult?.artistId && getOpenCommissionsResult.artistId === userId
 
+    console.log(`AAA ${getOpenCommissionsResult?.artistId} userId=${userId}`)
+
     const dispatch = useAppDispatch()
 
     useEffect(() => {
@@ -119,7 +121,7 @@ export default function OpenCommissions(props: Props) {
                 && <EditOpenCommissionModal openCommission={editingComm} open={true} onClose={() => setEditingComm(null)}/>
             }
             {
-                isOwner && newComm
+                !isOwner && newComm
                 && <NewCommissionModal openComm={newComm} open={true} onClose={() => setNewComm(null)}/>
             }
             <AppDialog

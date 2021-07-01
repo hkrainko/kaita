@@ -7,10 +7,10 @@ import {AuthUserUpdater} from "../../../domain/auth-user/model/auth-user-updater
 
 
 export const getAuthUser = createAsyncThunk<AuthUser,
-    {},
+    void,
     { state: RootState, extra: AppDependency }>(
     'authUser/getAuthUser',
-    async ({}, thunkAPI) => {
+    async (_, thunkAPI) => {
         const authUser = thunkAPI.getState().auth.authUser
         if (!authUser) {
             throw UnAuthError

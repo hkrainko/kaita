@@ -43,8 +43,9 @@ export default function ArtworkCard({artwork, onMainAction, onEdit, onDelete, ..
         <Card>
             <CardActionArea onClick={() => onMainAction(artwork)}>
                 {
-                    isImageLoaded ||
-                    <Skeleton variant="rect" animation={"wave"} height={140}/>
+                    isImageLoaded
+                        ? null
+                        : <Skeleton variant="rect" animation={"wave"} height={140}/>
                 }
                 <CardMedia
                     style={isImageLoaded ? {} : {display: 'none'}}

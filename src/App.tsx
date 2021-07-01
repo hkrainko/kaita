@@ -37,7 +37,7 @@ function App() {
 
     useEffect(() => {
         if (isLoggedIn) {
-            dispatch(getAuthUser({}))
+            dispatch(getAuthUser())
         }
     }, [dispatch, isLoggedIn])
 

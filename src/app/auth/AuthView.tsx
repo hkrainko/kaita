@@ -28,7 +28,7 @@ export default function AuthView() {
     const classes = useStyles()
     const authUseCase = useInjection<AuthUseCase>(TYPES.AuthUseCase)
     const dispatch = useAppDispatch();
-    const authState = useAppSelector((state) => state.auth)
+    const auth = useAppSelector((state) => state.auth)
 
     const location = useLocation<LocationState>()
     const history = useHistory();
@@ -38,13 +38,14 @@ export default function AuthView() {
     const code = query.get('code')
     const state = query.get('state')
 
-    if (authType && code && state && authState.authState === AuthState.Idle) {
+    console.log(`AAA authState:${auth.authState}`)
+    if (authType && code && state && (auth.authState === AuthState.Idle || auth.authState === AuthState.Failed)) {
         dispatch(submitAuthCallback({authType: (authType as AuthType), code, state}))
         console.log('1')
         return <></>
-    } else if (authState.authState === AuthState.Authed) {
+    } else if (auth.authState === AuthState.Authed) {
         console.log('2')
-        switch (authState?.authUser?.state) {
+        switch (auth?.authUser?.state) {
             case UserState.Active:
                 return <Redirect to='/'/>
             case UserState.Pending:
@@ -54,6 +55,8 @@ export default function AuthView() {
             default:
                 break
         }
+    } else {
+        console.log(`auth failed`)
     }
 
     const onButtonClick = (authType: AuthType) => {

@@ -52,14 +52,14 @@ export default function Account(props: Props) {
 
     const onCloseEditUserNameModal = useCallback((success: boolean) => {
         if (success) {
-            dispatch(getAuthUser({}))
+            dispatch(getAuthUser())
         }
         setEditingUserName(false)
     }, [dispatch])
 
     const onCloseEditProfileModal = useCallback((success: boolean) => {
         if (success) {
-            dispatch(getAuthUser({}))
+            dispatch(getAuthUser())
         }
         setEditingProfile(false)
     }, [dispatch])
